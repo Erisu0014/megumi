@@ -1,11 +1,15 @@
-package com.erisu.cloud.megumi.command.common;
+package com.erisu.cloud.megumi.command;
+
+import com.erisu.cloud.megumi.util.Module;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
 /**
  * 指令系统基本配置
  */
-@Target({ElementType.METHOD})
+
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Command {
@@ -13,6 +17,10 @@ public @interface Command {
     CommandType commandType();
 
     Pattern pattern();
+
+    String value();
+
+    Module module() default Module.DEFAULT;
 
     /**
      * 概率回复函数

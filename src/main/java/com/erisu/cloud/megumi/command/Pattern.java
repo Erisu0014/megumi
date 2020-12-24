@@ -1,4 +1,4 @@
-package com.erisu.cloud.megumi.command.common;
+package com.erisu.cloud.megumi.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Pattern {
-    CONTAINS(1,"包含"),PREFIX(2,"前缀"),SUFFIX(3,"后缀");
+    CONTAINS(1,"包含"),PREFIX(2,"前缀"),SUFFIX(3,"后缀"),EQUALS(4,"等于");
     private Integer type;
     private String typeName;
 }

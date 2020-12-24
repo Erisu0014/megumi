@@ -1,4 +1,4 @@
-package com.erisu.cloud.megumi.command.common;
+package com.erisu.cloud.megumi.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

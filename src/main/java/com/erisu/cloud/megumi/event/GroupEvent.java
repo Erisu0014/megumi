@@ -26,15 +26,15 @@ public class GroupEvent extends SimpleListenerHost {
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 
-    //todo 该message应当做成指令系统的一部分，这么写也是一种hello world
-    @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
-    public ListeningStatus onRepeatEvent(@NotNull GroupMessageEvent event) {
-        Message message = event.getMessage();
-        if (Math.random() > 0.5) {
-            event.getGroup().sendMessage(message);
-        }
-        return ListeningStatus.LISTENING; // 表示继续监听事件
-    }
+//    //todo 该message应当做成指令系统的一部分，这么写也是一种hello world
+//    @NotNull
+//    @EventHandler(priority = Listener.EventPriority.NORMAL)
+//    public ListeningStatus onRepeatEvent(@NotNull GroupMessageEvent event) {
+//        Message message = event.getMessage();
+//        if (Math.random() > 0.5) {
+//            event.getGroup().sendMessage(message);
+//        }
+//        return ListeningStatus.LISTENING; // 表示继续监听事件
+//    }
 
 }
