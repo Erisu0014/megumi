@@ -1,5 +1,6 @@
 package com.erisu.cloud.megumi.command;
 
+import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.util.Module;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,11 @@ public @interface Command {
 
     Pattern pattern();
 
-    String value();
+    String value() default "";
 
     Module module() default Module.DEFAULT;
+
+    String[] alias() default {};
 
     /**
      * 概率回复函数

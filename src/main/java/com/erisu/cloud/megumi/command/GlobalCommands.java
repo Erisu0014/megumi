@@ -11,5 +11,5 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/12/24 16:59
  **/
 public class GlobalCommands {
-    public static Map<Command, Object> COMMANDS = new ConcurrentHashMap<>();
+    public static Map<Command, Object> commands = new ConcurrentHashMap<>();
 }

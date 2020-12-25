@@ -1,10 +1,9 @@
 package com.erisu.cloud.megumi.hello;
 
-import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.command.ICommandService;
-import com.erisu.cloud.megumi.command.Pattern;
+import com.erisu.cloud.megumi.pattern.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Component;
  **/
 @Slf4j
 @Component
-@Command(commandType = CommandType.FRIEND, value = "在吗？", pattern = Pattern.EQUALS)
+@Command(commandType = CommandType.GROUP, value = "在吗？", pattern = Pattern.EQUALS, alias = {"zaima","zai"})
 public class HelloService implements ICommandService {
 
     @Override
@@ -28,8 +27,6 @@ public class HelloService implements ICommandService {
         log.info("thinking");
         return new PlainText("主様？");
     }
-
-
 
 
 }

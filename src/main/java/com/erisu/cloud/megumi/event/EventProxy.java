@@ -1,12 +1,9 @@
 package com.erisu.cloud.megumi.event;
 
-import com.erisu.cloud.megumi.command.Command;
-import com.erisu.cloud.megumi.command.CommandService;
-import com.erisu.cloud.megumi.command.GlobalCommands;
-import com.erisu.cloud.megumi.command.ICommandService;
-import com.erisu.cloud.megumi.event.annotation.Event;
 import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
-import com.erisu.cloud.megumi.hello.HelloService;
+import com.erisu.cloud.megumi.analysis.handler.AnalysisHandler;
+import com.erisu.cloud.megumi.command.*;
+import com.erisu.cloud.megumi.event.annotation.Event;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Listener;
@@ -21,7 +18,6 @@ import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +34,9 @@ import java.util.Map;
 public class EventProxy extends SimpleListenerHost {
     @Autowired
     private ApplicationContext applicationContext;
+
     @Resource
-    private CommandService commandService;
+    private AnalysisHandler analysisHandler;
 
 
     @PostConstruct
@@ -52,21 +49,22 @@ public class EventProxy extends SimpleListenerHost {
             beans.put(command, v);
 //            commands.add(command);
         });
-        GlobalCommands.COMMANDS = beans;
+        GlobalCommands.commands = beans;
         log.info("command指令初始化完成");
     }
 
-    @PreAnalysis
+    @NotNull
     @EventHandler(priority = Listener.EventPriority.NORMAL)
     public ListeningStatus execute(MessageEvent messageEvent) throws Exception {
-        ICommandService service = commandService.getCommandService();
-        Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
-        if (answer != null) {
-            messageEvent.getSubject().sendMessage(answer);
+        List<ICommandService> commandServices = analysisHandler.verify(messageEvent);
+        for (ICommandService service : commandServices) {
+            Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
+            if (answer != null) {
+                messageEvent.getSubject().sendMessage(answer);
+            }
         }
         return ListeningStatus.LISTENING;
     }
-
 
 
 }

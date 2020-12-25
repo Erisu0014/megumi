@@ -1,12 +1,13 @@
 package com.erisu.cloud.megumi.analysis.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.erisu.cloud.megumi.command.CommandType;
+
+import java.lang.annotation.*;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface PreAnalysis {
-    //todo 可能加点什么条件更灵活
+    //todo 切不到，呐，多西忒
+    CommandType name();
 }

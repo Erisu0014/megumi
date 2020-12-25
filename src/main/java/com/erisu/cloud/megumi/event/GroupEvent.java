@@ -1,5 +1,7 @@
 package com.erisu.cloud.megumi.event;
 
+import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
+import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.event.annotation.Event;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Listener;
