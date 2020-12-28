@@ -1,25 +1,18 @@
 package com.erisu.cloud.megumi.analysis.handler;
 
-import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.command.GlobalCommands;
 import com.erisu.cloud.megumi.command.ICommandService;
 import com.erisu.cloud.megumi.pattern.PatternFactory;
 import com.erisu.cloud.megumi.pattern.PatternStrategy;
-import com.erisu.cloud.megumi.pattern.strategy.ContainsStrategy;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.message.GroupMessageEvent;
 import net.mamoe.mirai.message.MessageEvent;
-import net.mamoe.mirai.message.data.Message;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import net.mamoe.mirai.message.data.MessageChain;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +36,7 @@ public class AnalysisHandler {
 //    @Before("@annotation(preAnalysis)")
 
     public List<ICommandService> verify(MessageEvent messageEvent) throws Exception {
-        Message message = messageEvent.getMessage();
+        MessageChain messageChain = messageEvent.getMessage();
         Contact subject = messageEvent.getSubject();
         boolean isGroup = messageEvent instanceof GroupMessageEvent;
         Map<Command, Object> commandObjectMap = GlobalCommands.commands;
@@ -52,7 +45,7 @@ public class AnalysisHandler {
         commandObjectMap.forEach((command, v) -> {
             if (isGroup && command.commandType().equals(CommandType.GROUP)) {
                 PatternStrategy processorHandler = PatternFactory.getProcessorHandler(command.pattern());
-                if (processorHandler.isMatch(message, command.value())) {
+                if (processorHandler != null && processorHandler.isMatch(messageChain, command.value())) {
                     commandServices.add((ICommandService) v);
                 }
             }

@@ -1,7 +1,7 @@
 package com.erisu.cloud.megumi.pattern;
 
 
-import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
 
 /**
  * @Description 匹配策略机
@@ -10,5 +10,5 @@ import net.mamoe.mirai.message.data.Message;
  **/
 
 public interface PatternStrategy {
-    public Boolean isMatch(Message message,String command);
+    public Boolean isMatch(MessageChain messageChain, String command);
 }
