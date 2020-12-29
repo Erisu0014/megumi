@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Description 事件proxy
+ * @Description 事件proxy，主要是commands指令控制
  * @Author alice
  * @Date 2020/12/9 16:09
  **/

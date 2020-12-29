@@ -1,15 +1,22 @@
 package com.erisu.cloud.megumi.event;
 
-import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
-import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.event.annotation.Event;
+import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Listener;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.event.events.BotNudgedEvent;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
+import net.mamoe.mirai.event.events.MemberNudgedEvent;
 import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.mirai.message.action.MemberNudge;
+import net.mamoe.mirai.message.action.Nudge;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,23 +27,29 @@ import org.jetbrains.annotations.NotNull;
 @Event
 public class GroupEvent extends SimpleListenerHost {
 
+//    @NotNull
+//    @EventHandler(priority = Listener.EventPriority.NORMAL)
+//    public ListeningStatus onMemberJoinEvent(@NotNull MemberJoinEvent event) {
+//        String name = event.getMember().getNameCard();
+//        event.getGroup().sendMessage(String.format("欢迎%s进群~", name));
+//        return ListeningStatus.LISTENING; // 表示继续监听事件
+//    }
+
+    /**
+     * todo 有bug，一会儿再搞吧
+     *
+     * @param event
+     * @return
+     */
     @NotNull
     @EventHandler(priority = Listener.EventPriority.NORMAL)
-    public ListeningStatus onMemberJoinEvent(@NotNull MemberJoinEvent event) {
-        String name = event.getMember().getNameCard();
-        event.getGroup().sendMessage(String.format("欢迎%s进群~", name));
+    public ListeningStatus onNudgedEvent(@NotNull BotNudgedEvent event) {
+        Bot bot = event.getBot();
+        Member contact = (Member) event.getFrom();
+        Nudge.Companion.sendNudge(contact.getGroup(), contact.nudge());
+        bot.getGroup(contact.getGroup().getId()).sendMessage("欸嘿~戳不到");
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 
-//    //todo 该message应当做成指令系统的一部分，这么写也是一种hello world
-//    @NotNull
-//    @EventHandler(priority = Listener.EventPriority.NORMAL)
-//    public ListeningStatus onRepeatEvent(@NotNull GroupMessageEvent event) {
-//        Message message = event.getMessage();
-//        if (Math.random() > 0.5) {
-//            event.getGroup().sendMessage(message);
-//        }
-//        return ListeningStatus.LISTENING; // 表示继续监听事件
-//    }
 
 }

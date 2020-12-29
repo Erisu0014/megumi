@@ -5,8 +5,11 @@ import net.mamoe.mirai.BotFactoryJvm;
 import net.mamoe.mirai.event.Events;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.utils.BotConfiguration;
+import net.mamoe.mirai.utils.BotConfigurationBase;
 
 import java.util.List;
+
+import static net.mamoe.mirai.utils.BotConfiguration.MiraiProtocol.ANDROID_PHONE;
 
 /**
  * @Description bot po
@@ -17,6 +20,7 @@ public class MegumiBot {
     public static void startBot(Long account, String pwd, String deviceInfo, List<ListenerHost> events) {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo(deviceInfo);
+        config.setProtocol(ANDROID_PHONE);
 //        config.setBotLoggerSupplier(bot -> new MagicLogger());
 //        config.redirectNetworkLogToDirectory(new File(netlog));
         final Bot megumi = BotFactoryJvm.newBot(account, pwd, config);
