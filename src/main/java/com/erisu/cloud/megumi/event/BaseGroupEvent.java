@@ -2,20 +2,14 @@ package com.erisu.cloud.megumi.event;
 
 import com.erisu.cloud.megumi.event.annotation.Event;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
-import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.Listener;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.event.events.BotActiveEvent;
 import net.mamoe.mirai.event.events.BotNudgedEvent;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
-import net.mamoe.mirai.event.events.MemberNudgedEvent;
-import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.MessageEvent;
-import net.mamoe.mirai.message.action.MemberNudge;
 import net.mamoe.mirai.message.action.Nudge;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,19 +19,23 @@ import org.jetbrains.annotations.NotNull;
  * @Date 2020/11/23 16:56
  **/
 @Event
-public class GroupEvent extends SimpleListenerHost {
-
-//    @NotNull
-//    @EventHandler(priority = Listener.EventPriority.NORMAL)
-//    public ListeningStatus onMemberJoinEvent(@NotNull MemberJoinEvent event) {
-//        String name = event.getMember().getNameCard();
-//        event.getGroup().sendMessage(String.format("欢迎%s进群~", name));
-//        return ListeningStatus.LISTENING; // 表示继续监听事件
-//    }
+public class BaseGroupEvent extends SimpleListenerHost {
 
     /**
-     * todo 有bug，一会儿再搞吧
-     *
+     * 入群事件
+     * @param event
+     * @return
+     */
+    @NotNull
+    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    public ListeningStatus onMemberJoinEvent(@NotNull MemberJoinEvent event) {
+        String name = event.getMember().getNameCard();
+        event.getGroup().sendMessage(String.format("欢迎%s进群~", name));
+        return ListeningStatus.LISTENING; // 表示继续监听事件
+    }
+
+    /**
+     * 戳出事了你负责吗
      * @param event
      * @return
      */
@@ -50,6 +48,7 @@ public class GroupEvent extends SimpleListenerHost {
         bot.getGroup(contact.getGroup().getId()).sendMessage("欸嘿~戳不到");
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
+
 
 
 }

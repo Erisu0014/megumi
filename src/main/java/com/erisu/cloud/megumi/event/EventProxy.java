@@ -55,7 +55,7 @@ public class EventProxy extends SimpleListenerHost {
 
     @NotNull
     @EventHandler(priority = Listener.EventPriority.NORMAL)
-    public ListeningStatus execute(MessageEvent messageEvent) throws Exception {
+    public ListeningStatus excuteCommand(MessageEvent messageEvent) throws Exception {
         List<ICommandService> commandServices = analysisHandler.verify(messageEvent);
         for (ICommandService service : commandServices) {
             Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());

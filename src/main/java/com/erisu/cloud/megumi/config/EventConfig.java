@@ -1,7 +1,8 @@
 package com.erisu.cloud.megumi.config;
 
 import com.erisu.cloud.megumi.event.EventProxy;
-import com.erisu.cloud.megumi.event.GroupEvent;
+import com.erisu.cloud.megumi.event.BaseGroupEvent;
+import com.erisu.cloud.megumi.event.GroupSchedulerEvent;
 import net.mamoe.mirai.event.ListenerHost;
 
 import org.springframework.context.annotation.Bean;
@@ -19,16 +20,19 @@ import java.util.List;
 @Configuration
 public class EventConfig {
     @Resource
-    private GroupEvent groupEvent;
+    private BaseGroupEvent baseGroupEvent;
     @Resource
     private EventProxy eventProxy;
+    @Resource
+    private GroupSchedulerEvent groupSchedulerEvent;
 
 
     @Bean(name = "megumiEvent")
     public List<ListenerHost> getMegumiEvents() {
         List<ListenerHost> events = new ArrayList<>();
-        events.add(groupEvent);
+        events.add(baseGroupEvent);
         events.add(eventProxy);
+        events.add(groupSchedulerEvent);
         return events;
     }
 
