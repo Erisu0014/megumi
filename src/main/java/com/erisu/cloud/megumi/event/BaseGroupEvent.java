@@ -45,7 +45,9 @@ public class BaseGroupEvent extends SimpleListenerHost {
         Bot bot = event.getBot();
         Member contact = (Member) event.getFrom();
         Nudge.Companion.sendNudge(contact.getGroup(), contact.nudge());
-        bot.getGroup(contact.getGroup().getId()).sendMessage("欸嘿~戳不到");
+        if (Math.random()>0.9){
+            bot.getGroup(contact.getGroup().getId()).sendMessage("欸嘿~戳不到");
+        }
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 

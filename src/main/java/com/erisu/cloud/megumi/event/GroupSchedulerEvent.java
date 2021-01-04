@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class GroupSchedulerEvent extends SimpleListenerHost {
 
     /**
-     * 什么bug，为什么进不来
+     * 什么bug，为什么进不来login能进relogin，不看了
      *
      * @param event
      * @return
@@ -32,15 +32,15 @@ public class GroupSchedulerEvent extends SimpleListenerHost {
         return ListeningStatus.LISTENING;
     }
 
-//    @EventHandler(priority = Listener.EventPriority.NORMAL)
-//    public ListeningStatus onBotRelogin(BotReloginEvent event) throws Exception {
-////        event.getBot().getGroup(604515343).sendMessage(new PlainText(""));
-//        return ListeningStatus.LISTENING;
-//    }
-//
-//    @EventHandler(priority = Listener.EventPriority.NORMAL)
-//    public ListeningStatus onBotActive(BotActiveEvent event) throws Exception {
-////        event.getBot().getGroup(604515343).sendMessage(new PlainText(""));
-//        return ListeningStatus.LISTENING;
-//    }
+    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    public ListeningStatus onBotRelogin(BotReloginEvent event) throws Exception {
+//        event.getBot().getGroup(604515343).sendMessage(new PlainText(""));
+        return ListeningStatus.LISTENING;
+    }
+
+    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    public ListeningStatus onBotActive(BotActiveEvent event) throws Exception {
+//        event.getBot().getGroup(604515343).sendMessage(new PlainText(""));
+        return ListeningStatus.LISTENING;
+    }
 }
