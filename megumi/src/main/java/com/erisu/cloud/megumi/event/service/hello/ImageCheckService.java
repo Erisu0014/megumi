@@ -1,4 +1,4 @@
-package com.erisu.cloud.megumi.hello;
+package com.erisu.cloud.megumi.event.service.hello;
 
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
@@ -13,8 +13,6 @@ import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.stereotype.Component;
-
-import java.io.File;
 
 /**
  * @Description 图像测试service

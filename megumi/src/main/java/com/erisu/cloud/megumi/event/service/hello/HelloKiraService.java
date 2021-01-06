@@ -1,10 +1,9 @@
-package com.erisu.cloud.megumi.hello;
+package com.erisu.cloud.megumi.event.service.hello;
 
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.command.ICommandService;
 import com.erisu.cloud.megumi.pattern.Pattern;
-import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.Message;
@@ -13,19 +12,15 @@ import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.stereotype.Component;
 
 /**
- * @Description hello world girl
+ * @Description kira~⭐
  * @Author alice
- * @Date 2020/12/10 16:25
+ * @Date 2020/12/29 10:08
  **/
-@Slf4j
+@Command(commandType = CommandType.GROUP,pattern = Pattern.CONTAINS,value = "kira")
 @Component
-@Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = {"zaima","zai"})
-public class HelloService implements ICommandService {
-
+public class HelloKiraService implements ICommandService {
     @Override
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
-        return new PlainText("はい！私はいつも貴方の側にいるよ～");
+        return new PlainText("主人你还写不写kira插件呀");
     }
-
-
 }
