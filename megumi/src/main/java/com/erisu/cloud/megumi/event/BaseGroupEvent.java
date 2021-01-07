@@ -34,6 +34,8 @@ public class BaseGroupEvent extends SimpleListenerHost {
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 
+
+
     /**
      * 戳出事了你负责吗
      * @param event
