@@ -1,11 +1,15 @@
 package com.erisu.cloud.megumi.scheduler;
 
-import com.erisu.cloud.megumi.util.PluginUtil;
+import cn.hutool.core.collection.CollUtil;
+import com.erisu.cloud.megumi.event.service.plugin.logic.PluginLogic;
+import com.erisu.cloud.megumi.event.service.plugin.pojo.GroupPlugin;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.event.ListeningStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Description
@@ -16,12 +20,17 @@ import org.springframework.stereotype.Component;
 public class BaseScheduler {
     @Value("${qq.username}")
     private long username;
+    @Resource
+    private PluginLogic pluginLogic;
 
     @Scheduled(cron = "0/30 * * * * ?") //每30s执行一次
     public void testScheduler() throws Exception {
-        if (!PluginUtil.plugins.isEmpty() && PluginUtil.plugins.containsKey("jap")) {
-            if (Bot.getInstance(username).getGroups().size() != 0) {
-                Bot.getInstance(username).getGroup(604515343).sendMessage("定时任务这么写也行？");
+        List<GroupPlugin> plugins = pluginLogic.getGroupPluginByName("jap");
+        if (CollUtil.isNotEmpty(plugins)) {
+            for (GroupPlugin plugin : plugins) {
+                if (Bot.getInstance(username).getGroups().size() != 0) {
+                    Bot.getInstance(username).getGroup(Long.parseLong(plugin.getGroupId())).sendMessage("えへってなんだよ");
+                }
             }
         }
     }

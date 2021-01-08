@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erisu.cloud.megumi.event.service.plugin.mapper.GroupPluginMapper">
+    <select id="getGroupPlugins"
+            resultType="com.erisu.cloud.megumi.event.service.plugin.pojo.GroupPlugin">
+        select a.*
+        from group_plugin a
+                 left join plugin b
+                           on a.plugin_id = b.id
+        where b.name = #{name}
+    </select>
+</mapper>
