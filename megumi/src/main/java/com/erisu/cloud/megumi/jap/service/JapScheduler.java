@@ -27,7 +27,7 @@ public class JapScheduler {
     @Resource
     private JapLogic japLogic;
 
-    @Scheduled(cron = "0/30 * * * * ?") //每30s执行一次
+    @Scheduled(cron = "0 20 10 * * ?") //每30s执行一次
     public void testScheduler() throws Exception {
         List<GroupPlugin> plugins = pluginLogic.getGroupPluginByName("jap");
         if (CollUtil.isNotEmpty(plugins)) {
