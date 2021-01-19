@@ -2,6 +2,7 @@ package com.erisu.cloud.megumi.command;
 
 import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.util.Module;
+import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
@@ -24,6 +25,10 @@ public @interface Command {
     Module module() default Module.DEFAULT;
 
     String[] alias() default {};
+
+//    boolean isSpec() default false;// 是否特殊化处理
+
+    String uuid() default "";
 
     /**
      * 概率回复函数

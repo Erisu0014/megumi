@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 @Component
-@Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS)
+@Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "3a1be4fb-0f8a-4413-a3c2-371d243c52d0")
 public class JapSearchService implements ICommandService {
     @Resource
     private JapWordsMapper japWordsMapper;

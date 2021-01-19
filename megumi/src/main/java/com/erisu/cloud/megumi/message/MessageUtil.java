@@ -39,8 +39,9 @@ public class MessageUtil {
     public void sendAsyncMessageAwait(String redisKey, Group group, Message message, Integer time) throws InterruptedException {
         TimeUnit.SECONDS.sleep(time);
         if (!redisUtil.hasKey(redisKey)) {
-            redisUtil.delete(redisKey);
             Bot.getInstance(username).getGroup(group.getId()).sendMessage(message);
+        } else {
+            redisUtil.delete(redisKey);
         }
     }
 }

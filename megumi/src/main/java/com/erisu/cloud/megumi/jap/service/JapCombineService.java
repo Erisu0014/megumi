@@ -1,6 +1,8 @@
 package com.erisu.cloud.megumi.jap.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
@@ -32,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 @Component
-@Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS)
+@Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "71f2fff5-a1ee-4688-8de5-ad5d36240ee1")
 public class JapCombineService implements ICommandService {
     @Resource
     private JapWordsMapper japWordsMapper;

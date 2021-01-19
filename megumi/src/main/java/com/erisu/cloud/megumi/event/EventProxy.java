@@ -1,5 +1,6 @@
 package com.erisu.cloud.megumi.event;
 
+import cn.hutool.core.util.IdUtil;
 import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
 import com.erisu.cloud.megumi.analysis.handler.AnalysisHandler;
 import com.erisu.cloud.megumi.command.*;
