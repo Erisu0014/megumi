@@ -12,6 +12,7 @@ import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.Voice;
+import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedInputStream;
@@ -29,6 +30,7 @@ public class HelloAudioService implements ICommandService {
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         InputStream inputStream = FileUtil.getInputStream("D:\\ideaProjects\\megumiBot\\megumi\\src\\main\\resources\\vo_btl_104301_ub_200.m4a");
-        return group.uploadVoice(inputStream);
+        ExternalResource externalResource = ExternalResource.create(inputStream);
+        return group.uploadVoice(externalResource);
     }
 }

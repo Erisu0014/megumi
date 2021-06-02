@@ -3,10 +3,7 @@ package com.erisu.cloud.megumi.event;
 import com.erisu.cloud.megumi.event.annotation.Event;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.event.EventHandler;
-import net.mamoe.mirai.event.Listener;
-import net.mamoe.mirai.event.ListeningStatus;
-import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.event.*;
 import net.mamoe.mirai.event.events.BotActiveEvent;
 import net.mamoe.mirai.event.events.BotEvent;
 import net.mamoe.mirai.event.events.BotOnlineEvent;
@@ -42,7 +39,7 @@ public class GroupSchedulerEvent extends SimpleListenerHost {
 
 
 
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.NORMAL)
     public ListeningStatus onBotActive(BotActiveEvent event) throws Exception {
 //        event.getBot().getGroup(604515343).sendMessage(new PlainText(""));
         return ListeningStatus.LISTENING;

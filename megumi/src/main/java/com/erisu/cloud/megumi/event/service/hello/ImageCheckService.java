@@ -26,6 +26,6 @@ public class ImageCheckService implements ICommandService {
 
     @Override
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
-        return new At((Member) sender).plus(new PlainText("色♥图♥偷♥偷♥私♥我♥"));
+        return new At(sender.getId()).plus(new PlainText("色♥图♥偷♥偷♥私♥我♥"));
     }
 }

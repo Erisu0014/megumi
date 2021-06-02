@@ -6,11 +6,8 @@ import com.erisu.cloud.megumi.analysis.handler.AnalysisHandler;
 import com.erisu.cloud.megumi.command.*;
 import com.erisu.cloud.megumi.event.annotation.Event;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.event.EventHandler;
-import net.mamoe.mirai.event.Listener;
-import net.mamoe.mirai.event.ListeningStatus;
-import net.mamoe.mirai.event.SimpleListenerHost;
-import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.mirai.event.*;
+import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.Message;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +52,7 @@ public class EventProxy extends SimpleListenerHost {
     }
 
     @NotNull
-    @EventHandler(priority = Listener.EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.NORMAL)
     public ListeningStatus excuteCommand(MessageEvent messageEvent) throws Exception {
         List<ICommandService> commandServices = analysisHandler.verify(messageEvent);
         for (ICommandService service : commandServices) {

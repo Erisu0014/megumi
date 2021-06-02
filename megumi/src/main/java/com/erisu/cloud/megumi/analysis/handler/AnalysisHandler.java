@@ -8,8 +8,8 @@ import com.erisu.cloud.megumi.pattern.PatternFactory;
 import com.erisu.cloud.megumi.pattern.PatternStrategy;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.message.GroupMessageEvent;
-import net.mamoe.mirai.message.MessageEvent;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.springframework.stereotype.Component;
 

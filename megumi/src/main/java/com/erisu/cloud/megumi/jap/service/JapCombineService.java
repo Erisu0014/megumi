@@ -58,7 +58,7 @@ public class JapCombineService implements ICommandService {
                 redisUtil.set(key2, "1");
                 redisUtil.delete(redisKey);
                 return new PlainText("恭喜")
-                        .plus(new At((Member) sender).plus(new PlainText("答对了")));
+                        .plus(new At(sender.getId()).plus(new PlainText("答对了")));
             } else {
                 return null;
             }

@@ -1,11 +1,13 @@
 package com.erisu.cloud.megumi.util;
 
+import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.event.ListenerHost;
+import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -37,10 +39,6 @@ public class BotServer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        第一次启动可以这么写，后面不用了
-//        BotConfiguration config = new BotConfiguration();
-//        config.fileBasedDeviceInfo("deviceInfo.json");
-//        final Bot megumi = BotFactoryJvm.newBot(username, password, config);
         MegumiBot.startBot(username, password, "deviceInfo.json", events);
     }
 }

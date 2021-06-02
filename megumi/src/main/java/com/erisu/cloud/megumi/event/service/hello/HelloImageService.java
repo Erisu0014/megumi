@@ -12,6 +12,7 @@ import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -29,6 +30,7 @@ public class HelloImageService implements ICommandService {
     @Override
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
         File imageTest = new File("D:\\ideaProjects\\megumi\\upload\\1.jpg");
-        return new At((Member) sender).plus(new PlainText("会长我这期摸了！")).plus(subject.uploadImage(imageTest));
+        ExternalResource externalResource = ExternalResource.create(imageTest);
+        return new At(sender.getId()).plus(new PlainText("会长我这期摸了！")).plus(subject.uploadImage(externalResource));
     }
 }
