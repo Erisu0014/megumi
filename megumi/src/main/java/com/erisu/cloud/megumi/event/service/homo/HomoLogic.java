@@ -3,8 +3,10 @@ package com.erisu.cloud.megumi.event.service.homo;
 import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.map.MapUtil;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,8 @@ public class HomoLogic {
     @PostConstruct
     public void init() {
         try {
-            FileReader fileReader = new FileReader("D:\\ideaProjects\\megumiBot\\megumi\\src\\main\\resources\\homo.data");
+            File homo = ResourceUtils.getFile("classpath:homo.data");
+            FileReader fileReader = new FileReader(homo);
             List<String> homoData = fileReader.readLines();
             homoData.forEach(h -> {
                 String[] split = h.split(":");
@@ -54,7 +57,7 @@ public class HomoLogic {
         }
         Integer div = 0;
         for (Map.Entry<Integer, String> entry : homoMap.entrySet()) {
-            if (num>=entry.getKey()) {
+            if (num >= entry.getKey()) {
                 div = entry.getKey();
                 break;
             }

@@ -2,7 +2,9 @@ package com.erisu.cloud.megumi.event.service.homo;
 
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
+import com.erisu.cloud.megumi.command.CommandV2;
 import com.erisu.cloud.megumi.command.ICommandService;
+import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
@@ -21,13 +23,13 @@ import javax.annotation.Resource;
  **/
 @Slf4j
 @Component
-@Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK)
-public class HomoService implements ICommandService {
+@Model(name = "homo")
+public class HomoService {
     @Resource
     private HomoLogic homoLogic;
 
-    @Override
-    public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
+    @CommandV2(commandType = CommandType.GROUP, pattern = Pattern.CHECK)
+    public Message homoNum(User sender, MessageChain messageChain, Contact subject) throws Exception {
         String homo = homoLogic.homo(((PlainText) messageChain.get(1)).getContent());
         return new PlainText(homo);
     }

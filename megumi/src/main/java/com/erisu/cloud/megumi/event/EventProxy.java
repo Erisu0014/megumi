@@ -5,6 +5,7 @@ import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
 import com.erisu.cloud.megumi.analysis.handler.AnalysisHandler;
 import com.erisu.cloud.megumi.command.*;
 import com.erisu.cloud.megumi.event.annotation.Event;
+import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.event.*;
 import net.mamoe.mirai.event.events.MessageEvent;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,30 +41,41 @@ public class EventProxy extends SimpleListenerHost {
 
     @PostConstruct
     public void register() {
-        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(Command.class);
+        Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(Model.class);
         Map<Command, Object> beans = new HashMap<>();
+        Map<CommandV2, MethodLite> beansV2 = new HashMap<>();
 //        List<Command> commands = new ArrayList<>();
         beansWithAnnotation.forEach((k, v) -> {
             Command command = v.getClass().getAnnotation(Command.class);
             beans.put(command, v);
+
+            Method[] methods = v.getClass().getDeclaredMethods();
+            for (Method method : methods) {
+                if (method.getAnnotation(CommandV2.class) != null) {
+                    beansV2.put(method.getAnnotation(CommandV2.class), MethodLite.builder().method(method).bean(v).build());
+                }
+            }
 //            commands.add(command);
         });
-        GlobalCommands.commands = beans;
+        GlobalCommands.commands = beansV2;
         log.info("command指令初始化完成");
     }
 
     @NotNull
     @EventHandler(priority = EventPriority.NORMAL)
     public ListeningStatus excuteCommand(MessageEvent messageEvent) throws Exception {
-        List<ICommandService> commandServices = analysisHandler.verify(messageEvent);
-        for (ICommandService service : commandServices) {
-            Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
-            if (answer != null) {
-                messageEvent.getSubject().sendMessage(answer);
+        List<MethodLite> methodLites = analysisHandler.verify(messageEvent);
+        for (MethodLite methodLite : methodLites) {
+            Method method = methodLite.getMethod();
+            Object bean = methodLite.getBean();
+            Object answer = method.invoke(bean, messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
+            if (!(answer instanceof Message)) {
+                continue;
             }
+            Message final_answer = (Message) answer;
+//            Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
+            messageEvent.getSubject().sendMessage(final_answer);
         }
         return ListeningStatus.LISTENING;
     }
-
-
 }

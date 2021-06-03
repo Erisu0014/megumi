@@ -28,5 +28,31 @@ create table jap_words
     type      varchar(100)                      not null,
     insertTag integer default 0 not null
 
-)
+);
+create table boss
+(
+    id         varchar(32) primary key not null,
+    name       varchar(200)            not null,
+    hp_max     integer                 not null,
+    boss_order integer                 not null
+);
+insert into boss(id, name, hp_max, boss_order)
+values ('36d2bae162cb4ef9a17fe559f458b748', '小龙', 6000000, 1),
+       ('37f54490aa934834a32857f0697aad42', '小熊', 8000000, 2),
+       ('abbb996a5bee4177b58a3493a2e46485', '小猪', 10000000, 3),
+       ('44e9575814dc4718883a67a55bd3340f', '小鹿', 12000000, 4),
+       ('65b0284cd85549f68cd0bb6107224fdf', '两只小猪', 15000000, 5);
+create table stage
+(
+    id       integer     not null,
+    boss1_id varchar(32) not null,
+    boss2_id varchar(32) not null,
+    boss3_id varchar(32) not null,
+    boss4_id varchar(32) not null,
+    boss5_id varchar(32) not null
+);
+insert into stage(id, boss1_id, boss2_id, boss3_id, boss4_id, boss5_id)
+values (1, '36d2bae162cb4ef9a17fe559f458b748', '37f54490aa934834a32857f0697aad42', 'abbb996a5bee4177b58a3493a2e46485',
+        '44e9575814dc4718883a67a55bd3340f', '65b0284cd85549f68cd0bb6107224fdf')
+
 

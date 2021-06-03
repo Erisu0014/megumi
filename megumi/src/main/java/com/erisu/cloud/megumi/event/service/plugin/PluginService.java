@@ -4,9 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
+import com.erisu.cloud.megumi.command.CommandV2;
 import com.erisu.cloud.megumi.command.ICommandService;
 import com.erisu.cloud.megumi.event.service.plugin.logic.PluginLogic;
 import com.erisu.cloud.megumi.event.service.plugin.pojo.GroupPlugin;
+import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
 import com.erisu.cloud.megumi.event.service.plugin.pojo.Plugin;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +30,13 @@ import java.util.List;
  **/
 @Slf4j
 @Component
-@Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "启用 ", alias = {"停用 "})
+@Model(name = "plugin")
 public class PluginService implements ICommandService {
     @Resource
     private PluginLogic pluginLogic;
 
 
-    @Override
+    @CommandV2(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "启用 ", alias = {"停用 "})
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         String content = ((PlainText) messageChain.get(1)).getContent();

@@ -1,9 +1,6 @@
 package com.erisu.cloud.megumi.analysis.handler;
 
-import com.erisu.cloud.megumi.command.Command;
-import com.erisu.cloud.megumi.command.CommandType;
-import com.erisu.cloud.megumi.command.GlobalCommands;
-import com.erisu.cloud.megumi.command.ICommandService;
+import com.erisu.cloud.megumi.command.*;
 import com.erisu.cloud.megumi.pattern.PatternFactory;
 import com.erisu.cloud.megumi.pattern.PatternStrategy;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +10,7 @@ import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,22 +33,22 @@ public class AnalysisHandler {
 //    }
 //    @Before("@annotation(preAnalysis)")
 
-    public List<ICommandService> verify(MessageEvent messageEvent) throws Exception {
+    public List<MethodLite> verify(MessageEvent messageEvent) throws Exception {
         MessageChain messageChain = messageEvent.getMessage();
         Contact subject = messageEvent.getSubject();
         boolean isGroup = messageEvent instanceof GroupMessageEvent;
-        Map<Command, Object> commandObjectMap = GlobalCommands.commands;
+        Map<CommandV2, MethodLite> commandObjectMap = GlobalCommands.commands;
         // 满意度commands
-        List<ICommandService> commandServices = new ArrayList<>();
-        commandObjectMap.forEach((command, v) -> {
+        List<MethodLite> methodLites = new ArrayList<>();
+        commandObjectMap.forEach((command, methodLite) -> {
             if (isGroup && command.commandType().equals(CommandType.GROUP)) {
                 PatternStrategy processorHandler = PatternFactory.getProcessorHandler(command.pattern());
                 if (processorHandler != null && processorHandler.isMatch(messageChain, command.value(), command.alias())) {
-                    commandServices.add((ICommandService) v);
+                    methodLites.add(methodLite);
                 }
             }
         });
-        return commandServices;
+        return methodLites;
     }
 
 
