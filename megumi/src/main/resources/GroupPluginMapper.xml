@@ -9,4 +9,10 @@
                            on a.plugin_id = b.id
         where b.name = #{name}
     </select>
+    <update id="updateGroupPlugin" parameterType="com.erisu.cloud.megumi.event.service.plugin.pojo.GroupPlugin">
+        update group_plugin
+        set enabled=#{groupPlugin.enabled}
+        where group_plugin.group_id = #{groupPlugin.groupId}
+          and group_plugin.plugin_id = #{groupPlugin.pluginId}
+    </update>
 </mapper>

@@ -38,7 +38,17 @@ public class PluginService implements ICommandService {
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         String content = ((PlainText) messageChain.get(1)).getContent();
-        String pluginName = StrUtil.removePrefix(content, "启用 ");
+        int enabled;
+        String pluginName;
+        if (StrUtil.startWith(content, "启用 ")) {
+            pluginName = StrUtil.removePrefix(content, "启用 ");
+            enabled = 1;
+        } else if (StrUtil.startWith(content, "停用 ")) {
+            pluginName = StrUtil.removePrefix(content, "停用 ");
+            enabled = 0;
+        } else {
+            return new PlainText("你他妈怎么进来的");
+        }
         List<Plugin> plugins = pluginLogic.getPluginByName(pluginName);
         if (CollUtil.isEmpty(plugins)) {
             return new PlainText("主人没写，我不会做的鸭");
@@ -46,7 +56,7 @@ public class PluginService implements ICommandService {
         pluginLogic.updateGroupPlugin(
                 GroupPlugin.builder()
                         .groupId(String.valueOf(group.getId()))
-                        .pluginId(plugins.get(0).getId()).build());
+                        .pluginId(plugins.get(0).getId()).enabled(enabled).build());
         return new PlainText("初始化插件成功");
     }
 }

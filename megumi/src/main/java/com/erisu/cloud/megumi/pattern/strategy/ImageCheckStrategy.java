@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImageCheckStrategy implements PatternStrategy {
     @Override
-    public Boolean isMatch(MessageChain messageChain, String command) {
+    public Boolean isMatch(MessageChain messageChain, String command,String ...alias) {
         if (messageChain.get(1) instanceof GroupImage) {
             //todo just test
             return ((GroupImage) messageChain.get(1)).getImageId().equals("{384CA435-D90D-CF9C-C547-AF8F42435314}.mirai");

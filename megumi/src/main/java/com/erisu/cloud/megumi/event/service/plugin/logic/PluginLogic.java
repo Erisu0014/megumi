@@ -38,10 +38,10 @@ public class PluginLogic {
         QueryWrapper<GroupPlugin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(true, "group_id", groupPlugin.getGroupId());
         queryWrapper.eq(true, "plugin_id", groupPlugin.getPluginId());
-
         if (groupPluginMapper.selectOne(queryWrapper) != null) {
-            groupPluginMapper.updateById(groupPlugin);
+            return groupPluginMapper.updateGroupPlugin(groupPlugin) > 0;
+        } else {
+            return groupPluginMapper.insert(groupPlugin) > 0;
         }
-        return groupPluginMapper.insert(groupPlugin) > 0;
     }
 }

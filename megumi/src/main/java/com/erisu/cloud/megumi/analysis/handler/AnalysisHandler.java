@@ -45,7 +45,7 @@ public class AnalysisHandler {
         commandObjectMap.forEach((command, v) -> {
             if (isGroup && command.commandType().equals(CommandType.GROUP)) {
                 PatternStrategy processorHandler = PatternFactory.getProcessorHandler(command.pattern());
-                if (processorHandler != null && processorHandler.isMatch(messageChain, command.value())) {
+                if (processorHandler != null && processorHandler.isMatch(messageChain, command.value(), command.alias())) {
                     commandServices.add((ICommandService) v);
                 }
             }

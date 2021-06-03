@@ -9,6 +9,11 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * @Description equals
  * @Author alice
@@ -18,10 +23,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class EqualsStrategy implements PatternStrategy {
     @Override
-    public Boolean isMatch(MessageChain messageChain, String command) {
+    public Boolean isMatch(MessageChain messageChain, String command, String... alias) {
+        List<String> commands = new ArrayList<>();
+        commands.add(command);
+        commands.addAll(Arrays.asList(alias));
         if (messageChain.get(1) instanceof PlainText) {
             String context = ((PlainText) messageChain.get(1)).getContent();
-            return StrUtil.equals(context.trim(), command);
+            Optional<String> any = commands.stream().filter(c -> StrUtil.equals(c, context.trim())).findAny();
+            return any.isPresent();
         }
         return false;
     }

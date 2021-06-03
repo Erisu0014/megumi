@@ -13,5 +13,8 @@ import java.util.List;
  **/
 
 public interface GroupPluginMapper extends BaseMapper<GroupPlugin> {
+
     List<GroupPlugin> getGroupPlugins(@Param("name") String name);
+
+    int updateGroupPlugin(@Param("groupPlugin") GroupPlugin groupPlugin);
 }

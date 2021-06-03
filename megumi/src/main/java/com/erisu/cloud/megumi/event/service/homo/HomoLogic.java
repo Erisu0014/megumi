@@ -17,7 +17,7 @@ import java.util.Map;
 @Component
 public class HomoLogic {
     // 保证有序
-    private Map<Integer, String> homoMap = new LinkedHashMap<>();
+    private final Map<Integer, String> homoMap = new LinkedHashMap<>();
 
     @PostConstruct
     public void init() {

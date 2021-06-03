@@ -19,13 +19,10 @@ import org.springframework.stereotype.Component;
  **/
 @Slf4j
 @Component
-@Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = {"zaima","zai"})
+@Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = {"zaima", "zai"})
 public class HelloService implements ICommandService {
-
     @Override
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
         return new PlainText("はい！私はいつも貴方の側にいるよ～");
     }
-
-
 }
