@@ -10,4 +10,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface Model {
     String name() default "";
+
+    String uuid() default "";
 }

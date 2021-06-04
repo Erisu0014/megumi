@@ -81,4 +81,12 @@ create table battle_user
     damage_times integer      not null --今日剩余刀数，每天五点更新
 );
 
+create table battle_damage
+(
+    id       integer primary key autoincrement not null,
+    group_id varchar(20)                       not null,
+    qq_id    varchar(20)                       not null,
+    boss_id  varchar(32)                       not null,
+    damage   integer                           not null
+)
 

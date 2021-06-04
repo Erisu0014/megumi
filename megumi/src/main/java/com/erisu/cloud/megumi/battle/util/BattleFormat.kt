@@ -3,6 +3,11 @@ package com.erisu.cloud.megumi.battle.util
 import com.erisu.cloud.megumi.battle.pojo.BattleBoss
 import com.erisu.cloud.megumi.battle.pojo.NowBoss
 
+/**
+ *@Description battle相关字符处理：单例模式
+ *@Author alice
+ *@Date 2021/6/4 17:37
+ **/
 object BattleFormat {
     fun nowBoss(round: Int, boss: List<BattleBoss>): String {
         val bosses = boss.sortedBy { it.bossOrder }
