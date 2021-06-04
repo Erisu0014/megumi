@@ -1,13 +1,10 @@
 package com.erisu.cloud.megumi.jap.service;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
-import com.erisu.cloud.megumi.command.CommandV2;
-import com.erisu.cloud.megumi.command.ICommandService;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
+import com.erisu.cloud.megumi.command.Command;
+import com.erisu.cloud.megumi.plugin.pojo.Model;
 import com.erisu.cloud.megumi.jap.mapper.JapWordsMapper;
 import com.erisu.cloud.megumi.jap.pojo.JapWords;
 import com.erisu.cloud.megumi.message.MessageUtil;
@@ -46,7 +43,7 @@ public class JapSearchService {
     @Resource
     private MessageUtil messageUtil;
 
-    @CommandV2(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "3a1be4fb-0f8a-4413-a3c2-371d243c52d0")
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "3a1be4fb-0f8a-4413-a3c2-371d243c52d0")
     public Message searchJap(User sender, MessageChain messageChain, Contact subject) throws Exception {
         String message = ((PlainText) messageChain.get(1)).getContent();
         QueryWrapper<JapWords> wrapper = new QueryWrapper<>();
@@ -62,7 +59,7 @@ public class JapSearchService {
         return new PlainText(sb.toString());
     }
 
-    @CommandV2(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "71f2fff5-a1ee-4688-8de5-ad5d36240ee1")
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "71f2fff5-a1ee-4688-8de5-ad5d36240ee1")
     public Message sendTestResult(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         String redisKey = String.format("%s:jap-lock+:%d", RedisKey.PLUGIN.getName(), group.getId());
@@ -89,7 +86,7 @@ public class JapSearchService {
     }
 
 
-    @CommandV2(commandType = CommandType.GROUP, value = "猜单词", pattern = Pattern.EQUALS, alias = {"测单词"})
+    @Command(commandType = CommandType.GROUP, value = "猜单词", pattern = Pattern.EQUALS, alias = {"测单词"})
     public Message guessWord(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         String key = String.format("%s:jap-lock+:%d", RedisKey.PLUGIN.getName(), group.getId());

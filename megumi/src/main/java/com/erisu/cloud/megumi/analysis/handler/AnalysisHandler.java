@@ -10,7 +10,6 @@ import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class AnalysisHandler {
         MessageChain messageChain = messageEvent.getMessage();
         Contact subject = messageEvent.getSubject();
         boolean isGroup = messageEvent instanceof GroupMessageEvent;
-        Map<CommandV2, MethodLite> commandObjectMap = GlobalCommands.commands;
+        Map<Command, MethodLite> commandObjectMap = GlobalCommands.commands;
         // 满意度commands
         List<MethodLite> methodLites = new ArrayList<>();
         commandObjectMap.forEach((command, methodLite) -> {

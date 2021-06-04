@@ -2,8 +2,6 @@ package com.erisu.cloud.megumi.command;
 
 import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.util.Module;
-import lombok.EqualsAndHashCode;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
@@ -11,18 +9,16 @@ import java.lang.annotation.*;
  * 指令系统基本配置
  */
 
-@Target({ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Command {
 
-    CommandType commandType();
+    CommandType commandType();  //  群聊....
 
     Pattern pattern();
 
-    String value() default "";
-
-    Module module() default Module.DEFAULT;
+    String value() default "";    //匹配值
 
     String[] alias() default {};
 

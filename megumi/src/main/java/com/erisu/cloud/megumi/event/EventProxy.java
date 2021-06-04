@@ -1,13 +1,16 @@
 package com.erisu.cloud.megumi.event;
 
-import cn.hutool.core.util.IdUtil;
-import com.erisu.cloud.megumi.analysis.annotation.PreAnalysis;
 import com.erisu.cloud.megumi.analysis.handler.AnalysisHandler;
-import com.erisu.cloud.megumi.command.*;
+import com.erisu.cloud.megumi.command.Command;
+import com.erisu.cloud.megumi.command.GlobalCommands;
+import com.erisu.cloud.megumi.command.MethodLite;
 import com.erisu.cloud.megumi.event.annotation.Event;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
+import com.erisu.cloud.megumi.plugin.pojo.Model;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.event.*;
+import net.mamoe.mirai.event.EventHandler;
+import net.mamoe.mirai.event.EventPriority;
+import net.mamoe.mirai.event.ListeningStatus;
+import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.Message;
 import org.jetbrains.annotations.NotNull;
@@ -42,20 +45,15 @@ public class EventProxy extends SimpleListenerHost {
     @PostConstruct
     public void register() {
         Map<String, Object> beansWithAnnotation = applicationContext.getBeansWithAnnotation(Model.class);
-        Map<Command, Object> beans = new HashMap<>();
-        Map<CommandV2, MethodLite> beansV2 = new HashMap<>();
+        Map<Command, MethodLite> beansV2 = new HashMap<>();
 //        List<Command> commands = new ArrayList<>();
         beansWithAnnotation.forEach((k, v) -> {
-            Command command = v.getClass().getAnnotation(Command.class);
-            beans.put(command, v);
-
             Method[] methods = v.getClass().getDeclaredMethods();
             for (Method method : methods) {
-                if (method.getAnnotation(CommandV2.class) != null) {
-                    beansV2.put(method.getAnnotation(CommandV2.class), MethodLite.builder().method(method).bean(v).build());
+                if (method.getAnnotation(Command.class) != null) {
+                    beansV2.put(method.getAnnotation(Command.class), MethodLite.builder().method(method).bean(v).build());
                 }
             }
-//            commands.add(command);
         });
         GlobalCommands.commands = beansV2;
         log.info("command指令初始化完成");

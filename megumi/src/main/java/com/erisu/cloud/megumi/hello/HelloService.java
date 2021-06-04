@@ -1,10 +1,8 @@
-package com.erisu.cloud.megumi.event.service.hello;
+package com.erisu.cloud.megumi.hello;
 
-import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
-import com.erisu.cloud.megumi.command.CommandV2;
-import com.erisu.cloud.megumi.command.ICommandService;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
+import com.erisu.cloud.megumi.command.Command;
+import com.erisu.cloud.megumi.plugin.pojo.Model;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
@@ -28,17 +26,17 @@ import java.io.File;
 @Model(name = "hello")
 //@Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = {"zaima", "zai"})
 public class HelloService {
-    @CommandV2(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = {"zaima", "zai"})
+    @Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = {"zaima", "zai"})
     public Message hello(User sender, MessageChain messageChain, Contact subject) throws Exception {
         return new PlainText("はい！私はいつも貴方の側にいるよ～");
     }
 
-    @CommandV2(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, value = "kira")
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, value = "kira")
     public Message helloKira(User sender, MessageChain messageChain, Contact subject) throws Exception {
         return new PlainText("主人你还写不写kira插件呀");
     }
 
-    @CommandV2(commandType = CommandType.GROUP, value = "摸了", pattern = Pattern.CONTAINS)
+    @Command(commandType = CommandType.GROUP, value = "摸了", pattern = Pattern.CONTAINS)
     public Message helloMo(User sender, MessageChain messageChain, Contact subject) throws Exception {
         File imageTest = new File("D:\\ideaProjects\\megumi\\upload\\1.jpg");
         ExternalResource externalResource = ExternalResource.create(imageTest);

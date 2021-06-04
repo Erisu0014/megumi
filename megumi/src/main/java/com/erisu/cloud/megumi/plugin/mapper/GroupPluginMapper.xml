@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erisu.cloud.megumi.plugin.mapper.GroupPluginMapper">
+    <select id="getGroupPlugins"
+            resultType="com.erisu.cloud.megumi.plugin.pojo.GroupPlugin">
+        select a.*
+        from group_plugin a
+        left join plugin b
+        on a.plugin_id = b.id
+        <where>
+            <if test="name!=null">
+                and b.name = #{name}
+            </if>
+            <if test="id!=null">
+                and a.group_id = #{id}
+            </if>
+        </where>
+
+    </select>
+    <update id="updateGroupPlugin" parameterType="com.erisu.cloud.megumi.plugin.pojo.GroupPlugin">
+        update group_plugin
+        set enabled=#{groupPlugin.enabled}
+        where group_plugin.group_id = #{groupPlugin.groupId}
+          and group_plugin.plugin_id = #{groupPlugin.pluginId}
+    </update>
+</mapper>

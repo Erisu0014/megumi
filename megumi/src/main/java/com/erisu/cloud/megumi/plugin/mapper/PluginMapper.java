@@ -1,7 +1,7 @@
-package com.erisu.cloud.megumi.event.service.plugin.mapper;
+package com.erisu.cloud.megumi.plugin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Plugin;
+import com.erisu.cloud.megumi.plugin.pojo.Plugin;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -19,7 +19,7 @@ public class MegumiBot {
     public static void startBot(Long account, String pwd, String deviceInfo, List<ListenerHost> events) {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo(deviceInfo);
-        config.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PAD);
+        config.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PHONE);
         config.setNetworkLoggerSupplier(Bot::getLogger);
         config.redirectNetworkLogToDirectory(new File("logs"));
         final Bot megumi = BotFactory.INSTANCE.newBot(account, pwd, config);

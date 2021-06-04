@@ -1,7 +1,5 @@
 package com.erisu.cloud.megumi.command;
 
-import org.springframework.stereotype.Component;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,5 +9,5 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/12/24 16:59
  **/
 public class GlobalCommands {
-    public static Map<CommandV2, MethodLite> commands = new ConcurrentHashMap<>();
+    public static Map<Command, MethodLite> commands = new ConcurrentHashMap<>();
 }

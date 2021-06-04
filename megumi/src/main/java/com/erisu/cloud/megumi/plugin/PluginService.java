@@ -1,15 +1,14 @@
-package com.erisu.cloud.megumi.event.service.plugin;
+package com.erisu.cloud.megumi.plugin;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
-import com.erisu.cloud.megumi.command.CommandV2;
+import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.ICommandService;
-import com.erisu.cloud.megumi.event.service.plugin.logic.PluginLogic;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.GroupPlugin;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Plugin;
+import com.erisu.cloud.megumi.plugin.logic.PluginLogic;
+import com.erisu.cloud.megumi.plugin.pojo.GroupPlugin;
+import com.erisu.cloud.megumi.plugin.pojo.Model;
+import com.erisu.cloud.megumi.plugin.pojo.Plugin;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
@@ -36,7 +35,7 @@ public class PluginService implements ICommandService {
     private PluginLogic pluginLogic;
 
 
-    @CommandV2(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "启用 ", alias = {"停用 "})
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "启用 ", alias = {"停用 "})
     public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         String content = ((PlainText) messageChain.get(1)).getContent();

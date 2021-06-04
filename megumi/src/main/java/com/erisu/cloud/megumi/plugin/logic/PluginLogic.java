@@ -1,10 +1,10 @@
-package com.erisu.cloud.megumi.event.service.plugin.logic;
+package com.erisu.cloud.megumi.plugin.logic;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.erisu.cloud.megumi.event.service.plugin.mapper.GroupPluginMapper;
-import com.erisu.cloud.megumi.event.service.plugin.mapper.PluginMapper;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.GroupPlugin;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Plugin;
+import com.erisu.cloud.megumi.plugin.mapper.GroupPluginMapper;
+import com.erisu.cloud.megumi.plugin.mapper.PluginMapper;
+import com.erisu.cloud.megumi.plugin.pojo.GroupPlugin;
+import com.erisu.cloud.megumi.plugin.pojo.Plugin;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -29,8 +29,8 @@ public class PluginLogic {
         return pluginMapper.selectList(queryWrapper);
     }
 
-    public List<GroupPlugin> getGroupPluginByName(String name) {
-        return groupPluginMapper.getGroupPlugins(name);
+    public List<GroupPlugin> getGroupPluginByName(String name, String id) {
+        return groupPluginMapper.getGroupPlugins(name,id);
     }
 
 

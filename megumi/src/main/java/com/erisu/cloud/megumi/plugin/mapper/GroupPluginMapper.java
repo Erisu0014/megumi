@@ -1,7 +1,7 @@
-package com.erisu.cloud.megumi.event.service.plugin.mapper;
+package com.erisu.cloud.megumi.plugin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.GroupPlugin;
+import com.erisu.cloud.megumi.plugin.pojo.GroupPlugin;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface GroupPluginMapper extends BaseMapper<GroupPlugin> {
 
-    List<GroupPlugin> getGroupPlugins(@Param("name") String name);
+    List<GroupPlugin> getGroupPlugins(@Param("name") String name, @Param("id") String groupId);
 
     int updateGroupPlugin(@Param("groupPlugin") GroupPlugin groupPlugin);
 }

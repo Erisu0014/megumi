@@ -1,4 +1,4 @@
-package com.erisu.cloud.megumi.event.service.plugin.pojo;
+package com.erisu.cloud.megumi.plugin.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;

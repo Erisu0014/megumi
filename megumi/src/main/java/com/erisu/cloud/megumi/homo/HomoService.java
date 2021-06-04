@@ -1,10 +1,8 @@
-package com.erisu.cloud.megumi.event.service.homo;
+package com.erisu.cloud.megumi.homo;
 
-import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
-import com.erisu.cloud.megumi.command.CommandV2;
-import com.erisu.cloud.megumi.command.ICommandService;
-import com.erisu.cloud.megumi.event.service.plugin.pojo.Model;
+import com.erisu.cloud.megumi.command.Command;
+import com.erisu.cloud.megumi.plugin.pojo.Model;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
@@ -28,7 +26,7 @@ public class HomoService {
     @Resource
     private HomoLogic homoLogic;
 
-    @CommandV2(commandType = CommandType.GROUP, pattern = Pattern.CHECK)
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK)
     public Message homoNum(User sender, MessageChain messageChain, Contact subject) throws Exception {
         String homo = homoLogic.homo(((PlainText) messageChain.get(1)).getContent());
         return new PlainText(homo);
