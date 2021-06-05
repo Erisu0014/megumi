@@ -36,11 +36,6 @@ public class HelloService {
         return new PlainText("主人你还写不写kira插件呀");
     }
 
-    @Command(commandType = CommandType.GROUP, value = "摸了", pattern = Pattern.CONTAINS)
-    public Message helloMo(User sender, MessageChain messageChain, Contact subject) throws Exception {
-        File imageTest = new File("D:\\ideaProjects\\megumi\\upload\\1.jpg");
-        ExternalResource externalResource = ExternalResource.create(imageTest);
-        return new At(sender.getId()).plus(new PlainText("会长我这期摸了！")).plus(subject.uploadImage(externalResource));
-    }
+
 
 }

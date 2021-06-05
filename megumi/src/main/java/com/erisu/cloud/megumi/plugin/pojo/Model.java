@@ -12,4 +12,7 @@ public @interface Model {
     String name() default "";
 
     String uuid() default "";
+
+    // TODO: 2021/6/5 有关model enabled和数据库一致性问题待考虑
+    boolean isEnabled() default true;
 }

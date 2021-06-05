@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 @Component
-@Model(name = "jap")
+@Model(name = "jap",isEnabled = false)
 public class JapSearchService {
     @Resource
     private JapWordsMapper japWordsMapper;

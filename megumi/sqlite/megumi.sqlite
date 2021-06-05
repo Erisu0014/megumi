@@ -19,6 +19,9 @@ create table group_plugin
 insert into plugin (id, name, des)
 values ('20210108', 'jap', '日语相关插件');
 
+insert into plugin(id, name, des)
+values ('20210602', 'gvg', '公会战插件');
+
 create table jap_words
 (
     id        integer primary key autoincrement not null,
@@ -55,6 +58,8 @@ insert into battle_stage(id, boss1_id, boss2_id, boss3_id, boss4_id, boss5_id)
 values (1, '36d2bae162cb4ef9a17fe559f458b748', '37f54490aa934834a32857f0697aad42', 'abbb996a5bee4177b58a3493a2e46485',
         '44e9575814dc4718883a67a55bd3340f', '65b0284cd85549f68cd0bb6107224fdf');
 
+
+
 create table now_boss
 (
     now_id      integer primary key autoincrement not null,
@@ -75,10 +80,10 @@ create table battle_group
 
 create table battle_user
 (
-    qq_id        varchar(20)  not null,
-    nickname     varchar(20)  not null,--冗余字段，暂时保留
-    group_id     varchar(200) not null,
-    damage_times integer      not null --今日剩余刀数，每天五点更新
+    qq_id        varchar(20) primary key not null,
+    nickname     varchar(20) primary key not null,--冗余字段，暂时保留
+    group_id     varchar(200)            not null,
+    damage_times integer                 not null --今日剩余刀数，每天五点更新
 );
 
 create table battle_damage

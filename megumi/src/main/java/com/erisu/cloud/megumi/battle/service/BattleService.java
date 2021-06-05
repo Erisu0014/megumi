@@ -12,10 +12,7 @@ import com.erisu.cloud.megumi.plugin.pojo.Model;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -30,7 +27,7 @@ import java.util.List;
  * @Date 2021/6/3 15:08
  **/
 @Component
-@Model(name = "gvg",uuid = "0c6916f12eb64875b227c7daa9e5d3cb")
+@Model(name = "gvg", uuid = "0c6916f12eb64875b227c7daa9e5d3cb")
 public class BattleService {
     @Resource
     private BattleLogic battleLogic;
@@ -39,7 +36,7 @@ public class BattleService {
 
     @Command(value = "状态", commandType = CommandType.GROUP, pattern = Pattern.EQUALS,
             uuid = "637a2d00bb3d4217b60d1ad155e84d8c")
-    public Message nowStage(User sender, MessageChain messageChain, Contact subject) throws Exception {
+    public Message nowStage(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
         if (battleLogic.isEnabled(modelName, group.getId())) {
             if (battleLogic.isCreatedGroup(group.getId())) {
@@ -80,4 +77,30 @@ public class BattleService {
             return new PlainText("创建公会失败");
         }
     }
+
+    @Command(value = "加入公会", commandType = CommandType.GROUP, pattern = Pattern.EQUALS, alias = {"加入工会"})
+    public Message addBattleUser(User sender, MessageChain messageChain, Contact subject) {
+        Group group = (Group) subject;
+        battleLogic.addBattleUser(sender, group.getId());
+        return new At(sender.getId()).plus(new PlainText("已加入本公会"));
+    }
+
+    @Command(value = "加入全部成员", commandType = CommandType.GROUP, pattern = Pattern.EQUALS)
+    public Message addAllBattleUser(User sender, MessageChain messageChain, Contact subject)  {
+        Group group = (Group) subject;
+        battleLogic.addAllBattleUser(group.getMembers(), group.getId());
+        return Image.fromId("{997C294C-1FEE-A4EF-CE1D-7AC055D0BA2A}.jpg").plus(new PlainText("添加群成员成功"));
+    }
+
+    /**
+     * 对公会战boss进行巨大打击
+     */
+    @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
+    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) {
+        Group group = (Group) subject;
+        // TODO: 2021/6/5
+        return new PlainText("摸了");
+    }
 }
+
+

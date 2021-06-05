@@ -48,12 +48,15 @@ public class EventProxy extends SimpleListenerHost {
         Map<Command, MethodLite> beansV2 = new HashMap<>();
 //        List<Command> commands = new ArrayList<>();
         beansWithAnnotation.forEach((k, v) -> {
-            Method[] methods = v.getClass().getDeclaredMethods();
-            for (Method method : methods) {
-                if (method.getAnnotation(Command.class) != null) {
-                    beansV2.put(method.getAnnotation(Command.class), MethodLite.builder().method(method).bean(v).build());
+            if (v.getClass().getAnnotation(Model.class).isEnabled()) {
+                Method[] methods = v.getClass().getDeclaredMethods();
+                for (Method method : methods) {
+                    if (method.getAnnotation(Command.class) != null) {
+                        beansV2.put(method.getAnnotation(Command.class), MethodLite.builder().method(method).bean(v).build());
+                    }
                 }
             }
+
         });
         GlobalCommands.commands = beansV2;
         log.info("command指令初始化完成");
