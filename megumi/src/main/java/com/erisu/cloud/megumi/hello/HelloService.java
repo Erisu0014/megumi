@@ -31,11 +31,19 @@ public class HelloService {
         return new PlainText("はい！私はいつも貴方の側にいるよ～");
     }
 
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, value = "kira")
-    public Message helloKira(User sender, MessageChain messageChain, Contact subject) throws Exception {
-        return new PlainText("主人你还写不写kira插件呀");
-    }
-
+//    /**
+//     * 随机复读
+//     * @param sender
+//     * @param messageChain
+//     * @param subject
+//     * @return
+//     * @throws Exception
+//     */
+//    @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS)
+//    public Message helloKira(User sender, MessageChain messageChain, Contact subject) throws Exception {
+//        // TODO: 2021/6/6 后续 直接用redis做得了
+//        return new PlainText("主人你还写不写kira插件呀");
+//    }
 
 
 }

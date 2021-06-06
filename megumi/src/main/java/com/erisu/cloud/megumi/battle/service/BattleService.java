@@ -95,9 +95,14 @@ public class BattleService {
     /**
      * 对公会战boss进行巨大打击
      */
+    // TODO: 2021/6/6 考虑lock
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
     public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
+        // 0.是否是替别人报刀
+        // 1.是否有刀
+        // 2.是否打死了boss -- 是 尾刀；否
+        // 3.打死boss后修改预约状态（不主动调起预约行为）
         // TODO: 2021/6/5
         return new PlainText("摸了");
     }
