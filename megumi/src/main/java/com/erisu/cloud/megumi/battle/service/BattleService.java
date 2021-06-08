@@ -52,7 +52,7 @@ public class BattleService {
                     }
                 } else {
                     // 说明nowBoss表中确实有数据
-                    return new PlainText(BattleFormat.INSTANCE.nowBoss1(1, nowBossQuery));
+                    return new PlainText(BattleFormat.INSTANCE.nowBoss1(nowBossQuery.get(0).getBossRounds(), nowBossQuery));
                 }
             } else {
                 return new PlainText("主人还没有创建工会哦");
@@ -98,7 +98,7 @@ public class BattleService {
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
     public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
-        String result = battleLogic.fuckBoss(sender, messageChain, group,false);
+        String result = battleLogic.fuckBoss(sender, messageChain, group, false);
         return new PlainText(result);
     }
 }

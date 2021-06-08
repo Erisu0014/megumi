@@ -20,7 +20,7 @@
         from now_boss b
         where b.group_id = #{groupId}
           and b.hp_now != 0
-        order by b.boss_rounds, b.boss_order
+        order by b.boss_rounds desc, b.boss_order
         limit 1
     </select>
     <select id="selectNowBoss" resultType="com.erisu.cloud.megumi.battle.pojo.NowBoss">
@@ -29,5 +29,15 @@
         where a.group_id = #{groupId}
         order by a.boss_rounds desc, a.boss_order
         limit 5;
+    </select>
+    <select id="selectNowBossWithOrder" resultType="com.erisu.cloud.megumi.battle.pojo.NowBoss">
+        select a.*
+        from now_boss a
+        where a.group_id = #{groupId}
+        <if test="bossOrder!=null">
+            and a.boss_order=#{bossOrder}
+        </if>
+        order by a.boss_rounds desc, a.boss_order
+        limit 1;
     </select>
 </mapper>

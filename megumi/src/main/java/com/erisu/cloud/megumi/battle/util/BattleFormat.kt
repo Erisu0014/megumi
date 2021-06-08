@@ -49,6 +49,7 @@ object BattleFormat {
         hpNow: Int,
         damageTime: Double
     ): String {
+        // TODO: 2021/6/8 这里是否需要记录打的是哪个boss
         return "${qqCard}对boss造成了${damage}点伤害，击败了boss\n" +
                 "（今日第${3 - damageTime}刀，${damageType.typeName}）\n" +
                 "现在${bossRounds}周目，${bossOrder}号boss\n" +
@@ -64,6 +65,7 @@ object BattleFormat {
         hpNow: Int,
         damageTime: Double
     ): String {
+        // TODO: 2021/6/8 这里是否需要记录打的是哪个boss
         return "${qqCard}对boss造成了${damage}点伤害\n" +
                 "（今日第${3 - damageTime}刀，${damageType.typeName}）\n" +
                 "现在${bossRounds}周目，${bossOrder}号boss\n" +

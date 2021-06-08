@@ -190,10 +190,10 @@ public class BattleLogic {
             String[] var0 = base_damage_str.split(" ", 2);
             boss_order = Integer.parseInt(var0[0]);
             damage = Integer.parseInt(var0[1]);
-            QueryWrapper<NowBoss> nowBossWrapper = new QueryWrapper<>();
-            nowBossWrapper.eq("boss_order", boss_order);
-            nowBossWrapper.eq("group_id", group.getId());
-            nowBoss = nowBossMapper.selectOne(nowBossWrapper);
+//            QueryWrapper<NowBoss> nowBossWrapper = new QueryWrapper<>();
+//            nowBossWrapper.eq("boss_order", boss_order);
+//            nowBossWrapper.eq("group_id", group.getId());
+            nowBoss = nowBossMapper.selectNowBossWithOrder(group.getId(), boss_order);
         } else {
             // 查询当前boss
             // TODO: 2021/6/7 后续考虑redis或其他方式缓存？
@@ -228,14 +228,14 @@ public class BattleLogic {
             isLast = false;
         }
         //  没刀了
-        if (battleUser.getDamageTimes() - lost <= 0) {
+        if (battleUser.getDamageTimes() - lost < 0) {
             if (!battleUser.getQqId().equals(String.valueOf(sender.getId()))) {
                 return "你再想想！" + battleUser.getNickname() + "已经出完三刀下班了哟~";
             } else {
                 return "你再想想！你已经出完三刀下班了哟~";
             }
         }
-        // 判断为最后一刀
+        // 判断尾刀
         if (isLast) {
             nowBoss.setHpNow(0);
             nowBossMapper.updateById(nowBoss);
@@ -245,19 +245,26 @@ public class BattleLogic {
             battleDamageMapper.insert(battleDamage);
 
             // TODO: 2021/6/8 提醒预约和挂树的
+            // TODO: 2021/6/8 此处写的不对，不是这么判的
             //判断是否为最后一个boss，需要注入新一轮boss
-            if (boss_order == 5) {
+            ;
+            QueryWrapper<NowBoss> nowBossQueryWrapper = new QueryWrapper<>();
+            nowBossQueryWrapper.eq("boss_rounds", nowBoss.getBossRounds());
+            nowBossQueryWrapper.eq("group_id", nowBoss.getGroupId());
+            List<NowBoss> nowRoundBosses = nowBossMapper.selectList(nowBossQueryWrapper);
+            if (CollUtil.isEmpty(nowRoundBosses)) {
+                return "唔，出问题了，联系爱丽丝姐姐看看吧";
+            }
+            // 说明这轮boss死完了
+            if (nowRoundBosses.stream().allMatch(b -> b.getHpNow() == 0)) {
                 int stage = BattleFormat.INSTANCE.getStage(nowBoss.getNowStage() + 1);
                 List<BattleBoss> battleBosses = searchStageBoss(stage);
                 nowBossMapper.insertStageBoss(battleBosses, String.valueOf(group.getId()), nowBoss.getBossRounds() + 1, stage);
                 BattleBoss battleBoss = battleBosses.stream().filter(b -> b.getBossOrder() == 1).findFirst().get();
                 fuckResult = BattleFormat.INSTANCE.fuckBossLastInfo(damageType, battleUser.getNickname(), damage, battleBoss.getBossOrder(), nowBoss.getBossRounds() + 1, battleBoss.getHpMax(), damageTimes);
             } else {
-                QueryWrapper<NowBoss> nowBossQueryWrapper = new QueryWrapper<>();
-                nowBossQueryWrapper.eq("group_id", group.getId());
-                nowBossQueryWrapper.eq("boss_order", nowBoss.getBossOrder() + 1);
-                nowBossQueryWrapper.eq("boss_rounds", nowBoss.getBossRounds());
-                NowBoss nowBossNext = nowBossMapper.selectOne(nowBossQueryWrapper);
+                // TODO: 2021/6/8 是否优化为显示所有当前论boss信息,+1的话5号boss怎么办啊
+                NowBoss nowBossNext = nowRoundBosses.stream().filter(b -> b.getBossOrder() == nowBoss.getBossOrder() + 1).findFirst().orElse(null);
                 if (nowBossNext == null) {
                     return "唔，出问题了，联系爱丽丝姐姐看看吧";
                 }
