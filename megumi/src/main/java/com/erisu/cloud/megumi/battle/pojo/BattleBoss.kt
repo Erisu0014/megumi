@@ -6,8 +6,8 @@ package com.erisu.cloud.megumi.battle.pojo
  *@Date 2021/6/4 13:37
  **/
 data class BattleBoss(
-    var id: String? = null,
-    val name: String? = null,
-    val hpMax: Int? = null,
-    val bossOrder: Int? = null
+    var id: String,
+    val name: String,
+    val hpMax: Int,
+    val bossOrder: Int
 )

@@ -86,7 +86,7 @@ public class BattleService {
     }
 
     @Command(value = "加入全部成员", commandType = CommandType.GROUP, pattern = Pattern.EQUALS)
-    public Message addAllBattleUser(User sender, MessageChain messageChain, Contact subject)  {
+    public Message addAllBattleUser(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
         battleLogic.addAllBattleUser(group.getMembers(), group.getId());
         return Image.fromId("{997C294C-1FEE-A4EF-CE1D-7AC055D0BA2A}.jpg").plus(new PlainText("添加群成员成功"));
@@ -98,8 +98,8 @@ public class BattleService {
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
     public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
-        // TODO: 2021/6/5
-        return new PlainText("摸了");
+        String result = battleLogic.fuckBoss(sender, messageChain, group,false);
+        return new PlainText(result);
     }
 }
 
