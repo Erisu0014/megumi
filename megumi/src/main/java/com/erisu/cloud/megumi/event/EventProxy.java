@@ -5,16 +5,19 @@ import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.GlobalCommands;
 import com.erisu.cloud.megumi.command.MethodLite;
 import com.erisu.cloud.megumi.event.annotation.Event;
+import com.erisu.cloud.megumi.exception.MegumiException;
 import com.erisu.cloud.megumi.plugin.pojo.Model;
+import kotlin.coroutines.CoroutineContext;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.event.EventHandler;
-import net.mamoe.mirai.event.EventPriority;
-import net.mamoe.mirai.event.ListeningStatus;
-import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.event.*;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.Message;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 
@@ -24,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Description 事件proxy，主要是commands指令控制
@@ -35,6 +39,8 @@ import java.util.Map;
 @Lazy
 @Event
 public class EventProxy extends SimpleListenerHost {
+    @Value("${qq.username}")
+    private long username;
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -64,12 +70,17 @@ public class EventProxy extends SimpleListenerHost {
 
     @NotNull
     @EventHandler(priority = EventPriority.NORMAL)
-    public ListeningStatus excuteCommand(MessageEvent messageEvent) throws Exception {
+    public ListeningStatus executeCommand(MessageEvent messageEvent) throws Exception {
         List<MethodLite> methodLites = analysisHandler.verify(messageEvent);
         for (MethodLite methodLite : methodLites) {
             Method method = methodLite.getMethod();
             Object bean = methodLite.getBean();
-            Object answer = method.invoke(bean, messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
+            Object answer = null;
+            try {
+                answer = method.invoke(bean, messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
+            } catch (Exception e) {
+                handleException(e, messageEvent);
+            }
             if (!(answer instanceof Message)) {
                 continue;
             }
@@ -78,5 +89,10 @@ public class EventProxy extends SimpleListenerHost {
             messageEvent.getSubject().sendMessage(final_answer);
         }
         return ListeningStatus.LISTENING;
+    }
+
+    public void handleException(@NotNull Throwable e, MessageEvent event) {
+        e.printStackTrace();
+        event.getSubject().sendMessage("唔，出问题了，联系爱丽丝姐姐看看吧");
     }
 }

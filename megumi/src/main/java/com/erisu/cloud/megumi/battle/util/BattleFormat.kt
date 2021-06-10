@@ -2,6 +2,7 @@ package com.erisu.cloud.megumi.battle.util
 
 import com.erisu.cloud.megumi.battle.pojo.BattleBoss
 import com.erisu.cloud.megumi.battle.pojo.BattleDamage
+import com.erisu.cloud.megumi.battle.pojo.DamagedBoss
 import com.erisu.cloud.megumi.battle.pojo.NowBoss
 
 /**
@@ -43,32 +44,28 @@ object BattleFormat {
     fun fuckBossLastInfo(
         damageType: DamageType,
         qqCard: String,
-        damage: Int,
-        bossOrder: Int,
-        bossRounds: Int,
-        hpNow: Int,
+        boss: DamagedBoss,
         damageTime: Double
     ): String {
         // TODO: 2021/6/8 这里是否需要记录打的是哪个boss
-        return "${qqCard}对boss造成了${damage}点伤害，击败了boss\n" +
+        return "${qqCard}对boss造成了${boss.damage}点伤害，击败了boss\n" +
                 "（今日第${3 - damageTime}刀，${damageType.typeName}）\n" +
-                "现在${bossRounds}周目，${bossOrder}号boss\n" +
-                "生命值$hpNow"
+                "现在${boss.nowBoss.bossRounds}周目，${boss.nowBoss.bossOrder}号boss\n" +
+                "生命值${boss.nowBoss.hpNow}"
     }
+
+
 
     fun fuckBossInfo(
         damageType: DamageType,
         qqCard: String,
-        damage: Int,
-        bossOrder: Int,
-        bossRounds: Int,
-        hpNow: Int,
+        boss: DamagedBoss,
         damageTime: Double
     ): String {
         // TODO: 2021/6/8 这里是否需要记录打的是哪个boss
-        return "${qqCard}对boss造成了${damage}点伤害\n" +
+        return "${qqCard}对boss造成了${boss.damage}点伤害\n" +
                 "（今日第${3 - damageTime}刀，${damageType.typeName}）\n" +
-                "现在${bossRounds}周目，${bossOrder}号boss\n" +
-                "生命值$hpNow"
+                "现在${boss.nowBoss.bossRounds}周目，${boss.nowBoss.bossOrder}号boss\n" +
+                "生命值${boss.nowBoss.hpNow}"
     }
 }

@@ -10,15 +10,14 @@ import com.baomidou.mybatisplus.annotation.TableId
  **/
 data class NowBoss(
     @TableId(type = IdType.AUTO)
-    var nowId: Int,
-    var bossId: String,
+    var nowId: Int?=null, // 为什么有null，因为涉及重新分配
+    var bossId: String?=null,
     var bossName: String,
-    var groupId: String,
+    var groupId: String?=null,
     var hpNow: Int = 0,
     var bossOrder: Int,
     var bossRounds: Int,
     var nowStage: Int
 ) {
-
 }
 

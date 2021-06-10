@@ -24,6 +24,6 @@ public interface NowBossMapper extends BaseMapper<NowBoss> {
 
     List<NowBoss> selectNowBoss(@Param("groupId") long id);
 
-    NowBoss selectNowBossWithOrder(@Param("groupId") long id, @Param("bossOrder") int bossOrder);
+    NowBoss selectNowBossWithOrder(@Param("groupId") String id, @Param("bossOrder") int bossOrder);
 
 }

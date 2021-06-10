@@ -2,11 +2,15 @@ package com.erisu.cloud.megumi.event;
 
 import com.erisu.cloud.megumi.event.annotation.Event;
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.Member;
+import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.*;
 
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
+import net.mamoe.mirai.message.action.MemberNudge;
 import net.mamoe.mirai.message.action.Nudge;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +24,7 @@ public class BaseGroupEvent extends SimpleListenerHost {
 
     /**
      * 入群事件
+     *
      * @param event
      * @return
      */
@@ -32,24 +37,28 @@ public class BaseGroupEvent extends SimpleListenerHost {
     }
 
 
-
-//    /**
-//     * 戳出事了你负责吗
-//     * @param event
-//     * @return
-//     */
-//    @NotNull
-//    @EventHandler(priority = EventPriority.NORMAL)
-//    public ListeningStatus onNudgedEvent(@NotNull NudgeEvent event) {
-//        Bot bot = event.getBot();
-//        Member contact = (Member) event.getFrom();
-//        Nudge.Companion.sendNudge(contact.getGroup(), contact.nudge());
-//        if (Math.random()>0.9){
-//            bot.getGroup(contact.getGroup().getId()).sendMessage("欸嘿~戳不到");
-//        }
-//        return ListeningStatus.LISTENING; // 表示继续监听事件
-//    }
-
+    /**
+     * 戳出事了你负责吗
+     *
+     * @param event
+     * @return
+     */
+    @NotNull
+    @EventHandler(priority = EventPriority.NORMAL)
+    public ListeningStatus onNudgedEvent(@NotNull NudgeEvent event) {
+        Bot bot = event.getBot();
+        if (!(event.getFrom() instanceof NormalMember)) {
+            return ListeningStatus.LISTENING; // 表示继续监听事件
+        }
+        NormalMember contact = (NormalMember) event.getFrom();
+        Group group = contact.getGroup();
+        MemberNudge nudge = contact.nudge();
+        nudge.sendTo(group);
+        if (Math.random() > 0.5) {
+            bot.getGroup(contact.getGroup().getId()).sendMessage("戳出事了你负责吗");
+        }
+        return ListeningStatus.LISTENING; // 表示继续监听事件
+    }
 
 
 }

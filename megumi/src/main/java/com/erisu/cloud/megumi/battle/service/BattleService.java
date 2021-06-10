@@ -96,7 +96,7 @@ public class BattleService {
      * 对公会战boss进行巨大打击
      */
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) {
+    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception{
         Group group = (Group) subject;
         String result = battleLogic.fuckBoss(sender, messageChain, group, false);
         return new PlainText(result);
