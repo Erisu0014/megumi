@@ -10,6 +10,7 @@ import com.erisu.cloud.megumi.battle.mapper.*;
 import com.erisu.cloud.megumi.battle.pojo.*;
 import com.erisu.cloud.megumi.battle.util.BattleFormat;
 import com.erisu.cloud.megumi.battle.util.DamageType;
+import com.erisu.cloud.megumi.battle.util.LostInfo;
 import com.erisu.cloud.megumi.exception.MegumiException;
 import com.erisu.cloud.megumi.plugin.logic.PluginLogic;
 import com.erisu.cloud.megumi.plugin.pojo.GroupPlugin;
@@ -24,6 +25,7 @@ import net.mamoe.mirai.event.events.GroupEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.apache.poi.ss.formula.functions.Now;
+import org.apache.regexp.RE;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -151,7 +153,6 @@ public class BattleLogic {
      * @return
      */
     // TODO: 2021/6/8 后续进行sql分离
-    // TODO: 2021/6/8 md事务没回滚 
     @Transactional
     public String fuckBoss(User sender, MessageChain messageChain, Group group, Boolean checkCompleted) throws Exception {
         /*
@@ -177,8 +178,57 @@ public class BattleLogic {
         // 1.判断是否为自己的刀
         BattleUser battleUser = getBattleUser(originalMessage, senderId, groupId);
         // 2.判断是几号boss
-        DamagedBoss damagedBoss = getDamagedBoss(originalMessage, groupId);
+        DamagedBoss damagedBoss = getDamagedBoss(originalMessage, groupId, checkCompleted);
         // 3.判断是否尾刀
+        LostInfo lostInfo = checkCompleted ? checkCompleted(damagedBoss) : new LostInfo(0.5, true, DamageType.Last);
+        //  说明现在没刀了
+        if (battleUser.getDamageTimes() - lostInfo.getLost() < 0) {
+            if (!battleUser.getQqId().equals(senderId)) {
+                return String.format("你再想想！%s已经出完三刀下班了哟~", battleUser.getNickname());
+            } else {
+                return "你再想想！你已经出完三刀下班了哟~";
+            }
+        }
+        // 判断尾刀
+        if (lostInfo.isLast()) {
+            damagedBoss.getNowBoss().setHpNow(0);
+            updateDamageInfo(damagedBoss, groupId, battleUser, lostInfo.getLost());
+            // TODO: 2021/6/8 提醒预约和挂树的
+            QueryWrapper<NowBoss> nowBossQueryWrapper = new QueryWrapper<>();
+            nowBossQueryWrapper.eq("boss_rounds", damagedBoss.getNowBoss().getBossRounds());
+            nowBossQueryWrapper.eq("group_id", damagedBoss.getNowBoss().getGroupId());
+            List<NowBoss> nowRoundBosses = nowBossMapper.selectList(nowBossQueryWrapper);
+            if (CollUtil.isEmpty(nowRoundBosses)) {
+                throw new Exception("当前轮boss为空");
+            }
+            if (nowRoundBosses.stream().allMatch(b -> b.getHpNow() == 0)) {
+                // 说明这轮boss死完了，需要注入新一轮boss
+                DamagedBoss nextDamagedBoss = insertNewRoundBosses(damagedBoss, groupId);
+                fuckResult = BattleFormat.INSTANCE.fuckBossLastInfo(lostInfo.getDamageType(), battleUser.getNickname(), nextDamagedBoss, battleUser.getDamageTimes());
+            } else {
+                // TODO: 2021/6/8 是否优化为显示所有当前论boss信息,+1的话5号boss怎么办啊
+                nowRoundBosses.sort(Comparator.comparingInt(NowBoss::getBossOrder));
+                NowBoss nextBoss = nowRoundBosses.stream().filter(b -> b.getHpNow() != 0).findFirst().orElse(null);
+                if (nextBoss == null) {
+                    throw new Exception("nextBoss为空");
+                }
+                DamagedBoss nextDamageBoss = new DamagedBoss(damagedBoss.getDamage(), nextBoss);
+                fuckResult = BattleFormat.INSTANCE.fuckBossLastInfo(lostInfo.getDamageType(), battleUser.getNickname(), nextDamageBoss, battleUser.getDamageTimes());
+            }
+        } else {
+            // 非尾刀形式
+            damagedBoss.getNowBoss().setHpNow(damagedBoss.getNowBoss().getHpNow() - damagedBoss.getDamage());
+            updateDamageInfo(damagedBoss, groupId, battleUser, lostInfo.getLost());
+            fuckResult = BattleFormat.INSTANCE.fuckBossInfo(lostInfo.getDamageType(),
+                    battleUser.getNickname(), damagedBoss, battleUser.getDamageTimes());
+        }
+        battleUserMapper.updateById(battleUser);
+        return fuckResult;
+
+    }
+
+
+    private LostInfo checkCompleted(DamagedBoss damagedBoss) {
         double lost;
         boolean isLast;
         DamageType damageType;
@@ -200,50 +250,7 @@ public class BattleLogic {
 
             isLast = false;
         }
-        //  说明现在没刀了
-        if (battleUser.getDamageTimes() - lost < 0) {
-            if (!battleUser.getQqId().equals(senderId)) {
-                return String.format("你再想想！%s已经出完三刀下班了哟~", battleUser.getNickname());
-            } else {
-                return "你再想想！你已经出完三刀下班了哟~";
-            }
-        }
-        // 判断尾刀
-        if (isLast) {
-            damagedBoss.getNowBoss().setHpNow(0);
-            updateDamageInfo(damagedBoss, groupId, battleUser, lost);
-            // TODO: 2021/6/8 提醒预约和挂树的
-            QueryWrapper<NowBoss> nowBossQueryWrapper = new QueryWrapper<>();
-            nowBossQueryWrapper.eq("boss_rounds", damagedBoss.getNowBoss().getBossRounds());
-            nowBossQueryWrapper.eq("group_id", damagedBoss.getNowBoss().getGroupId());
-            List<NowBoss> nowRoundBosses = nowBossMapper.selectList(nowBossQueryWrapper);
-            if (CollUtil.isEmpty(nowRoundBosses)) {
-                throw new Exception("当前轮boss为空");
-            }
-            if (nowRoundBosses.stream().allMatch(b -> b.getHpNow() == 0)) {
-                // 说明这轮boss死完了，需要注入新一轮boss
-                DamagedBoss nextDamagedBoss = insertNewRoundBosses(damagedBoss, groupId);
-                fuckResult = BattleFormat.INSTANCE.fuckBossLastInfo(damageType, battleUser.getNickname(), nextDamagedBoss, battleUser.getDamageTimes());
-            } else {
-                // TODO: 2021/6/8 是否优化为显示所有当前论boss信息,+1的话5号boss怎么办啊
-                nowRoundBosses.sort(Comparator.comparingInt(NowBoss::getBossOrder));
-                NowBoss nextBoss = nowRoundBosses.stream().filter(b -> b.getHpNow() != 0).findFirst().orElse(null);
-                if (nextBoss == null) {
-                    throw new Exception("nextBoss为空");
-                }
-                DamagedBoss nextDamageBoss = new DamagedBoss(damagedBoss.getDamage(), nextBoss);
-                fuckResult = BattleFormat.INSTANCE.fuckBossLastInfo(damageType, battleUser.getNickname(), nextDamageBoss, battleUser.getDamageTimes());
-            }
-        } else {
-            // 非尾刀形式
-            damagedBoss.getNowBoss().setHpNow(damagedBoss.getNowBoss().getHpNow() - damagedBoss.getDamage());
-            updateDamageInfo(damagedBoss, groupId, battleUser, lost);
-            fuckResult = BattleFormat.INSTANCE.fuckBossInfo(damageType,
-                    battleUser.getNickname(), damagedBoss, battleUser.getDamageTimes());
-        }
-        battleUserMapper.updateById(battleUser);
-        return fuckResult;
-
+        return new LostInfo(lost, isLast, damageType);
     }
 
     /**
@@ -291,26 +298,41 @@ public class BattleLogic {
      * @return
      * @throws Exception
      */
-    private DamagedBoss getDamagedBoss(List<MessageChainPo.MessageInfo> originalMessage, String groupId) throws Exception {
+    private DamagedBoss getDamagedBoss(List<MessageChainPo.MessageInfo> originalMessage, String groupId, boolean checkCompleted) throws Exception {
         int damage = 0;
         NowBoss nowBoss;
-        String base_damage_str = Objects.requireNonNull(StrUtil.removePrefix(originalMessage.get(0).getContent(), "报刀")).trim();
-        if (base_damage_str.contains(" ")) {
-            // 说明报刀规则是报刀x xxxxxx
-            String[] var0 = base_damage_str.split(" ", 2);
-            int boss_order = Integer.parseInt(var0[0]);
-            damage = Integer.parseInt(var0[1]);
-            nowBoss = nowBossMapper.selectNowBossWithOrder(groupId, boss_order);
+        // 尾刀
+        if (!checkCompleted) {
+            String base_str = Objects.requireNonNull(StrUtil.removePrefix(originalMessage.get(0).getContent(), "尾刀")).trim();
+            //  形如尾刀3这种形式
+            if (NumberUtil.isNumber(base_str)) {
+                int boss_order = Integer.parseInt(base_str);
+                nowBoss = nowBossMapper.selectNowBossWithOrder(groupId, boss_order);
+            } else {
+                nowBoss = nowBossMapper.selectByMinBossOrder(groupId);
+            }
+            damage = nowBoss.getHpNow();
+            return new DamagedBoss(damage, nowBoss);
         } else {
-            // 查询当前boss
-            // TODO: 2021/6/7 后续考虑redis或其他方式缓存？
-            damage = Integer.parseInt(base_damage_str);
-            nowBoss = nowBossMapper.selectByMinBossOrder(groupId);
+            //  报刀
+            String base_damage_str = Objects.requireNonNull(StrUtil.removePrefix(originalMessage.get(0).getContent(), "报刀")).trim();
+            if (base_damage_str.contains(" ")) {
+                // 说明报刀规则是报刀x xxxxxx
+                String[] var0 = base_damage_str.split(" ", 2);
+                int boss_order = Integer.parseInt(var0[0]);
+                damage = Integer.parseInt(var0[1]);
+                nowBoss = nowBossMapper.selectNowBossWithOrder(groupId, boss_order);
+            } else {
+                // 查询当前boss
+                // TODO: 2021/6/7 后续考虑redis或其他方式缓存？
+                damage = Integer.parseInt(base_damage_str);
+                nowBoss = nowBossMapper.selectByMinBossOrder(groupId);
+            }
+            if (nowBoss == null) {
+                throw new Exception("nowBoss为空");
+            }
+            return new DamagedBoss(damage, nowBoss);
         }
-        if (nowBoss == null) {
-            throw new Exception("nowBoss为空");
-        }
-        return new DamagedBoss(damage, nowBoss);
     }
 
     /**

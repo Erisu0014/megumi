@@ -40,7 +40,6 @@ public class BattleService {
         Group group = (Group) subject;
         if (battleLogic.isEnabled(modelName, group.getId())) {
             if (battleLogic.isCreatedGroup(group.getId())) {
-                // TODO: 2021/6/4
                 /* 如果当前不存在boss（说明是第一次或者被clear掉了，放入一周目boss）*/
                 List<NowBoss> nowBossQuery = battleLogic.getNowBossQuery(group.getId());
                 if (CollUtil.isEmpty(nowBossQuery)) {
@@ -62,6 +61,7 @@ public class BattleService {
             return new PlainText("请先启动公会战插件~");
         }
     }
+
 
     @Command(value = "创建公会", commandType = CommandType.GROUP, pattern = Pattern.EQUALS,
             uuid = "a8fe759a62004acead3091d01cb11269")
@@ -98,9 +98,19 @@ public class BattleService {
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
     public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception{
         Group group = (Group) subject;
+        String result = battleLogic.fuckBoss(sender, messageChain, group, true);
+        return new PlainText(result);
+    }
+
+    @Command(value = "尾刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
+    public Message fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception{
+        Group group = (Group) subject;
         String result = battleLogic.fuckBoss(sender, messageChain, group, false);
         return new PlainText(result);
     }
+
+
+
 }
 
 
