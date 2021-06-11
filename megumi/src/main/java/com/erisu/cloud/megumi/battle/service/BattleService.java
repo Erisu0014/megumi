@@ -40,7 +40,6 @@ public class BattleService {
         Group group = (Group) subject;
         if (battleLogic.isEnabled(modelName, group.getId())) {
             if (battleLogic.isCreatedGroup(group.getId())) {
-                // TODO: 2021/6/4
                 /* 如果当前不存在boss（说明是第一次或者被clear掉了，放入一周目boss）*/
                 List<NowBoss> nowBossQuery = battleLogic.getNowBossQuery(group.getId());
                 if (CollUtil.isEmpty(nowBossQuery)) {
@@ -52,7 +51,7 @@ public class BattleService {
                     }
                 } else {
                     // 说明nowBoss表中确实有数据
-                    return new PlainText(BattleFormat.INSTANCE.nowBoss1(1, nowBossQuery));
+                    return new PlainText(BattleFormat.INSTANCE.nowBoss1(nowBossQuery.get(0).getBossRounds(), nowBossQuery));
                 }
             } else {
                 return new PlainText("主人还没有创建工会哦");
@@ -62,6 +61,7 @@ public class BattleService {
             return new PlainText("请先启动公会战插件~");
         }
     }
+
 
     @Command(value = "创建公会", commandType = CommandType.GROUP, pattern = Pattern.EQUALS,
             uuid = "a8fe759a62004acead3091d01cb11269")
@@ -86,7 +86,7 @@ public class BattleService {
     }
 
     @Command(value = "加入全部成员", commandType = CommandType.GROUP, pattern = Pattern.EQUALS)
-    public Message addAllBattleUser(User sender, MessageChain messageChain, Contact subject)  {
+    public Message addAllBattleUser(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
         battleLogic.addAllBattleUser(group.getMembers(), group.getId());
         return Image.fromId("{997C294C-1FEE-A4EF-CE1D-7AC055D0BA2A}.jpg").plus(new PlainText("添加群成员成功"));
@@ -95,17 +95,22 @@ public class BattleService {
     /**
      * 对公会战boss进行巨大打击
      */
-    // TODO: 2021/6/6 考虑lock
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) {
+    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception{
         Group group = (Group) subject;
-        // 0.是否是替别人报刀
-        // 1.是否有刀
-        // 2.是否打死了boss -- 是 尾刀；否
-        // 3.打死boss后修改预约状态（不主动调起预约行为）
-        // TODO: 2021/6/5
-        return new PlainText("摸了");
+        String result = battleLogic.fuckBoss(sender, messageChain, group, true);
+        return new PlainText(result);
     }
+
+    @Command(value = "尾刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
+    public Message fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception{
+        Group group = (Group) subject;
+        String result = battleLogic.fuckBoss(sender, messageChain, group, false);
+        return new PlainText(result);
+    }
+
+
+
 }
 
 

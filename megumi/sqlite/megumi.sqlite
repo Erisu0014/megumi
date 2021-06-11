@@ -83,15 +83,16 @@ create table battle_user
     qq_id        varchar(20) primary key not null,
     nickname     varchar(20) primary key not null,--冗余字段，暂时保留
     group_id     varchar(200)            not null,
-    damage_times integer                 not null --今日剩余刀数，每天五点更新
+    damage_times double                  not null --今日剩余刀数，每天五点更新
 );
 
 create table battle_damage
 (
-    id       integer primary key autoincrement not null,
-    group_id varchar(20)                       not null,
-    qq_id    varchar(20)                       not null,
-    boss_id  varchar(32)                       not null,
-    damage   integer                           not null
+    id          integer primary key autoincrement not null,
+    group_id    varchar(20)                       not null,
+    qq_id       varchar(20)                       not null,
+    boss_id     varchar(32)                       not null,
+    damage      integer                           not null,
+    now_boss_id integer                           not null
 )
 

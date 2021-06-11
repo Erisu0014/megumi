@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Method;
 
 /**
- * @Description TODO
+ * @Description 用以方法反射, bean为注入至ioc中bean的节点
  * @Author alice
  * @Date 2021/6/3 19:42
  **/

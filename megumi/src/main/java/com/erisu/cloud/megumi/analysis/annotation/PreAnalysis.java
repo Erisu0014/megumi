@@ -8,6 +8,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface PreAnalysis {
-    //todo 切不到，呐，多西忒
     CommandType name();
 }
