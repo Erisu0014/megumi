@@ -35,17 +35,17 @@ public class PluginService implements ICommandService {
     private PluginLogic pluginLogic;
 
 
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "启用 ", alias = {"停用 "})
-    public Message execute(User sender, MessageChain messageChain, Contact subject) throws Exception {
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "启用", alias = {"停用"})
+    public Message execute(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
         String content = ((PlainText) messageChain.get(1)).getContent();
         int enabled;
         String pluginName;
-        if (StrUtil.startWith(content, "启用 ")) {
-            pluginName = StrUtil.removePrefix(content, "启用 ");
+        if (StrUtil.startWith(content, "启用")) {
+            pluginName = StrUtil.removePrefix(content, "启用").trim();
             enabled = 1;
-        } else if (StrUtil.startWith(content, "停用 ")) {
-            pluginName = StrUtil.removePrefix(content, "停用 ");
+        } else if (StrUtil.startWith(content, "停用")) {
+            pluginName = StrUtil.removePrefix(content, "停用").trim();
             enabled = 0;
         } else {
             return new PlainText("你他妈怎么进来的");
