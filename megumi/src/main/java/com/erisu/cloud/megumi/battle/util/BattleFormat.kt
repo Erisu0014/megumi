@@ -11,15 +11,15 @@ import com.erisu.cloud.megumi.battle.pojo.NowBoss
  *@Date 2021/6/4 17:37
  **/
 object BattleFormat {
-    fun nowBoss(round: Int, boss: List<BattleBoss>): String {
+    fun nowBossInfo(round: Int, boss: List<BattleBoss>): String {
         val bosses = boss.sortedBy { it.bossOrder }
         var boss_info = ""
         bosses.forEach { boss_info += "${it.bossOrder}号boss，生命值：${it.hpMax}\n" }
         return "现在${round}周目:\n${boss_info}今天已出0刀，剩余90刀完整刀和0刀补偿刀\n"
     }
 
-    @JvmName("nowBoss1")
-    fun nowBoss(round: Int, boss: List<NowBoss>): String {
+    @JvmName("nowBoss1Info")
+    fun nowBossInfo(round: Int, boss: List<NowBoss>): String {
         val bosses = boss.sortedBy { it.bossOrder }
         var boss_info = ""
         bosses.forEach { boss_info += "${it.bossOrder}号boss，生命值：${it.hpNow}\n" }
@@ -55,7 +55,6 @@ object BattleFormat {
     }
 
 
-
     fun fuckBossInfo(
         damageType: DamageType,
         qqCard: String,
@@ -67,5 +66,14 @@ object BattleFormat {
                 "（今日第${3 - damageTime}刀，${damageType.typeName}）\n" +
                 "现在${boss.nowBoss.bossRounds}周目，${boss.nowBoss.bossOrder}号boss\n" +
                 "生命值${boss.nowBoss.hpNow}"
+    }
+
+    fun revertDamageInfo(
+        qqCard: String,
+        nowBoss: NowBoss
+    ): String {
+        return "${qqCard}的出刀记录已被撤销\n" +
+                "现在${nowBoss.bossRounds}周目，${nowBoss.bossOrder}号boss\n" +
+                "生命值${nowBoss.hpNow}\n";
     }
 }

@@ -19,11 +19,21 @@ public interface NowBossMapper extends BaseMapper<NowBoss> {
     int insertStageBoss(@Param("bosses") List<BattleBoss> bosses,
                         @Param("groupId") String groupId, @Param("bossRounds") int bossRounds, @Param("nowStage") int nowStage);
 
-    // TODO: 2021/6/7 修改damage表，增加now_id，用以撤销报刀 
+    /**
+     * 查询本轮最小序未死亡boss
+     *
+     * @param groupId
+     */
     NowBoss selectByMinBossOrder(@Param("groupId") String groupId);
 
-    List<NowBoss> selectNowBoss(@Param("groupId") long id);
+    /**
+     * 查询本轮所有boss
+     *
+     * @param groupId
+     */
+    List<NowBoss> selectNowBoss(@Param("groupId") long groupId);
 
     NowBoss selectNowBossWithOrder(@Param("groupId") String id, @Param("bossOrder") int bossOrder);
 
+    int revertDamage(@Param("nowBossId") int nowBossId, @Param("damage") int damage);
 }

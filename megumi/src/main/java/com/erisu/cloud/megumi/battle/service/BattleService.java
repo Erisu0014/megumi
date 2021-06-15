@@ -9,9 +9,7 @@ import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.plugin.pojo.Model;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.User;
+import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.stereotype.Component;
@@ -47,11 +45,11 @@ public class BattleService {
                     if (CollUtil.isEmpty(bosses)) {
                         return new PlainText("主人你写错代码了吧！快看日志");
                     } else {
-                        return new PlainText(BattleFormat.INSTANCE.nowBoss(1, bosses));
+                        return new PlainText(BattleFormat.INSTANCE.nowBossInfo(1, bosses));
                     }
                 } else {
                     // 说明nowBoss表中确实有数据
-                    return new PlainText(BattleFormat.INSTANCE.nowBoss1(nowBossQuery.get(0).getBossRounds(), nowBossQuery));
+                    return new PlainText(BattleFormat.INSTANCE.nowBoss1Info(nowBossQuery.get(0).getBossRounds(), nowBossQuery));
                 }
             } else {
                 return new PlainText("主人还没有创建工会哦");
@@ -96,21 +94,30 @@ public class BattleService {
      * 对公会战boss进行巨大打击
      */
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception{
+    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         String result = battleLogic.fuckBoss(sender, messageChain, group, true);
         return new PlainText(result);
     }
 
     @Command(value = "尾刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public Message fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception{
+    public Message fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         String result = battleLogic.fuckBoss(sender, messageChain, group, false);
         return new PlainText(result);
     }
 
-
-
+    @Command(value = "撤销", commandType = CommandType.GROUP, pattern = Pattern.EQUALS)
+    public Message revertBossDamage(User sender, MessageChain messageChain, Contact subject) throws Exception {
+        Group group = (Group) subject;
+        NormalMember member = (NormalMember) sender;
+        if (member.getPermission().getLevel() >= MemberPermission.ADMINISTRATOR.getLevel()) {
+            String result = battleLogic.revertBossDamage(sender, messageChain, group);
+            return new PlainText(result);
+        } else {
+            return new PlainText("无权撤销");
+        }
+    }
 }
 
 
