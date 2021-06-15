@@ -94,5 +94,13 @@ create table battle_damage
     boss_id     varchar(32)                       not null,
     damage      integer                           not null,
     now_boss_id integer                           not null
-)
+);
+
+create table dev_remind
+(
+    id          integer primary key autoincrement not null,
+    group_id    varchar(20)                       not null,
+    qq_id       varchar(20)                       not null,
+    remind_json varchar(200)                      not null
+);
 
