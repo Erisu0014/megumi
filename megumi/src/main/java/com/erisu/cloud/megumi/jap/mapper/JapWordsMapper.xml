@@ -5,7 +5,7 @@
             resultType="com.erisu.cloud.megumi.jap.pojo.JapWords">
         SELECT *
         FROM jap_words
-        ORDER BY RANDOM()
+        ORDER BY rand()
         limit #{count}
     </select>
 </mapper>

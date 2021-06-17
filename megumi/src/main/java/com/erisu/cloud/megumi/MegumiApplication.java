@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 
 @EnableScheduling
+@PropertySource("classpath:mysql.properties")
 @PropertySource("classpath:redis.properties")
 @PropertySource("classpath:qq.properties")
 @EnableAsync

@@ -6,7 +6,7 @@
         <foreach collection="bosses" item="item" separator=",">
             (
             #{item.id},
-            #{item.name},--bossName
+            #{item.name},##bossName
             #{groupId},
             #{item.hpMax},
             #{item.bossOrder},
