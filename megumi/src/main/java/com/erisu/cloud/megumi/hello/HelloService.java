@@ -40,13 +40,9 @@ public class HelloService {
     @Command(commandType = CommandType.GROUP, value = "火星文", pattern = Pattern.PREFIX)
     public Message mars(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group g = (Group) subject;
-        if (g.getId() == 604515343) {
-            String content = ((PlainText) messageChain.get(1)).getContent();
-            String marsText = StrUtil.removePrefix(content, "火星文").trim();
-            return new PlainText(marsUtil.getMars(marsText));
-        } else {
-            return null;
-        }
+        String content = ((PlainText) messageChain.get(1)).getContent();
+        String marsText = StrUtil.removePrefix(content, "火星文").trim();
+        return new PlainText(marsUtil.getMars(marsText));
     }
 
 

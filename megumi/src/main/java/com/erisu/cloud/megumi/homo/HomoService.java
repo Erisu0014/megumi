@@ -26,7 +26,7 @@ public class HomoService {
     @Resource
     private HomoLogic homoLogic;
 
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK)
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK, probaility = 0.4)
     public Message homoNum(User sender, MessageChain messageChain, Contact subject) throws Exception {
         String homo = homoLogic.homo(((PlainText) messageChain.get(1)).getContent());
         return new PlainText(homo);

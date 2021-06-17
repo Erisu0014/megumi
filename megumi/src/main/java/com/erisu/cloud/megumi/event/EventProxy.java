@@ -14,6 +14,7 @@ import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.*;
 import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.data.EmptyMessageChain;
 import net.mamoe.mirai.message.data.Message;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,12 +77,15 @@ public class EventProxy extends SimpleListenerHost {
             Method method = methodLite.getMethod();
             Object bean = methodLite.getBean();
             Object answer = null;
+            Command command = method.getAnnotation(Command.class);
+            if (Math.random() > command.probaility()) return ListeningStatus.LISTENING;
+            //  随机概率小于设定概率，执行
             try {
                 answer = method.invoke(bean, messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
             } catch (Exception e) {
                 handleException(e, messageEvent);
             }
-            if (!(answer instanceof Message)) {
+            if (!(answer instanceof Message) || answer instanceof EmptyMessageChain) {
                 continue;
             }
             Message final_answer = (Message) answer;
