@@ -11,6 +11,6 @@ import lombok.Getter;
 public enum Pattern {
     CONTAINS(1,"包含"),PREFIX(2,"前缀"),SUFFIX(3,"后缀"),EQUALS(4,"等于"),
     MD5(5,"md5比较"),CHECK(6,"检测文本属性");
-    private Integer type;
-    private String typeName;
+    private final Integer type;
+    private final String typeName;
 }

@@ -1,8 +1,6 @@
 package com.erisu.cloud.megumi.util
 
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
-import kotlin.experimental.and
 
 
 /**
@@ -19,7 +17,7 @@ object CheRuEncoder {
     }
 
     fun word2cheru(w: String): String {
-        var res: String = "切"
+        var res = "切"
         //对于base16而言无须补位
         val toByteArray = w.toByteArray(Charset.forName("GB2312"))
         toByteArray.forEach {

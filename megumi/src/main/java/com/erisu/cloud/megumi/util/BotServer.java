@@ -1,9 +1,6 @@
 package com.erisu.cloud.megumi.util;
 
-import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.event.ListenerHost;
-import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
