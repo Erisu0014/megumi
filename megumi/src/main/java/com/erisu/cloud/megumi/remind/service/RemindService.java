@@ -1,5 +1,6 @@
 package com.erisu.cloud.megumi.remind.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.pattern.Pattern;
@@ -40,5 +41,16 @@ public class RemindService {
     public Message showRemindMe(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
         return remindMeLogic.getRemindMe(String.valueOf(group.getId()), String.valueOf(sender.getId()));
+    }
+
+    @Command(value = "~todo", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
+    public Message removeRemindMe(User sender, MessageChain messageChain, Contact subject) {
+        Group group = (Group) subject;
+        PlainText plainText = (PlainText) messageChain.get(1);
+        String id = StrUtil.removePrefix(plainText.getContent(), "~todo").trim();
+        if (StrUtil.isBlank(id)) {
+            return null;
+        }
+        return remindMeLogic.removeRemindMe(id, String.valueOf(group.getId()), String.valueOf(sender.getId()));
     }
 }
