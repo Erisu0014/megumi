@@ -23,6 +23,7 @@ import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.ExceptionInEventHandlerException;
 import net.mamoe.mirai.event.events.GroupEvent;
 import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.apache.poi.ss.formula.functions.Now;
 import org.apache.regexp.RE;
@@ -284,7 +285,7 @@ public class BattleLogic {
         nowBossMapper.updateById(damagedBoss.getNowBoss());
         double damageTimes = user.component4() - lost;
         user.setDamageTimes(damageTimes);
-        BattleDamage battleDamage = new BattleDamage(groupId, user.getQqId(),
+        BattleDamage battleDamage = new BattleDamage(null, groupId, user.getQqId(),
                 Objects.requireNonNull(damagedBoss.getNowBoss().getBossId()),
                 damagedBoss.getDamage(), Objects.requireNonNull(damagedBoss.getNowBoss().getNowId()));
         battleDamageMapper.insert(battleDamage);
@@ -353,15 +354,42 @@ public class BattleLogic {
             throw new Exception("qqId为空");
         }
         // 查出来本人信息
-        QueryWrapper<BattleUser> battleUserWrapper = new QueryWrapper<>();
-        battleUserWrapper.eq("qq_id", qqId);
-        battleUserWrapper.eq("group_id", groupId);
-        BattleUser battleUser = battleUserMapper.selectOne(battleUserWrapper);
+        BattleUser battleUser = getBattleUser(groupId, qqId);
         if (battleUser == null) {
             throw new Exception("battleUser为空");
         }
         return battleUser;
     }
 
+    /**
+     * 查询指定user的battle信息
+     *
+     * @param groupId 组id
+     * @param qqId    用户id
+     */
+    private BattleUser getBattleUser(String groupId, String qqId) {
+        // 查出来本人信息
+        QueryWrapper<BattleUser> battleUserWrapper = new QueryWrapper<>();
+        battleUserWrapper.eq("qq_id", qqId);
+        battleUserWrapper.eq("group_id", groupId);
+        return battleUserMapper.selectOne(battleUserWrapper);
+    }
 
+    @Transactional
+    public String revertBossDamage(User sender, MessageChain messageChain, Group group) {
+        /*
+        1.查最近出刀
+        2.还原伤害
+        3.还刀
+        4.todo order回退(doable?)
+         */
+        String groupId = String.valueOf(group.getId());
+        String senderId = String.valueOf(sender.getId());
+        BattleDamage battleDamage = battleDamageMapper.selectLastDamage(groupId, senderId);
+        nowBossMapper.revertDamage(battleDamage.getNowBossId(), battleDamage.getDamage());
+        battleUserMapper.revertDamageTimes(groupId, senderId);
+        NowBoss nowBoss = nowBossMapper.selectByMinBossOrder(groupId);
+        BattleUser battleUser = getBattleUser(groupId, senderId);
+        return BattleFormat.INSTANCE.revertDamageInfo(battleUser.getNickname(), nowBoss);
+    }
 }

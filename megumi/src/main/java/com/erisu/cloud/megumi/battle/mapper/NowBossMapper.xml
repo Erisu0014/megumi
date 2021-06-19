@@ -6,7 +6,7 @@
         <foreach collection="bosses" item="item" separator=",">
             (
             #{item.id},
-            #{item.name},--bossName
+            #{item.name},##bossName
             #{groupId},
             #{item.hpMax},
             #{item.bossOrder},
@@ -40,4 +40,9 @@
         order by a.boss_rounds desc, a.boss_order
         limit 1;
     </select>
+    <update id="revertDamage">
+        update now_boss
+        set hp_now=hp_now + #{damage}
+        where now_id = #{nowBossId};
+    </update>
 </mapper>

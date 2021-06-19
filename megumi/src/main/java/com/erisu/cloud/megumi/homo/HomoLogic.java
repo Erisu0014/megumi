@@ -6,6 +6,7 @@ import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Component
 public class HomoLogic {
     // 保证有序
-    private final Map<Integer, String> homoMap = new LinkedHashMap<>();
+    private final Map<BigInteger, String> homoMap = new LinkedHashMap<>();
 
     @PostConstruct
     public void init() {
@@ -28,7 +29,7 @@ public class HomoLogic {
             List<String> homoData = fileReader.readLines();
             homoData.forEach(h -> {
                 String[] split = h.split(":");
-                homoMap.put(Integer.valueOf(split[0]), split[1]);
+                homoMap.put(new BigInteger(split[0]), split[1]);
             });
 //            MapUtil.sort(homoMap, (k1, k2) -> k2 - k1);
         } catch (Exception e) {
@@ -40,28 +41,32 @@ public class HomoLogic {
 //    private ScriptUtil scriptUtil;
 
     public String homo(String numStr) {
-        // 啥bNashorn不懂es6
-//        Object homo = scriptUtil.executeJs( "D:\\ideaProjects\\megumiBot\\megumi\\src\\main\\resources\\homo.js", "homo", 123);
-        Integer num = Integer.valueOf(numStr);
-        if (num < 0) {
+        BigInteger num;
+        double num_temp = Double.parseDouble(numStr);
+        if (Math.floor(num_temp) == num_temp) {
+            num = new BigInteger(numStr);
+        } else {
+            return "爱丽丝没写，但是你可以当成整数算然后除以10的n次方";
+        }
+        if (num.compareTo(BigInteger.ZERO) < 0) {
             return "负数有什么论证的必要吗？";
         } else {
             return numStr + "=" + toBeHomo(num);
         }
     }
 
-    private String toBeHomo(Integer num) {
+    private String toBeHomo(BigInteger num) {
         if (homoMap.containsKey(num)) {
             return homoMap.get(num);
         }
-        Integer div = 0;
-        for (Map.Entry<Integer, String> entry : homoMap.entrySet()) {
-            if (num >= entry.getKey()) {
+        BigInteger div = BigInteger.ZERO;
+        for (Map.Entry<BigInteger, String> entry : homoMap.entrySet()) {
+            if (num.compareTo(entry.getKey()) >= 0) {
                 div = entry.getKey();
                 break;
             }
         }
-        return "" + toBeHomo(div) + "*(" + toBeHomo(num / div) + ")" + "+(" + toBeHomo(num % div) + ")";
+        return "" + toBeHomo(div) + "*(" + toBeHomo(num.divide(div)) + ")" + "+(" + toBeHomo(num.mod(div)) + ")";
     }
 
 

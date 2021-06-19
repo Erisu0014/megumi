@@ -2,14 +2,13 @@ package com.erisu.cloud.megumi.plugin;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.command.Command;
-import com.erisu.cloud.megumi.command.ICommandService;
+import com.erisu.cloud.megumi.command.CommandType;
+import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.plugin.logic.PluginLogic;
 import com.erisu.cloud.megumi.plugin.pojo.GroupPlugin;
 import com.erisu.cloud.megumi.plugin.pojo.Model;
 import com.erisu.cloud.megumi.plugin.pojo.Plugin;
-import com.erisu.cloud.megumi.pattern.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
@@ -30,13 +29,13 @@ import java.util.List;
 @Slf4j
 @Component
 @Model(name = "plugin")
-public class PluginService implements ICommandService {
+public class PluginService {
     @Resource
     private PluginLogic pluginLogic;
 
 
     @Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "启用", alias = {"停用"})
-    public Message execute(User sender, MessageChain messageChain, Contact subject) {
+    public Message executePlugin(User sender, MessageChain messageChain, Contact subject) {
         Group group = (Group) subject;
         String content = ((PlainText) messageChain.get(1)).getContent();
         int enabled;

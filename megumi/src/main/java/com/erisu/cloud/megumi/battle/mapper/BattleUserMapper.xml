@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.erisu.cloud.megumi.battle.mapper.BattleUserMapper">
     <insert id="insertIgnore" parameterType="com.erisu.cloud.megumi.battle.pojo.BattleUser">
-        insert or ignore into battle_user(qq_id, nickname, group_id, damage_times)
+        insert ignore into battle_user(qq_id, nickname, group_id, damage_times)
         VALUES (#{battleUser.qqId}, #{battleUser.nickname}, #{battleUser.groupId}, #{battleUser.damageTimes})
     </insert>
     <insert id="insertAllIgnore" parameterType="com.erisu.cloud.megumi.battle.pojo.BattleUser">
-        insert or ignore into battle_user(qq_id, nickname, group_id, damage_times)values
+        insert ignore into battle_user(qq_id, nickname, group_id, damage_times)values
         <foreach collection="battleUsers" item="item" separator=",">
             (
             #{item.qqId},
@@ -17,4 +17,10 @@
         </foreach>
 
     </insert>
+    <update id="revertDamageTimes">
+        update battle_user
+        set damage_times=damage_times + 1
+        where qq_id = #{groupId}
+          and group_id = #{senderId};
+    </update>
 </mapper>

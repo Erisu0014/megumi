@@ -28,8 +28,9 @@ public @interface Command {
 
     /**
      * 概率回复函数
+     *
      * @return
      */
-//    Probability probaility(); 没想好怎么实现更优雅
+    double probaility() default 1.0; //没想好怎么实现更优雅
 
 }

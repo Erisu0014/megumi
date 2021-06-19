@@ -14,3 +14,7 @@
 
 ### qq.properties ##
 /megumi/src/main/resources/qq.properties
+### redis.properties ##
+/megumi/src/main/resources/redis.properties
+### mysql.properties ##
+/megumi/src/main/resources/mysql.properties
