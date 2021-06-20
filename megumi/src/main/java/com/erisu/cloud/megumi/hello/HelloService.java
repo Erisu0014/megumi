@@ -62,7 +62,7 @@ public class HelloService {
         Path path = FileUtil.downloadHttpUrl(audioUrl, "audio");
         if (path != null) {
             ExternalResource externalResource = ExternalResource.create(path.toFile());
-            return g.uploadVoice(externalResource);
+            return ExternalResource.uploadAsVoice(externalResource, subject);
         } else {
             return null;
         }
