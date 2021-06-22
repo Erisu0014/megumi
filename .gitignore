@@ -18,3 +18,5 @@
 /megumi/src/main/resources/redis.properties
 ### mysql.properties ##
 /megumi/src/main/resources/mysql.properties
+### other.properties ##
+/megumi/src/main/resources/other.properties

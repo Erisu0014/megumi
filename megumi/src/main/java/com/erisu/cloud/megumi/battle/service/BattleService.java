@@ -9,6 +9,8 @@ import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.plugin.pojo.Model;
+import com.erisu.cloud.megumi.util.ImageUtil;
+import com.erisu.cloud.megumi.util.MessageUtil;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
@@ -18,6 +20,7 @@ import org.springframework.util.ResourceUtils;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Description 公会战相关接口
@@ -68,9 +71,8 @@ public class BattleService {
         if (battleLogic.createBattleGroup(group)) {
             // TODO: 2021/6/4 后续改用数据库存储+程序init
             File nico = ResourceUtils.getFile("classpath:emoticon/nico.jpg");
-            ExternalResource externalResource = ExternalResource.create(nico);
-            Image image = subject.uploadImage(externalResource);
-            return new PlainText("创建工会成功").plus(image);
+            CompletableFuture<Image> future = MessageUtil.INSTANCE.generateImageAsync(group, nico, false);
+            return new PlainText("创建工会成功").plus(future.get());
         } else {
             return new PlainText("创建公会失败");
         }

@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @PropertySource("classpath:mysql.properties")
 @PropertySource("classpath:redis.properties")
 @PropertySource("classpath:qq.properties")
+@PropertySource("classpath:other.properties")
 @EnableAsync
 @SpringBootApplication
 public class MegumiApplication {

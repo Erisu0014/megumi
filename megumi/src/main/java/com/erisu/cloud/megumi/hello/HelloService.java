@@ -1,6 +1,5 @@
 package com.erisu.cloud.megumi.hello;
 
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.erisu.cloud.megumi.battle.util.MarsUtil;
 import com.erisu.cloud.megumi.command.Command;
@@ -13,13 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.message.data.*;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.utils.ExternalResource;
-import org.apache.poi.util.StringUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -44,7 +43,7 @@ public class HelloService {
         String content = ((PlainText) messageChain.get(1)).getContent().trim();
         String imageUrl = PatternUtil.INSTANCE.checkRemoteImage(content);
         if (imageUrl == null) return null;
-        Path path = FileUtil.downloadHttpUrl(imageUrl, "image");
+        Path path = FileUtil.downloadHttpUrl(imageUrl, "image",null);
         if (path != null) {
             ExternalResource externalResource = ExternalResource.create(path.toFile());
             return subject.uploadImage(externalResource);
@@ -59,7 +58,7 @@ public class HelloService {
         String content = ((PlainText) messageChain.get(1)).getContent().trim();
         String audioUrl = PatternUtil.INSTANCE.checkRemoteAudio(content);
         if (audioUrl == null) return null;
-        Path path = FileUtil.downloadHttpUrl(audioUrl, "audio");
+        Path path = FileUtil.downloadHttpUrl(audioUrl, "audio",null);
         if (path != null) {
             ExternalResource externalResource = ExternalResource.create(path.toFile());
             return ExternalResource.uploadAsVoice(externalResource, subject);
@@ -70,7 +69,6 @@ public class HelloService {
 
     @Command(commandType = CommandType.GROUP, value = "火星文", pattern = Pattern.PREFIX)
     public Message mars(User sender, MessageChain messageChain, Contact subject) throws Exception {
-        Group g = (Group) subject;
         String content = ((PlainText) messageChain.get(1)).getContent();
         String marsText = StrUtil.removePrefix(content, "火星文").trim();
         return new PlainText(marsUtil.getMars(marsText));
