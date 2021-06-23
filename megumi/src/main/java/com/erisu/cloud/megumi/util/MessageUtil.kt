@@ -1,6 +1,5 @@
 package com.erisu.cloud.megumi.util
 
-import com.erisu.cloud.megumi.pcr.basic.logic.PcrInitData.princessMap
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import net.mamoe.mirai.contact.Group
@@ -8,7 +7,6 @@ import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.messageChainOf
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
-import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.File
 import java.util.concurrent.CompletableFuture
 

@@ -62,7 +62,7 @@ public class JapSearchService {
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "71f2fff5-a1ee-4688-8de5-ad5d36240ee1")
     public Message sendTestResult(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
-        String redisKey = String.format("%s:jap-lock+:%d", RedisKey.PLUGIN.getName(), group.getId());
+        String redisKey = String.format("%s:jap-lock+:%d", RedisKey.PLUGIN.getKey(), group.getId());
         String value = redisUtil.get(redisKey);
         if ("1".equals(value)) {
             // 后续修改为从redis中获取
@@ -71,7 +71,7 @@ public class JapSearchService {
             wrapper.eq("pseudonym", message);
             List<JapWords> japWords = japWordsMapper.selectList(wrapper);
             // 胜利者
-            String key2 = String.format("%s:jap-winner+:%d", RedisKey.PLUGIN.getName(), group.getId());
+            String key2 = String.format("%s:jap-winner+:%d", RedisKey.PLUGIN.getKey(), group.getId());
             if (CollUtil.isNotEmpty(japWords)) {
                 redisUtil.set(key2, "1");
                 redisUtil.delete(redisKey);
@@ -89,7 +89,7 @@ public class JapSearchService {
     @Command(commandType = CommandType.GROUP, value = "猜单词", pattern = Pattern.EQUALS, alias = {"测单词"})
     public Message guessWord(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
-        String key = String.format("%s:jap-lock+:%d", RedisKey.PLUGIN.getName(), group.getId());
+        String key = String.format("%s:jap-lock+:%d", RedisKey.PLUGIN.getKey(), group.getId());
         if (redisUtil.hasKey(key)) {
             return new PlainText("上一个单词还没有猜对哦~");
         }
@@ -99,7 +99,7 @@ public class JapSearchService {
         }
         JapWords words = japWordsList.get(0);
         // 胜利者
-        String key2 = String.format("%s:jap-winner+:%d", RedisKey.PLUGIN.getName(), group.getId());
+        String key2 = String.format("%s:jap-winner+:%d", RedisKey.PLUGIN.getKey(), group.getId());
         messageUtil.sendAsyncMessageAwait(key2, group, new PlainText(String.format("很遗憾没有人猜对，%s的假名是%s", words.getWord(), words.getPseudonym())), 20);
         redisUtil.setEx(key,
                 "1", 20, TimeUnit.SECONDS);

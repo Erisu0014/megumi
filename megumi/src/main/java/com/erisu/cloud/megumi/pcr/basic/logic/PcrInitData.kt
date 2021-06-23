@@ -4,10 +4,17 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrAvatar
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrPrincess
+import com.erisu.cloud.megumi.util.RedisKey
+import com.erisu.cloud.megumi.util.RedisUtil
+import org.springframework.stereotype.Component
 import org.springframework.util.ResourceUtils
+import javax.annotation.Resource
 
+@Component
+class PcrInitData {
+    @Resource
+    private lateinit var redisUtil: RedisUtil
 
-object PcrInitData {
     val nameMap: MutableMap<String, String> = mutableMapOf()
     val idMap: MutableMap<String, List<String>> = mutableMapOf()
     val princessMap: MutableMap<String, PcrPrincess> = mutableMapOf()
@@ -33,7 +40,9 @@ object PcrInitData {
                 }
                 idMap[t] = l
             }
-
+            // 增加redis name
+            val nameExtraMap = redisUtil.hGetAll(RedisKey.PRINCESS_NAME.key)
+            if (!nameExtraMap.isNullOrEmpty()) nameMap.putAll(nameExtraMap as Map<out String, String>)
             // 2.初始化profile
             val profileFile = ResourceUtils.getFile("classpath:basic/profile.json")
             val line1 = profileFile.readLines()

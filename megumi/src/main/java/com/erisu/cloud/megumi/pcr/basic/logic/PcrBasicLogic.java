@@ -21,10 +21,12 @@ public class PcrBasicLogic implements ApplicationRunner {
     private String basicUrl;
     @Resource
     private PcrAvatarMapper avatarMapper;
+    @Resource
+    private PcrInitData pcrInitData;
 
     @Override
     public void run(ApplicationArguments args) {
-        List<PcrAvatar> avatarList = PcrInitData.INSTANCE.getAvatarList(basicUrl + "/avatar");
+        List<PcrAvatar> avatarList = pcrInitData.getAvatarList(basicUrl + "/avatar");
         avatarMapper.insertAvatar(avatarList);
     }
 }

@@ -25,12 +25,14 @@ import java.util.concurrent.CompletableFuture;
 public class NameLogic {
     @Resource
     private PcrAvatarMapper avatarMapper;
+    @Resource
+    private PcrInitData pcrInitData;
 
     public Message getAvatar(User sender, Group group, String princessId) throws Exception {
         PcrAvatar pcrAvatar = avatarMapper.searchMaxStarAvatar(princessId);
         Path imagePath = FileUtil.downloadHttpUrl(pcrAvatar.getAvatarUrl(), "image", null);
         if (imagePath != null) {
-            List<String> nameList = PcrInitData.INSTANCE.getIdMap().get(pcrAvatar.getPrincessId());
+            List<String> nameList = pcrInitData.getIdMap().get(pcrAvatar.getPrincessId());
             CompletableFuture<Image> future = MessageUtil.INSTANCE.generateImageAsync(group, imagePath.toFile(), true);
             return MessageUtil.INSTANCE.message(new At(sender.getId()),
                     future.get(), new PlainText(nameList.get(0)));
