@@ -53,10 +53,7 @@ public class PluginService {
         if (CollUtil.isEmpty(plugins)) {
             return new PlainText("主人没写，我不会做的鸭");
         }
-        pluginLogic.updateGroupPlugin(
-                GroupPlugin.builder()
-                        .groupId(String.valueOf(group.getId()))
-                        .pluginId(plugins.get(0).getId()).enabled(enabled).build());
+        pluginLogic.updateGroupPlugin(new GroupPlugin(String.valueOf(group.getId()), plugins.get(0).getId(), enabled));
         return new PlainText("初始化插件成功");
     }
 }

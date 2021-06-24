@@ -1,17 +1,10 @@
 package com.erisu.cloud.megumi.event;
 
-import com.erisu.cloud.megumi.event.annotation.Event;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.*;
 import net.mamoe.mirai.event.events.BotActiveEvent;
-import net.mamoe.mirai.event.events.BotEvent;
 import net.mamoe.mirai.event.events.BotOnlineEvent;
-import net.mamoe.mirai.event.events.BotReloginEvent;
 import net.mamoe.mirai.message.data.PlainText;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * @Description 定时任务事件插件

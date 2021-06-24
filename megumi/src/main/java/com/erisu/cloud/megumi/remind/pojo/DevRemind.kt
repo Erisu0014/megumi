@@ -9,6 +9,4 @@ data class DevRemind(
     var groupId: String? = null,
     var qqId: String? = null,
     val remindJson: String // mirai message
-) {
-
-}
+)

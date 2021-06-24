@@ -11,7 +11,7 @@ import java.io.File
 import java.util.concurrent.CompletableFuture
 
 /**
- *@Description TODO
+ *@Description 消息处理器
  *@Author alice
  *@Date 2021/6/22 14:37
  **/
@@ -24,7 +24,7 @@ object MessageUtil {
     fun generateImageAsync(group: Group, file: File, delete: Boolean): CompletableFuture<Image> =
         GlobalScope.future { generateImage(group, file, delete) }
 
-    private suspend fun generateImage(group: Group, file: File, delete: Boolean): Image {
+    suspend fun generateImage(group: Group, file: File, delete: Boolean): Image {
         val externalResource = file.toExternalResource()
         val image: Image = group.uploadImage(externalResource)
         externalResource.close()

@@ -4,14 +4,9 @@ import com.erisu.cloud.megumi.analysis.handler.AnalysisHandler;
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.GlobalCommands;
 import com.erisu.cloud.megumi.command.MethodLite;
-import com.erisu.cloud.megumi.event.annotation.Event;
-import com.erisu.cloud.megumi.exception.MegumiException;
 import com.erisu.cloud.megumi.plugin.pojo.Model;
-import kotlin.coroutines.CoroutineContext;
+import kotlinx.coroutines.GlobalScope;
 import lombok.extern.slf4j.Slf4j;
-import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.*;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.EmptyMessageChain;
@@ -28,7 +23,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @Description 事件proxy，主要是commands指令控制
@@ -59,7 +53,7 @@ public class EventProxy extends SimpleListenerHost {
                 Method[] methods = v.getClass().getDeclaredMethods();
                 for (Method method : methods) {
                     if (method.getAnnotation(Command.class) != null) {
-                        beansV2.put(method.getAnnotation(Command.class), MethodLite.builder().method(method).bean(v).build());
+                        beansV2.put(method.getAnnotation(Command.class), new MethodLite(method, v));
                     }
                 }
             }

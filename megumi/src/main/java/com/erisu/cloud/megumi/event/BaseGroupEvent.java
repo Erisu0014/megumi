@@ -1,17 +1,13 @@
 package com.erisu.cloud.megumi.event;
 
-import com.erisu.cloud.megumi.event.annotation.Event;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
-import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.event.*;
 
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.action.MemberNudge;
-import net.mamoe.mirai.message.action.Nudge;
 import org.jetbrains.annotations.NotNull;
 
 /**
