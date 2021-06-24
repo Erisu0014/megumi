@@ -11,12 +11,12 @@ import com.erisu.cloud.megumi.util.RedisKey
 import com.erisu.cloud.megumi.util.RedisUtil
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.MessageChain
-import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.*
 import org.springframework.stereotype.Component
 import javax.annotation.Resource
 
@@ -50,6 +50,7 @@ class NameService {
         return if (princessId == null) {
             PlainText("兰德索尔似乎没有叫${name}的人...")
         } else {
+//            runBlocking { nameLogic.getAvatar(sender, subject as Group, princessId) }
             GlobalScope.future { nameLogic.getAvatar(sender, subject as Group, princessId) }.get()
         }
     }
@@ -88,9 +89,8 @@ class NameService {
 
 
     @Command(commandType = CommandType.GROUP, value = "体检", pattern = Pattern.PREFIX)
-    @Throws(
-        Exception::class)
-    fun checkProfile(sender: User?, messageChain: MessageChain, subject: Contact?): Message? {
+    @Throws(Exception::class)
+    fun checkProfile(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val (content) = messageChain[1] as PlainText
         val name = content.removePrefix("体检")
         val character = pcrInitData.nameMap[name]
@@ -98,7 +98,9 @@ class NameService {
             PlainText("无体检数据")
         } else {
             val pcrPrincess = pcrInitData.princessMap[character]
-            PlainText(if (pcrPrincess != null) JSON.toJSONString(pcrPrincess) else "无体检数据")
+            val image = GlobalScope.future { nameLogic.getAvatarImage(subject as Group, character) }.get()
+            return if (pcrPrincess != null) messageChainOf(At(sender.id), image!!, PlainText(pcrPrincess.toString()))
+            else PlainText("无体检数据")
         }
     }
 }

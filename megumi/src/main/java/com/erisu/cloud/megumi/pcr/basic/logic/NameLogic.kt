@@ -29,13 +29,17 @@ class NameLogic {
     private lateinit var pcrInitData: PcrInitData
 
     @Throws(Exception::class)
-    suspend fun getAvatar(sender: User, group: Group, princessId: String): Message? {
-        val (_, princessId1, _, avatarUrl) = avatarMapper.searchMaxStarAvatar(princessId)
+    suspend fun getAvatar(sender: User, group: Group, princessId: String): Message {
+        return message(At(sender.id), getAvatarImage(group, princessId), PlainText(pcrInitData.idMap[princessId]!![0]))
+    }
+
+
+    @Throws(Exception::class)
+    suspend fun getAvatarImage(group: Group, princessId: String): Message {
+        val (_, _, _, avatarUrl) = avatarMapper.searchMaxStarAvatar(princessId)
         val imagePath = FileUtil.downloadHttpUrl(avatarUrl, "image", null)
         return if (imagePath != null) {
-            val nameList = pcrInitData.idMap[princessId1]
-            val image = MessageUtil.generateImage(group, imagePath.toFile(), true)
-            message(At(sender.id), image, PlainText(nameList!![0]))
-        } else null
+            return MessageUtil.generateImage(group, imagePath.toFile(), true)
+        } else PlainText("")
     }
 }
