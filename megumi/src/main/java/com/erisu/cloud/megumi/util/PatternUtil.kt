@@ -18,8 +18,5 @@ object PatternUtil {
     }
 }
 
-fun main() {
-    PatternUtil.checkRemoteImage("https://www.google.com/.jpg.png")
-}
 
 
