@@ -41,9 +41,8 @@ class NameService {
         value = "谁是",
         pattern = Pattern.PREFIX,
         uuid = "d92fcb894ba34f81a108194e219999bb")
-    @Throws(
-        Exception::class)
-    fun searchName(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+    @Throws(Exception::class)
+    suspend fun searchName(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val (content) = messageChain[1] as PlainText
         val name = content.removePrefix("谁是").trim()
         val princessId = pcrInitData.nameMap[name]
@@ -51,7 +50,7 @@ class NameService {
             PlainText("兰德索尔似乎没有叫${name}的人...")
         } else {
 //            runBlocking { nameLogic.getAvatar(sender, subject as Group, princessId) }
-            GlobalScope.future { nameLogic.getAvatar(sender, subject as Group, princessId) }.get()
+            nameLogic.getAvatar(sender, subject as Group, princessId)
         }
     }
 
@@ -90,7 +89,7 @@ class NameService {
 
     @Command(commandType = CommandType.GROUP, value = "体检", pattern = Pattern.PREFIX)
     @Throws(Exception::class)
-    fun checkProfile(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+    suspend fun checkProfile(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val (content) = messageChain[1] as PlainText
         val name = content.removePrefix("体检")
         val character = pcrInitData.nameMap[name]
@@ -98,8 +97,8 @@ class NameService {
             PlainText("无体检数据")
         } else {
             val pcrPrincess = pcrInitData.princessMap[character]
-            val image = GlobalScope.future { nameLogic.getAvatarImage(subject as Group, character) }.get()
-            return if (pcrPrincess != null) messageChainOf(At(sender.id), image!!, PlainText(pcrPrincess.toString()))
+            val image = nameLogic.getAvatarImage(subject as Group, character)
+            return if (pcrPrincess != null) messageChainOf(At(sender.id), image, PlainText(pcrPrincess.toString()))
             else PlainText("无体检数据")
         }
     }

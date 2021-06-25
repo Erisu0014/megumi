@@ -32,9 +32,9 @@ class ImgService {
         pattern = Pattern.SUFFIX,
         uuid = "ff33a026c184430fb88fb1e49ee4bf25")
     @Throws(Exception::class)
-    fun generateImg(sender: User, messageChain: MessageChain, subject: Contact): Message {
+   suspend fun generateImg(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val (content) = messageChain[1] as PlainText
         val text = content.removeSuffix(".jpg")
-        return GlobalScope.future { imageLogic.generateImage(sender, subject, text) }.get()
+        return imageLogic.generateImage(sender, subject, text)
     }
 }

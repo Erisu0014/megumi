@@ -13,7 +13,6 @@ annotation class Command(
     /**
      * 概率回复函数
      *
-     * @return
      */
     val probaility: Double = 1.0, //没想好怎么实现更优雅
 )

@@ -3,8 +3,11 @@ package com.erisu.cloud.megumi.event;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.NormalMember;
-import net.mamoe.mirai.event.*;
-
+import net.mamoe.mirai.event.EventHandler;
+import net.mamoe.mirai.event.EventPriority;
+import net.mamoe.mirai.event.ListeningStatus;
+import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.event.events.MemberCardChangeEvent;
 import net.mamoe.mirai.event.events.MemberJoinEvent;
 import net.mamoe.mirai.event.events.NudgeEvent;
 import net.mamoe.mirai.message.action.MemberNudge;
@@ -29,6 +32,14 @@ public class BaseGroupEvent extends SimpleListenerHost {
     public ListeningStatus onMemberJoinEvent(@NotNull MemberJoinEvent event) {
         String name = event.getMember().getNameCard();
         event.getGroup().sendMessage(String.format("欢迎%s进群~", name));
+        return ListeningStatus.LISTENING; // 表示继续监听事件
+    }
+
+    @NotNull
+    @EventHandler(priority = EventPriority.NORMAL)
+    public ListeningStatus onMemberCardChangeEvent(@NotNull MemberCardChangeEvent event) {
+//        String name = event.getMember().getNameCard();
+//        event.getGroup().sendMessage(String.format("欢迎%s进群~", name));
         return ListeningStatus.LISTENING; // 表示继续监听事件
     }
 

@@ -34,14 +34,14 @@ public class PluginLogic {
     }
 
 
-    public Boolean updateGroupPlugin(GroupPlugin groupPlugin) {
+    public void updateGroupPlugin(GroupPlugin groupPlugin) {
         QueryWrapper<GroupPlugin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(true, "group_id", groupPlugin.getGroupId());
         queryWrapper.eq(true, "plugin_id", groupPlugin.getPluginId());
         if (groupPluginMapper.selectOne(queryWrapper) != null) {
-            return groupPluginMapper.updateGroupPlugin(groupPlugin) > 0;
+            groupPluginMapper.updateGroupPlugin(groupPlugin);
         } else {
-            return groupPluginMapper.insert(groupPlugin) > 0;
+            groupPluginMapper.insert(groupPlugin);
         }
     }
 }
