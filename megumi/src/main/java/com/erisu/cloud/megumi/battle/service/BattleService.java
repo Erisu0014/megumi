@@ -9,11 +9,9 @@ import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.plugin.pojo.Model;
-import com.erisu.cloud.megumi.util.ImageUtil;
 import com.erisu.cloud.megumi.util.MessageUtil;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.message.data.*;
-import net.mamoe.mirai.utils.ExternalResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
@@ -96,17 +94,15 @@ public class BattleService {
      * 对公会战boss进行巨大打击
      */
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
+    public List<Message> fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
-        String result = battleLogic.fuckBoss(sender, messageChain, group, true);
-        return new PlainText(result);
+        return battleLogic.fuckBoss(sender, messageChain, group, true);
     }
 
     @Command(value = "尾刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public Message fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
+    public List<Message> fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
-        String result = battleLogic.fuckBoss(sender, messageChain, group, false);
-        return new PlainText(result);
+        return battleLogic.fuckBoss(sender, messageChain, group, false);
     }
 
     @Command(value = "撤销", commandType = CommandType.GROUP, pattern = Pattern.EQUALS)
@@ -119,6 +115,14 @@ public class BattleService {
         } else {
             return new PlainText("无权撤销");
         }
+    }
+
+    @Command(value = "预约", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
+    public Message orderBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
+        Group group = (Group) subject;
+        String result = battleLogic.orderBoss(sender, messageChain, group);
+        if (result == null) return null;
+        return new PlainText(result);
     }
 
 

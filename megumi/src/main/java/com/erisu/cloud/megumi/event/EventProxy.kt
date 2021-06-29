@@ -76,24 +76,29 @@ class EventProxy : SimpleListenerHost() {
             try {
                 val a = method.kotlinFunction
                 answer = if (a!!.isSuspend) {
-                    a.callSuspend(bean,messageEvent.sender, messageEvent.message, messageEvent.subject)
+                    a.callSuspend(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
                 } else {
-                    a.call(bean,messageEvent.sender, messageEvent.message, messageEvent.subject)
+                    a.call(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
                 }
 //                answer = method.invoke(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
             } catch (e: Exception) {
                 handleException(e, messageEvent)
             }
-            if (answer !is Message || answer is EmptyMessageChain) {
-                continue
-            }
+            // 答案为数组且不为空
+            if (answer is List<*>) answer.forEach {
+                when {
+                    it is Message && it !is EmptyMessageChain -> {
+                        messageEvent.subject.sendMessage(it)
+                    }
+                }
+            } else if (answer !is Message || answer is EmptyMessageChain) continue
             //            Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
-            messageEvent.subject.sendMessage(answer)
+            else messageEvent.subject.sendMessage(answer)
         }
         return ListeningStatus.LISTENING
     }
 
-    suspend fun handleException(e: Throwable, event: MessageEvent) {
+    private suspend fun handleException(e: Throwable, event: MessageEvent) {
         e.printStackTrace()
         event.subject.sendMessage("唔，出问题了，联系爱丽丝姐姐看看吧")
     }

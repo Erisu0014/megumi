@@ -11,5 +11,5 @@ public interface BattleUserMapper extends BaseMapper<BattleUser> {
 
     int insertAllIgnore(@Param("battleUsers")List<BattleUser> battleUsers);
 
-    int revertDamageTimes(@Param("groupId")String groupId, @Param("senderId")String senderId);
+    int revertDamageTimes(@Param("groupId")String groupId, @Param("senderId")String senderId,@Param("lost")double lost);
 }

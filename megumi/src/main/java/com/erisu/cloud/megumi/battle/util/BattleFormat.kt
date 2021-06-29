@@ -4,6 +4,7 @@ import com.erisu.cloud.megumi.battle.pojo.BattleBoss
 import com.erisu.cloud.megumi.battle.pojo.BattleDamage
 import com.erisu.cloud.megumi.battle.pojo.DamagedBoss
 import com.erisu.cloud.megumi.battle.pojo.NowBoss
+import java.util.*
 
 /**
  *@Description battle相关字符处理：单例模式
@@ -45,10 +46,9 @@ object BattleFormat {
         damageType: DamageType,
         qqCard: String,
         boss: DamagedBoss,
-        damageTime: Double
+        damageTime: Double,
     ): String {
-        // TODO: 2021/6/8 这里是否需要记录打的是哪个boss
-        return "${qqCard}对boss造成了${boss.damage}点伤害，击败了boss\n" +
+        return "${qqCard}对${boss.nowBoss.bossName}造成了${boss.damage}点伤害，击败了boss\n" +
                 "（今日第${3 - damageTime}刀，${damageType.typeName}）\n" +
                 "现在${boss.nowBoss.bossRounds}周目，${boss.nowBoss.bossOrder}号boss\n" +
                 "生命值${boss.nowBoss.hpNow}"
@@ -59,10 +59,9 @@ object BattleFormat {
         damageType: DamageType,
         qqCard: String,
         boss: DamagedBoss,
-        damageTime: Double
+        damageTime: Double,
     ): String {
-        // TODO: 2021/6/8 这里是否需要记录打的是哪个boss
-        return "${qqCard}对boss造成了${boss.damage}点伤害\n" +
+        return "${qqCard}对${boss.nowBoss.bossName}造成了${boss.damage}点伤害\n" +
                 "（今日第${3 - damageTime}刀，${damageType.typeName}）\n" +
                 "现在${boss.nowBoss.bossRounds}周目，${boss.nowBoss.bossOrder}号boss\n" +
                 "生命值${boss.nowBoss.hpNow}"
@@ -70,10 +69,18 @@ object BattleFormat {
 
     fun revertDamageInfo(
         qqCard: String,
-        nowBoss: NowBoss
+        nowBoss: NowBoss,
     ): String {
         return "${qqCard}的出刀记录已被撤销\n" +
                 "现在${nowBoss.bossRounds}周目，${nowBoss.bossOrder}号boss\n" +
                 "生命值${nowBoss.hpNow}\n";
+    }
+
+    fun isToday(date: Date): Boolean {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 4)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        return date.after(calendar.time)
     }
 }

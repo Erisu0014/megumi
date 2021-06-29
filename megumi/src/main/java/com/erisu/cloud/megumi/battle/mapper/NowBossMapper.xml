@@ -20,7 +20,7 @@
         from now_boss b
         where b.group_id = #{groupId}
           and b.hp_now != 0
-        order by b.boss_rounds desc, b.boss_order
+        order by b.boss_rounds, b.boss_order
         limit 1
     </select>
     <select id="selectNowBoss" resultType="com.erisu.cloud.megumi.battle.pojo.NowBoss">

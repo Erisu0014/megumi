@@ -19,8 +19,8 @@
     </insert>
     <update id="revertDamageTimes">
         update battle_user
-        set damage_times=damage_times + 1
-        where qq_id = #{groupId}
-          and group_id = #{senderId};
+        set damage_times=damage_times + #{lost}
+        where qq_id = #{senderId}
+          and group_id = #{groupId};
     </update>
 </mapper>

@@ -11,7 +11,6 @@ import com.erisu.cloud.megumi.battle.pojo.*;
 import com.erisu.cloud.megumi.battle.util.BattleFormat;
 import com.erisu.cloud.megumi.battle.util.DamageType;
 import com.erisu.cloud.megumi.battle.util.LostInfo;
-import com.erisu.cloud.megumi.exception.MegumiException;
 import com.erisu.cloud.megumi.plugin.logic.PluginLogic;
 import com.erisu.cloud.megumi.plugin.pojo.GroupPlugin;
 import com.erisu.cloud.megumi.util.MessageChainPo;
@@ -20,18 +19,13 @@ import net.mamoe.mirai.contact.ContactList;
 import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.contact.NormalMember;
 import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.event.ExceptionInEventHandlerException;
-import net.mamoe.mirai.event.events.GroupEvent;
-import net.mamoe.mirai.message.data.At;
-import net.mamoe.mirai.message.data.Message;
-import net.mamoe.mirai.message.data.MessageChain;
-import org.apache.poi.ss.formula.functions.Now;
-import org.apache.regexp.RE;
+import net.mamoe.mirai.message.data.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description 公会战逻辑处理
@@ -55,6 +49,8 @@ public class BattleLogic {
     private NowBossMapper nowBossMapper;
     @Resource
     private BattleUserMapper battleUserMapper;
+    @Resource
+    private BattleBossOrderMapper battleBossOrderMapper;
 
     public Boolean isEnabled(String name, long id) {
         List<GroupPlugin> plugin = pluginLogic.getGroupPluginByName(name, String.valueOf(id));
@@ -150,12 +146,12 @@ public class BattleLogic {
      * @param sender
      * @param messageChain
      * @param group
-     * @param checkCompleted 判断是否为整刀    // TODO: 2021/6/8 后续优化
+     * @param checkCompleted 判断是否为整刀
      * @return
      */
     // TODO: 2021/6/8 后续进行sql分离
     @Transactional
-    public String fuckBoss(User sender, MessageChain messageChain, Group group, Boolean checkCompleted) throws Exception {
+    public List<Message> fuckBoss(User sender, MessageChain messageChain, Group group, Boolean checkCompleted) throws Exception {
         /*
          1.判断是否为自己的刀
          2.判断打的是什么boss
@@ -165,6 +161,7 @@ public class BattleLogic {
          6.尾刀改变预约状态
          */
         // 0.初始化参数
+        List<Message> messages = new ArrayList<>();
         String fuckResult;
         String groupId = String.valueOf(group.getId());
         String senderId = String.valueOf(sender.getId());
@@ -172,7 +169,7 @@ public class BattleLogic {
         List<Object> messageObjects = JSON.parseArray(messageJsonString, Object.class);
 
         if (!CollUtil.isNotEmpty(messageObjects) || messageObjects.get(0) == null) {
-            return "唔，出问题了，联系爱丽丝姐姐看看吧";
+            return null;
         }
         MessageChainPo messageChainPo = JSONObject.parseObject(JSON.toJSONString(messageObjects.get(0)), MessageChainPo.class);
         List<MessageChainPo.MessageInfo> originalMessage = messageChainPo.getOriginalMessage();
@@ -185,16 +182,17 @@ public class BattleLogic {
         //  说明现在没刀了
         if (battleUser.getDamageTimes() - lostInfo.getLost() < 0) {
             if (!battleUser.getQqId().equals(senderId)) {
-                return String.format("你再想想！%s已经出完三刀下班了哟~", battleUser.getNickname());
+                String var0 = String.format("你再想想！%s已经出完三刀下班了哟~", battleUser.getNickname());
+                return CollUtil.newArrayList(new PlainText(var0));
             } else {
-                return "你再想想！你已经出完三刀下班了哟~";
+                String var0 = "你再想想！你已经出完三刀下班了哟~";
+                return CollUtil.newArrayList(new PlainText(var0));
             }
         }
         // 判断尾刀
         if (lostInfo.isLast()) {
             damagedBoss.getNowBoss().setHpNow(0);
             updateDamageInfo(damagedBoss, groupId, battleUser, lostInfo.getLost());
-            // TODO: 2021/6/8 提醒预约和挂树的
             QueryWrapper<NowBoss> nowBossQueryWrapper = new QueryWrapper<>();
             nowBossQueryWrapper.eq("boss_rounds", damagedBoss.getNowBoss().getBossRounds());
             nowBossQueryWrapper.eq("group_id", damagedBoss.getNowBoss().getGroupId());
@@ -204,12 +202,16 @@ public class BattleLogic {
             }
             if (nowRoundBosses.stream().allMatch(b -> b.getHpNow() == 0)) {
                 // 说明这轮boss死完了，需要注入新一轮boss
+                // TODO: 2021/6/8 提醒预约和挂树的
+                Message remindMessage = remindOrder(groupId);
+                messages.add(remindMessage);
                 DamagedBoss nextDamagedBoss = insertNewRoundBosses(damagedBoss, groupId);
                 fuckResult = BattleFormat.INSTANCE.fuckBossLastInfo(lostInfo.getDamageType(), battleUser.getNickname(), nextDamagedBoss, battleUser.getDamageTimes());
             } else {
-                // TODO: 2021/6/8 是否优化为显示所有当前论boss信息,+1的话5号boss怎么办啊
+                // TODO: 2021/6/8 是否优化为显示所有当前论boss信息
                 nowRoundBosses.sort(Comparator.comparingInt(NowBoss::getBossOrder));
                 NowBoss nextBoss = nowRoundBosses.stream().filter(b -> b.getHpNow() != 0).findFirst().orElse(null);
+
                 if (nextBoss == null) {
                     throw new Exception("nextBoss为空");
                 }
@@ -224,8 +226,38 @@ public class BattleLogic {
                     battleUser.getNickname(), damagedBoss, battleUser.getDamageTimes());
         }
         battleUserMapper.updateById(battleUser);
-        return fuckResult;
+        messages.add(new PlainText(fuckResult));
+        return messages;
+    }
 
+    private MessageChain remindOrder(String groupId) {
+        QueryWrapper<BattleBossOrder> wrapper = new QueryWrapper<>();
+        wrapper.eq("group_id", groupId);
+        List<BattleBossOrder> bossOrders = battleBossOrderMapper.selectList(wrapper);
+        if (CollUtil.isEmpty(bossOrders)) return null;
+        Map<Integer, List<BattleBossOrder>> orderMap = bossOrders.stream().collect(Collectors.groupingBy(BattleBossOrder::getBossOrder));
+        MessageChainBuilder chain = new MessageChainBuilder();
+        if (orderMap.containsKey(1)) {
+            chain.append("该出刀惹~\n预约1王的骑士君：");
+            orderMap.getOrDefault(1, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+        }
+        if (orderMap.containsKey(2)) {
+            chain.append("\n预约2王的骑士君：");
+            orderMap.getOrDefault(2, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+        }
+        if (orderMap.containsKey(3)) {
+            chain.append("\n预约3王的骑士君：");
+            orderMap.getOrDefault(3, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+        }
+        if (orderMap.containsKey(4)) {
+            chain.append("\n预约4王的骑士君：");
+            orderMap.getOrDefault(4, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+        }
+        if (orderMap.containsKey(5)) {
+            chain.append("\n预约5王的骑士君：");
+            orderMap.getOrDefault(5, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+        }
+        return chain.build();
     }
 
 
@@ -287,8 +319,13 @@ public class BattleLogic {
         user.setDamageTimes(damageTimes);
         BattleDamage battleDamage = new BattleDamage(null, groupId, user.getQqId(),
                 Objects.requireNonNull(damagedBoss.getNowBoss().getBossId()),
-                damagedBoss.getDamage(), Objects.requireNonNull(damagedBoss.getNowBoss().getNowId()));
+                damagedBoss.getDamage(), Objects.requireNonNull(damagedBoss.getNowBoss().getNowId()), lost, null);
         battleDamageMapper.insert(battleDamage);
+        // 删除该人的预约信息
+        QueryWrapper<BattleBossOrder> orderQueryWrapper = new QueryWrapper<>();
+        orderQueryWrapper.eq("group_id", groupId).eq("qq_id", user.getQqId())
+                .eq("boss_order", damagedBoss.getNowBoss().getBossOrder());
+        battleBossOrderMapper.delete(orderQueryWrapper);
     }
 
     /**
@@ -376,20 +413,49 @@ public class BattleLogic {
     }
 
     @Transactional
-    public String revertBossDamage(User sender, MessageChain messageChain, Group group) {
+    public String revertBossDamage(User sender, MessageChain messageChain, Group group) throws Exception {
         /*
         1.查最近出刀
         2.还原伤害
-        3.还刀
-        4.todo order回退(doable?)
+        3.删除该记录
+        4.还刀
+        5.更新nowBoss
+        6.todo order回退(doable?)
          */
         String groupId = String.valueOf(group.getId());
         String senderId = String.valueOf(sender.getId());
         BattleDamage battleDamage = battleDamageMapper.selectLastDamage(groupId, senderId);
+        // 判断是否为当日刀
+        if (!BattleFormat.INSTANCE.isToday(Objects.requireNonNull(battleDamage.getDamageDate()))) {
+            throw new Exception("今日无刀，无法撤销");
+        }
+        battleDamageMapper.deleteById(battleDamage.getId());
         nowBossMapper.revertDamage(battleDamage.getNowBossId(), battleDamage.getDamage());
-        battleUserMapper.revertDamageTimes(groupId, senderId);
+        NowBoss revertBoss = nowBossMapper.selectById(battleDamage.getNowBossId());
+        // 判断是否为上轮最后一个boss，是的话需要回滚下轮boss（已在其他事务中注册）
+        if (revertBoss.getBossOrder() == 5) {
+            QueryWrapper<NowBoss> nowBossQueryWrapper = new QueryWrapper<>();
+            nowBossQueryWrapper.eq("boss_rounds", revertBoss.getBossRounds() + 1);
+            nowBossMapper.delete(nowBossQueryWrapper);
+        }
+        // 还刀
+        battleUserMapper.revertDamageTimes(groupId, senderId, battleDamage.getLost());
         NowBoss nowBoss = nowBossMapper.selectByMinBossOrder(groupId);
         BattleUser battleUser = getBattleUser(groupId, senderId);
         return BattleFormat.INSTANCE.revertDamageInfo(battleUser.getNickname(), nowBoss);
+    }
+
+    public String orderBoss(User sender, MessageChain messageChain, Group group) {
+        String message = messageChain.get(1).contentToString().substring(2);
+        if (NumberUtil.isNumber(message)) {
+            int order = Integer.parseInt(message);
+            if (order <= 5 && order >= 1) {
+                battleBossOrderMapper.insertIgnore(new BattleBossOrder(
+                        null, String.valueOf(group.getId()), String.valueOf(sender.getId()), order));
+                // 放入redis队列
+                return "预约成功";
+            }
+        }
+        return null;
     }
 }

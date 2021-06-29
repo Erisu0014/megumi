@@ -1,7 +1,6 @@
 package com.erisu.cloud.megumi.event
 
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
-import com.erisu.cloud.megumi.emoji.mapper.PcrEmojiMapper
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.EventPriority
