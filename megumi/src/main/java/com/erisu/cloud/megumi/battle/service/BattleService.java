@@ -94,13 +94,13 @@ public class BattleService {
      * 对公会战boss进行巨大打击
      */
     @Command(value = "报刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public List<Message> fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
+    public Message fuckBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         return battleLogic.fuckBoss(sender, messageChain, group, true);
     }
 
     @Command(value = "尾刀", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    public List<Message> fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
+    public Message fuckLastBoss(User sender, MessageChain messageChain, Contact subject) throws Exception {
         Group group = (Group) subject;
         return battleLogic.fuckBoss(sender, messageChain, group, false);
     }

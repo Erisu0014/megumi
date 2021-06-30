@@ -151,7 +151,7 @@ public class BattleLogic {
      */
     // TODO: 2021/6/8 后续进行sql分离
     @Transactional
-    public List<Message> fuckBoss(User sender, MessageChain messageChain, Group group, Boolean checkCompleted) throws Exception {
+    public Message fuckBoss(User sender, MessageChain messageChain, Group group, Boolean checkCompleted) throws Exception {
         /*
          1.判断是否为自己的刀
          2.判断打的是什么boss
@@ -161,7 +161,7 @@ public class BattleLogic {
          6.尾刀改变预约状态
          */
         // 0.初始化参数
-        List<Message> messages = new ArrayList<>();
+        MessageChainBuilder messageBuilder = new MessageChainBuilder();
         String fuckResult;
         String groupId = String.valueOf(group.getId());
         String senderId = String.valueOf(sender.getId());
@@ -183,10 +183,10 @@ public class BattleLogic {
         if (battleUser.getDamageTimes() - lostInfo.getLost() < 0) {
             if (!battleUser.getQqId().equals(senderId)) {
                 String var0 = String.format("你再想想！%s已经出完三刀下班了哟~", battleUser.getNickname());
-                return CollUtil.newArrayList(new PlainText(var0));
+                return messageBuilder.append(var0).build();
             } else {
                 String var0 = "你再想想！你已经出完三刀下班了哟~";
-                return CollUtil.newArrayList(new PlainText(var0));
+                return messageBuilder.append(var0).build();
             }
         }
         // 判断尾刀
@@ -203,10 +203,13 @@ public class BattleLogic {
             if (nowRoundBosses.stream().allMatch(b -> b.getHpNow() == 0)) {
                 // 说明这轮boss死完了，需要注入新一轮boss
                 // TODO: 2021/6/8 提醒预约和挂树的
-                Message remindMessage = remindOrder(groupId);
-                messages.add(remindMessage);
                 DamagedBoss nextDamagedBoss = insertNewRoundBosses(damagedBoss, groupId);
                 fuckResult = BattleFormat.INSTANCE.fuckBossLastInfo(lostInfo.getDamageType(), battleUser.getNickname(), nextDamagedBoss, battleUser.getDamageTimes());
+                Message remindMessage = remindOrder(groupId);
+                if (remindMessage != null) {
+                    messageBuilder.append("\n");
+                    messageBuilder.append(remindMessage);
+                }
             } else {
                 // TODO: 2021/6/8 是否优化为显示所有当前论boss信息
                 nowRoundBosses.sort(Comparator.comparingInt(NowBoss::getBossOrder));
@@ -226,8 +229,12 @@ public class BattleLogic {
                     battleUser.getNickname(), damagedBoss, battleUser.getDamageTimes());
         }
         battleUserMapper.updateById(battleUser);
-        messages.add(new PlainText(fuckResult));
-        return messages;
+        // 在头部添加
+        if (messageBuilder.size() != 0) {
+            return new MessageChainBuilder().append(fuckResult).append("\n").append(messageBuilder.build()).build();
+        } else {
+            return new MessageChainBuilder().append(fuckResult).build();
+        }
     }
 
     private MessageChain remindOrder(String groupId) {
@@ -238,24 +245,29 @@ public class BattleLogic {
         Map<Integer, List<BattleBossOrder>> orderMap = bossOrders.stream().collect(Collectors.groupingBy(BattleBossOrder::getBossOrder));
         MessageChainBuilder chain = new MessageChainBuilder();
         if (orderMap.containsKey(1)) {
-            chain.append("该出刀惹~\n预约1王的骑士君：");
+            chain.append("预约1王的骑士君：");
             orderMap.getOrDefault(1, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+            chain.append("\n");
         }
         if (orderMap.containsKey(2)) {
-            chain.append("\n预约2王的骑士君：");
+            chain.append("预约2王的骑士君：");
             orderMap.getOrDefault(2, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+            chain.append("\n");
         }
         if (orderMap.containsKey(3)) {
-            chain.append("\n预约3王的骑士君：");
+            chain.append("预约3王的骑士君：");
             orderMap.getOrDefault(3, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+            chain.append("\n");
         }
         if (orderMap.containsKey(4)) {
-            chain.append("\n预约4王的骑士君：");
+            chain.append("预约4王的骑士君：");
             orderMap.getOrDefault(4, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+            chain.append("\n");
         }
         if (orderMap.containsKey(5)) {
-            chain.append("\n预约5王的骑士君：");
+            chain.append("预约5王的骑士君：");
             orderMap.getOrDefault(5, new ArrayList<>()).forEach(v -> chain.append(new At(Long.parseLong(v.getQqId()))));
+            chain.append("\n");
         }
         return chain.build();
     }

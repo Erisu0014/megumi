@@ -80,20 +80,23 @@ class EventProxy : SimpleListenerHost() {
                 } else {
                     a.call(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
                 }
-//                answer = method.invoke(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
+//               answer = method.invoke(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
             } catch (e: Exception) {
                 handleException(e, messageEvent)
             }
-            // 答案为数组且不为空
-            if (answer is List<*>) answer.forEach {
-                when {
-                    it is Message && it !is EmptyMessageChain -> {
-                        messageEvent.subject.sendMessage(it)
-                    }
-                }
-            } else if (answer !is Message || answer is EmptyMessageChain) continue
-            //            Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
+            if (answer !is Message || answer is EmptyMessageChain) continue
             else messageEvent.subject.sendMessage(answer)
+            // 答案为数组且不为空
+//            if (answer is List<*>) answer.forEach {
+//                when {
+//                    it is Message && it !is EmptyMessageChain -> {
+//                        messageEvent.subject.sendMessage(it)
+//                    }
+//                }
+//            } else if (answer !is Message || answer is EmptyMessageChain) continue
+//            //            Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
+//            else messageEvent.subject.sendMessage(answer)
+
         }
         return ListeningStatus.LISTENING
     }
