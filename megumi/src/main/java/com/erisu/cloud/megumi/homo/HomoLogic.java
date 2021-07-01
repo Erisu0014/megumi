@@ -1,12 +1,14 @@
 package com.erisu.cloud.megumi.homo;
 
-import cn.hutool.core.io.file.FileReader;
+import cn.hutool.core.io.IoUtil;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +26,16 @@ public class HomoLogic {
     @PostConstruct
     public void init() {
         try {
-            File homo = ResourceUtils.getFile("classpath:homo.data");
-            FileReader fileReader = new FileReader(homo);
-            List<String> homoData = fileReader.readLines();
+            InputStream inputStream = new ClassPathResource("homo.data").getInputStream();
+            List<String> homoData = new ArrayList<>();
+            IoUtil.readLines(inputStream, StandardCharsets.UTF_8.name(), homoData);
             homoData.forEach(h -> {
                 String[] split = h.split(":");
                 homoMap.put(new BigInteger(split[0]), split[1]);
             });
 //            MapUtil.sort(homoMap, (k1, k2) -> k2 - k1);
         } catch (Exception e) {
+
             e.printStackTrace();
         }
     }

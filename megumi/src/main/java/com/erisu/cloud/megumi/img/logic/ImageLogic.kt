@@ -26,7 +26,8 @@ class ImageLogic {
 
     @Throws(Exception::class)
     suspend fun generateImage(sender: User, subject: Contact, text: String): Message {
-        val imgPath = imageUtil.generateImage("classpath:emoticon/xcw-1.jpg", text)
+        val imgPath = imageUtil.generateImage("emoticon/xcw-1.jpg", text)
+        // 此处为外置路径可获取file
         return generateImage(subject as Group, File(imgPath), true)
     }
 }

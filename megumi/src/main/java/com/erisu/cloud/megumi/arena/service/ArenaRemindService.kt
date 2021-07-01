@@ -9,13 +9,11 @@ import kotlinx.coroutines.future.future
 import kotlinx.coroutines.withContext
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.utils.ExternalResource
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import org.springframework.util.ResourceUtils
 import java.io.FileNotFoundException
-import java.util.*
 import javax.annotation.Resource
 
 /**
@@ -38,12 +36,12 @@ class ArenaRemindService {
             val plugins = pluginLogic.getGroupPluginByName("arena", null)
             if (CollUtil.isNotEmpty(plugins)) {
                 val bot = Bot.getInstance(username)
-                val nico = withContext(Dispatchers.IO) { ResourceUtils.getFile("classpath:emoticon/fencing.jpg") }
+                val nico = withContext(Dispatchers.IO) { ClassPathResource("emoticon/fencing.jpg").inputStream }
                 for (plugin in plugins) {
                     if (plugin.enabled > 0 && Bot.getInstance(username).groups.isNotEmpty()) {
                         val groupId = plugin.groupId.toLong()
                         val group = bot.getGroup(groupId) as Group
-                        val message = MessageUtil.generateImage(group, nico, false)
+                        val message = MessageUtil.generateImage(group, nico)
                         group.sendMessage(message)
                     }
                 }

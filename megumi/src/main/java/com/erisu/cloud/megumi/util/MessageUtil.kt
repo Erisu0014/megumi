@@ -8,6 +8,7 @@ import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.messageChainOf
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import java.io.File
+import java.io.InputStream
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -24,11 +25,21 @@ object MessageUtil {
     fun generateImageAsync(group: Group, file: File, delete: Boolean): CompletableFuture<Image> =
         GlobalScope.future { generateImage(group, file, delete) }
 
+    fun generateImageAsync(group: Group, inputStream: InputStream): CompletableFuture<Image> =
+        GlobalScope.future { generateImage(group, inputStream) }
+
     suspend fun generateImage(group: Group, file: File, delete: Boolean): Image {
         val externalResource = file.toExternalResource()
         val image: Image = group.uploadImage(externalResource)
         externalResource.close()
         if (delete) file.delete()
+        return image
+    }
+    suspend fun generateImage(group: Group, inputStream: InputStream): Image {
+        val externalResource = inputStream.toExternalResource()
+        val image: Image = group.uploadImage(externalResource)
+        externalResource.close()
+        inputStream.close()
         return image
     }
 

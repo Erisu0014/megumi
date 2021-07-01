@@ -12,11 +12,11 @@ import com.erisu.cloud.megumi.plugin.pojo.Model;
 import com.erisu.cloud.megumi.util.MessageUtil;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.message.data.*;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -68,8 +68,8 @@ public class BattleService {
         Group group = (Group) subject;
         if (battleLogic.createBattleGroup(group)) {
             // TODO: 2021/6/4 后续改用数据库存储+程序init
-            File nico = ResourceUtils.getFile("classpath:emoticon/nico.jpg");
-            CompletableFuture<Image> future = MessageUtil.INSTANCE.generateImageAsync(group, nico, false);
+            InputStream nico = new ClassPathResource("emoticon/nico.jpg").getInputStream();
+            CompletableFuture<Image> future = MessageUtil.INSTANCE.generateImageAsync(group, nico);
             return new PlainText("创建工会成功").plus(future.get());
         } else {
             return new PlainText("创建公会失败");

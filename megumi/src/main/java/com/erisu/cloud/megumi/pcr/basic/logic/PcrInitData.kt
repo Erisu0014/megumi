@@ -6,8 +6,9 @@ import com.erisu.cloud.megumi.pcr.basic.pojo.PcrAvatar
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrPrincess
 import com.erisu.cloud.megumi.util.RedisKey
 import com.erisu.cloud.megumi.util.RedisUtil
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
-import org.springframework.util.ResourceUtils
+import java.nio.charset.StandardCharsets
 import javax.annotation.Resource
 
 @Component
@@ -25,7 +26,7 @@ class PcrInitData {
     @Synchronized
     fun initData() {
         if (!isMemoryInited) {
-            val characterFile = ResourceUtils.getFile("classpath:basic/character.json")
+            val characterFile = ClassPathResource("basic/character.json").inputStream.reader(StandardCharsets.UTF_8)
             // 1.初始化character和反向character
             val line = characterFile.readLines()
             var s = ""
@@ -44,7 +45,7 @@ class PcrInitData {
             val nameExtraMap = redisUtil.hGetAll(RedisKey.PRINCESS_NAME.key)
             if (!nameExtraMap.isNullOrEmpty()) nameMap.putAll(nameExtraMap as Map<out String, String>)
             // 2.初始化profile
-            val profileFile = ResourceUtils.getFile("classpath:basic/profile.json")
+            val profileFile = ClassPathResource("basic/profile.json").inputStream.reader(StandardCharsets.UTF_8)
             val line1 = profileFile.readLines()
             var s1 = ""
             line1.forEach { s1 += it }
@@ -70,7 +71,8 @@ class PcrInitData {
         }
         if (!isDatabaseInited) {
             val avatarList: MutableList<PcrAvatar> = arrayListOf()
-            val avatarFile = ResourceUtils.getFile("classpath:basic/character.txt")
+            val avatarFile = ClassPathResource("basic/character.txt").inputStream.reader(StandardCharsets.UTF_8)
+//            val avatarFile = ResourceUtils.getFile("classpath:basic/character.txt")
             val line = avatarFile.readLines()
             line.forEach { l ->
                 val s1 = l.split("\t")
