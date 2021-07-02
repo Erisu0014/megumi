@@ -29,7 +29,7 @@ def concat_images(image_names, sourcePath, cachePath, picName):
     image_files = []
     ROW = math.ceil(len(image_names) / COL)
     for index in range(len(image_names)):
-        print(image_names[index] + ',')
+        # print(image_names[index] + ',')
         image_files.append(Image.open(sourcePath + os.sep + image_names[index]))  # 读取所有用于拼接的图片
     target = Image.new('RGB', (UNIT_WIDTH_SIZE * COL, UNIT_HEIGHT_SIZE * ROW), 0xffffff)  # 创建成品图的画布
     # 第一个参数RGB表示创建RGB彩色图，第二个参数传入元组指定图片大小，第三个参数可指定颜色，默认为黑色
