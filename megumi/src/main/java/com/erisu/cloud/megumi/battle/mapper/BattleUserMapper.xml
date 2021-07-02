@@ -17,6 +17,13 @@
         </foreach>
 
     </insert>
+    <update id="updateById">
+        update battle_user
+        set nickname=#{battleUser.nickname},
+            damage_times=#{battleUser.damageTimes}
+        where qq_id = #{battleUser.qqId}
+          and group_id = #{battleUser.groupId};
+    </update>
     <update id="revertDamageTimes">
         update battle_user
         set damage_times=damage_times + #{lost}

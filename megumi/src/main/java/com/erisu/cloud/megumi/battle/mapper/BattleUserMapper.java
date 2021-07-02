@@ -9,7 +9,10 @@ import java.util.List;
 public interface BattleUserMapper extends BaseMapper<BattleUser> {
     int insertIgnore(@Param("battleUser") BattleUser battleUser);
 
-    int insertAllIgnore(@Param("battleUsers")List<BattleUser> battleUsers);
+    @Override
+    int updateById(@Param("battleUser") BattleUser battleUser);
 
-    int revertDamageTimes(@Param("groupId")String groupId, @Param("senderId")String senderId,@Param("lost")double lost);
+    int insertAllIgnore(@Param("battleUsers") List<BattleUser> battleUsers);
+
+    int revertDamageTimes(@Param("groupId") String groupId, @Param("senderId") String senderId, @Param("lost") double lost);
 }
