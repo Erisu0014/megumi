@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrAvatar
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrPrincess
+import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.RedisKey
 import com.erisu.cloud.megumi.util.RedisUtil
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
+import java.io.File
 import java.nio.charset.StandardCharsets
+import java.nio.file.Path
 import javax.annotation.Resource
 
 @Component
@@ -19,6 +22,7 @@ class PcrInitData {
     val nameMap: MutableMap<String, String> = mutableMapOf()
     val idMap: MutableMap<String, List<String>> = mutableMapOf()
     val princessMap: MutableMap<String, PcrPrincess> = mutableMapOf()
+    var gacheJson: String = ""
     private var isMemoryInited: Boolean = false
     private var isDatabaseInited: Boolean = false
 
@@ -26,7 +30,8 @@ class PcrInitData {
     @Synchronized
     fun initData() {
         if (!isMemoryInited) {
-            val characterFile = ClassPathResource("basic/character.json").inputStream.reader(StandardCharsets.UTF_8)
+//            val characterFile = ClassPathResource("basic/character.json").inputStream.reader(StandardCharsets.UTF_8)
+            val characterFile = File("static${File.separator}character.json")
             // 1.初始化character和反向character
             val line = characterFile.readLines()
             var s = ""
@@ -59,6 +64,10 @@ class PcrInitData {
                 )
                 princessMap[t] = profile
             }
+            // 3.更新卡池信息
+            val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
+                "static", null)
+            gachePath.toFile().readLines(StandardCharsets.UTF_8).forEach { gacheJson += it }
             isMemoryInited = true
 
         }

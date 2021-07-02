@@ -6,5 +6,5 @@ package com.erisu.cloud.megumi.util
  *@Date 2021/6/23 8:33
  **/
 enum class RedisKey(val key: String) {
-    PRINCESS_NAME("princess:name"), PLUGIN("plugin")
+    PRINCESS_NAME("princess:name"), PLUGIN("plugin"),GACHE("gache")
 }

@@ -6,10 +6,7 @@ import com.erisu.cloud.megumi.util.MessageUtil
 import com.erisu.cloud.megumi.util.MessageUtil.message
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.data.At
-import net.mamoe.mirai.message.data.Image
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.*
 import org.springframework.stereotype.Component
 import java.util.concurrent.CompletableFuture
 import javax.annotation.Resource
@@ -42,4 +39,5 @@ class NameLogic {
             return MessageUtil.generateImage(group, imagePath.toFile(), true)
         } else PlainText("")
     }
+
 }

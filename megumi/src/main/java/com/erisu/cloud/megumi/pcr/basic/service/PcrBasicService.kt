@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
+import com.erisu.cloud.megumi.pcr.basic.logic.GacheLogic
 import com.erisu.cloud.megumi.pcr.basic.logic.NameLogic
 import com.erisu.cloud.megumi.pcr.basic.logic.PcrInitData
 import com.erisu.cloud.megumi.plugin.pojo.Model
@@ -21,15 +22,18 @@ import org.springframework.stereotype.Component
 import javax.annotation.Resource
 
 /**
- *@Description pcr name相关
+ *@Description pcr 基本信息相关
  *@Author alice
  *@Date 2021/6/24 10:27
  **/
 @Model(name = "name")
 @Component
-class NameService {
+class PcrBasicService {
     @Resource
     private lateinit var nameLogic: NameLogic
+
+    @Resource
+    private lateinit var gacheLogic: GacheLogic
 
     @Resource
     private lateinit var redisUtil: RedisUtil
@@ -102,4 +106,17 @@ class NameService {
             else PlainText("无体检数据")
         }
     }
+
+    @Command(commandType = CommandType.GROUP, value = "更新卡池", pattern = Pattern.PREFIX)
+    suspend fun updateGache(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+        return gacheLogic.updateUser(sender, messageChain, subject as Group)
+    }
+
+
+    @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.EQUALS, alias = ["来一井"])
+    suspend fun getGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        return gacheLogic.getGache(sender, messageChain, subject as Group)
+    }
+
+
 }

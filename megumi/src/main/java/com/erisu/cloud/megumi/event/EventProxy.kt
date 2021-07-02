@@ -47,21 +47,17 @@ class EventProxy : SimpleListenerHost() {
             Model::class.java)
         val beansV2: MutableMap<Command, MethodLite> = HashMap()
         //        List<Command> commands = new ArrayList<>();
-        beansWithAnnotation.forEach { (k: String?, v: Any) ->
-            if (v.javaClass.getAnnotation(
-                    Model::class.java).isEnabled
-            ) {
+        beansWithAnnotation.forEach { (_: String?, v: Any) ->
+            if (v.javaClass.getAnnotation(Model::class.java).isEnabled) {
                 val methods = v.javaClass.declaredMethods
-                for (method in methods) {
+                methods.forEach { method ->
                     if (method.getAnnotation(Command::class.java) != null) {
-                        beansV2[method.getAnnotation(Command::class.java)] =
-                            MethodLite(method, v)
+                        beansV2[method.getAnnotation(Command::class.java)] = MethodLite(method, v)
                     }
                 }
             }
         }
         GlobalCommands.commands = beansV2
-//        print("command指令初始化完成")
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -86,23 +82,12 @@ class EventProxy : SimpleListenerHost() {
             }
             if (answer !is Message || answer is EmptyMessageChain) continue
             else messageEvent.subject.sendMessage(answer)
-            // 答案为数组且不为空
-//            if (answer is List<*>) answer.forEach {
-//                when {
-//                    it is Message && it !is EmptyMessageChain -> {
-//                        messageEvent.subject.sendMessage(it)
-//                    }
-//                }
-//            } else if (answer !is Message || answer is EmptyMessageChain) continue
-//            //            Message answer = service.execute(messageEvent.getSender(), messageEvent.getMessage(), messageEvent.getSubject());
-//            else messageEvent.subject.sendMessage(answer)
-
         }
         return ListeningStatus.LISTENING
     }
 
     private suspend fun handleException(e: Throwable, event: MessageEvent) {
         e.printStackTrace()
-        event.subject.sendMessage("唔，出问题了，联系爱丽丝姐姐看看吧")
+//        event.subject.sendMessage("唔，出问题了，联系爱丽丝姐姐看看吧")
     }
 }
