@@ -1,6 +1,5 @@
 package com.erisu.cloud.megumi.pcr.basic.service
 
-import com.alibaba.fastjson.JSON
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
@@ -10,10 +9,6 @@ import com.erisu.cloud.megumi.pcr.basic.logic.PcrInitData
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.util.RedisKey
 import com.erisu.cloud.megumi.util.RedisUtil
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.future.future
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
@@ -41,10 +36,12 @@ class PcrBasicService {
     @Resource
     private lateinit var pcrInitData: PcrInitData
 
-    @Command(commandType = CommandType.GROUP,
+    @Command(
+        commandType = CommandType.GROUP,
         value = "谁是",
         pattern = Pattern.PREFIX,
-        uuid = "d92fcb894ba34f81a108194e219999bb")
+        uuid = "d92fcb894ba34f81a108194e219999bb"
+    )
     @Throws(Exception::class)
     suspend fun searchName(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val (content) = messageChain[1] as PlainText
@@ -67,10 +64,12 @@ class PcrBasicService {
      * @return
      * @throws Exception
      */
-    @Command(commandType = CommandType.GROUP,
+    @Command(
+        commandType = CommandType.GROUP,
         value = "添加昵称",
         pattern = Pattern.PREFIX,
-        uuid = "35eb96b99d944a6b9bcc3d066407f6f4")
+        uuid = "35eb96b99d944a6b9bcc3d066407f6f4"
+    )
     @Throws(Exception::class)
     fun addNickName(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val (content) = messageChain[1] as PlainText
@@ -114,7 +113,7 @@ class PcrBasicService {
 
 
     @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.EQUALS, alias = ["来一井"])
-    suspend fun getGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+    fun getGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         return gacheLogic.getGache(sender, messageChain, subject as Group)
     }
 

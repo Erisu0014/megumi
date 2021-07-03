@@ -19,7 +19,6 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Lazy
 import javax.annotation.PostConstruct
 import javax.annotation.Resource
-import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.jvm.kotlinFunction
 

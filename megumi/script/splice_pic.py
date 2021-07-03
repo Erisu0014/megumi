@@ -19,7 +19,7 @@ UNIT_WIDTH_SIZE = 128  # 图片宽度
 # SPLICE_PATH = os.getcwd() + os.sep + "cache"
 # picName = "test"  # 拼接出的图片保存的名字
 RANDOM_SELECT = False  # 设置是否可重复抽取图片
-SAVE_QUALITY = 100  # 保存的图片的质量 可选0-100
+SAVE_QUALITY = 20  # 保存的图片的质量 可选0-100
 
 
 # 进行图片的复制拼接
@@ -40,6 +40,9 @@ def concat_images(image_names, sourcePath, cachePath, picName):
             # 或四元元组（指定复制位置的左上角和右下角坐标）
             if COL * row + col < len(image_names):
                 target.paste(image_files[COL * row + col], (0 + UNIT_WIDTH_SIZE * col, 0 + UNIT_HEIGHT_SIZE * row))
+
+    width,height=round(target.width*0.5),round(target.height*0.5)#去掉浮点，防报错
+    target=target.resize((width,height),Image.ANTIALIAS)
     target.save(cachePath + os.sep + picName + '.png', quality=SAVE_QUALITY)  # 成品图保存
 
 

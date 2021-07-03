@@ -5,15 +5,15 @@ import com.alibaba.fastjson.JSON
 import com.erisu.cloud.megumi.pcr.basic.mapper.PcrAvatarMapper
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrGache
 import com.erisu.cloud.megumi.pcr.basic.pojo.RollResult
-import com.erisu.cloud.megumi.util.*
-import com.erisu.cloud.megumi.util.MessageUtil.message
+import com.erisu.cloud.megumi.util.MessageUtil
+import com.erisu.cloud.megumi.util.PythonRunner
+import com.erisu.cloud.megumi.util.RedisKey
+import com.erisu.cloud.megumi.util.RedisUtil
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
-import org.jsoup.select.Evaluator.Class
 import org.springframework.stereotype.Component
 import java.io.File
-import java.util.concurrent.CompletableFuture
 import javax.annotation.Resource
 import kotlin.random.Random
 
@@ -34,13 +34,13 @@ class GacheLogic {
     @Resource
     private lateinit var redisUtil: RedisUtil
 
-    fun updateUser(sender: User, messageChain: MessageChain, group: Group): Message? {
-        return null
+    suspend fun updateUser(sender: User, messageChain: MessageChain, group: Group): Message {
+        return PlainText("alice还没写呢")
     }
 
 
-    suspend fun getGache(sender: User, messageChain: MessageChain, group: Group): Message {
-        //  我的回合，抽卡
+    fun getGache(sender: User, messageChain: MessageChain, group: Group): Message {
+//        //  我的回合，抽卡
         var gacheName = redisUtil.get("${RedisKey.GACHE.key}:${group.id}")
         if (gacheName == null) gacheName = "JP"
         val gache = JSON.parseObject(pcrInitData.gacheJson, PcrGache::class.java)
@@ -56,17 +56,24 @@ class GacheLogic {
         rollResult.result.forEach { pyParam += "${it}31.png," }
         pyParam = pyParam.removeSuffix(",")
         val fastUUID = UUID.fastUUID().toString(true)
-        PythonRunner.runPythonScript("${System.getProperty("user.dir")}${File.separator}script${File.separator}splice_pic.py",
-            arrayOf(pyParam, avatarPath, cachePath, fastUUID))
-        return messageChainOf(PlainText("素敵な仲間が増えますよ！ \n"),
-            MessageUtil.generateImage(group, File("${cachePath}${File.separator}${fastUUID}.png"), true),
+        PythonRunner.runPythonScript(
+            "${System.getProperty("user.dir")}${File.separator}script${File.separator}splice_pic.py",
+            arrayOf(pyParam, avatarPath, cachePath, fastUUID)
+        )
+        val image = MessageUtil.generateImageAsync(
+            group,
+            File("${cachePath}${File.separator}${fastUUID}.png"), true
+        ).get()
+        return messageChainOf(
+            PlainText("素敵な仲間が増えますよ！ \n"),
+            image,
             PlainText(
-                        "★★★${rollResult.s3_num}× ★★×${rollResult.s2_num} ★×${rollResult.s1_num}\n" +
+                "★★★${rollResult.s3_num}× ★★×${rollResult.s2_num} ★×${rollResult.s1_num}\n" +
                         "获得记忆碎片${rollResult.memoryChip}与女神秘石×${rollResult.reward}！\n" +
                         "第${rollResult.firstUp}抽首次获得up角色\n" +
-                        "记忆碎片一大堆！您是托吧？\n"))
-
-
+                        "记忆碎片一大堆！您是托吧？\n"
+            )
+        )
     }
 
     fun getMaxRoll(gache: PcrGache.SingleGache, num: Int): RollResult {
@@ -83,11 +90,10 @@ class GacheLogic {
                     rollResult.result.add(gache.up[Random.nextInt(gache.up.size)])
                     rollResult.s3_num++
                     if (rollResult.firstUp == 0) rollResult.firstUp = num
-                    else rollResult.memoryChip += 100
                     50
                 }
                 in gache.up_prob + 1..gache.s3_prob -> {
-                    var c_num = 0
+                    var c_num: Int
                     do {
                         c_num = Random.nextInt(gache.star3.size - gache.up.size)
                     } while (gache.up.contains(c_num))
@@ -111,14 +117,5 @@ class GacheLogic {
         }
         // TODO: 2021/7/2 判断firstUp=0的情况
         return rollResult
-    }
-
-    fun getOneCharacter(all: MutableList<Int>, up: MutableList<Int>, up_prob: Int, all_prob: Int) {
-        var trueUp: MutableList<Int> = mutableListOf()
-        // 深拷贝
-        var copyAll = all.toMutableList()
-        up.forEach { if (all.contains(it)) trueUp.add(it) }
-//        // 需向all中填充的值 不推荐该做法。对于无穷小数无限扩容会造成内存泄露
-//        val num = all.size * up_prob / (all_prob - up_prob)
     }
 }

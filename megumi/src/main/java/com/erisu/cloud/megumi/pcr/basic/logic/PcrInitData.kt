@@ -65,9 +65,10 @@ class PcrInitData {
                 princessMap[t] = profile
             }
             // 3.更新卡池信息
-            val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
-                "static", null)
-            gachePath.toFile().readLines(StandardCharsets.UTF_8).forEach { gacheJson += it }
+//            val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
+//                "static", null)
+            val gacheFile = File("static${File.separator}gache.json")
+            gacheFile.readLines(StandardCharsets.UTF_8).forEach { gacheJson += it }
             isMemoryInited = true
 
         }

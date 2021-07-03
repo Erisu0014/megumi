@@ -8,7 +8,6 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import org.springframework.stereotype.Component
-import java.util.concurrent.CompletableFuture
 import javax.annotation.Resource
 
 /**
@@ -27,7 +26,11 @@ class NameLogic {
 
     @Throws(Exception::class)
     suspend fun getAvatar(sender: User, group: Group, princessId: String): Message {
-        return message(At(sender.id), getAvatarImage(group, princessId), PlainText(pcrInitData.idMap[princessId]!![0]))
+        return messageChainOf(
+            At(sender.id),
+            getAvatarImage(group, princessId),
+            PlainText(pcrInitData.idMap[princessId]!![0])
+        )
     }
 
 
