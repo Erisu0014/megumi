@@ -43,7 +43,7 @@ public class HelloService {
         String content = ((PlainText) messageChain.get(1)).getContent().trim();
         String imageUrl = PatternUtil.INSTANCE.checkRemoteImage(content);
         if (imageUrl == null) return null;
-        Path path = FileUtil.downloadHttpUrl(imageUrl, "image",null);
+        Path path = FileUtil.downloadHttpUrl(imageUrl, "image", null, null);
         if (path != null) {
             ExternalResource externalResource = ExternalResource.create(path.toFile());
             return subject.uploadImage(externalResource);
@@ -58,7 +58,7 @@ public class HelloService {
         String content = ((PlainText) messageChain.get(1)).getContent().trim();
         String audioUrl = PatternUtil.INSTANCE.checkRemoteAudio(content);
         if (audioUrl == null) return null;
-        Path path = FileUtil.downloadHttpUrl(audioUrl, "audio",null);
+        Path path = FileUtil.downloadHttpUrl(audioUrl, "audio", null, null);
         if (path != null) {
             ExternalResource externalResource = ExternalResource.create(path.toFile());
             return ExternalResource.uploadAsVoice(externalResource, subject);

@@ -5,15 +5,14 @@ import com.alibaba.fastjson.JSON
 import com.erisu.cloud.megumi.pcr.basic.mapper.PcrAvatarMapper
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrGache
 import com.erisu.cloud.megumi.pcr.basic.pojo.RollResult
-import com.erisu.cloud.megumi.util.MessageUtil
-import com.erisu.cloud.megumi.util.PythonRunner
-import com.erisu.cloud.megumi.util.RedisKey
-import com.erisu.cloud.megumi.util.RedisUtil
+import com.erisu.cloud.megumi.pcr.basic.util.GachaFormat
+import com.erisu.cloud.megumi.util.*
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import org.springframework.stereotype.Component
 import java.io.File
+import java.nio.charset.StandardCharsets
 import javax.annotation.Resource
 import kotlin.random.Random
 
@@ -35,7 +34,25 @@ class GacheLogic {
     private lateinit var redisUtil: RedisUtil
 
     suspend fun updateUser(sender: User, messageChain: MessageChain, group: Group): Message {
-        return PlainText("alice还没写呢")
+        var json = ""
+        val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
+            "static", null, "gache.json")
+//        val gacheFile = File("static${File.separator}gache.json")
+        gachePath.toFile().readLines(StandardCharsets.UTF_8).forEach { json += it }
+        val avatarList: MutableList<String> = mutableListOf()
+        File("avatar").listFiles()!!.forEach { avatarList.add(it.name) }
+        val gache = JSON.parseObject(json, PcrGache::class.java)
+        val loseCharacterSet: MutableSet<Int> = mutableSetOf()
+        // 日服
+        gache.ALL.star1.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
+        gache.ALL.star2.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
+        gache.ALL.star3.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
+        loseCharacterSet.forEach {
+            FileUtil.downloadHttpUrl("https://redive.estertion.win/icon/unit/${it}31.webp", "avatar",
+                "png", null)
+        }
+        pcrInitData.gacheJson = json
+        return messageChainOf(PlainText("缺失角色:$loseCharacterSet"))
     }
 
 
@@ -64,16 +81,11 @@ class GacheLogic {
             group,
             File("${cachePath}${File.separator}${fastUUID}.png"), true
         ).get()
-        return messageChainOf(
-            PlainText("素敵な仲間が増えますよ！ \n"),
-            image,
-            PlainText(
-                "★★★${rollResult.s3_num}× ★★×${rollResult.s2_num} ★×${rollResult.s1_num}\n" +
-                        "获得记忆碎片${rollResult.memoryChip}与女神秘石×${rollResult.reward}！\n" +
-                        "第${rollResult.firstUp}抽首次获得up角色\n" +
-                        "记忆碎片一大堆！您是托吧？\n"
-            )
-        )
+        return if (rollResult.firstUp != 201) {
+            GachaFormat.dog(rollResult, image)
+        } else {
+            GachaFormat.cat(rollResult, image)
+        }
     }
 
     fun getMaxRoll(gache: PcrGache.SingleGache, num: Int): RollResult {
@@ -89,7 +101,8 @@ class GacheLogic {
                 in 0..gache.up_prob -> {
                     rollResult.result.add(gache.up[Random.nextInt(gache.up.size)])
                     rollResult.s3_num++
-                    if (rollResult.firstUp == 0) rollResult.firstUp = num
+                    if (rollResult.firstUp == 201) rollResult.firstUp = i
+                    rollResult.memoryChip += 100
                     50
                 }
                 in gache.up_prob + 1..gache.s3_prob -> {

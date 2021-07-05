@@ -41,8 +41,8 @@ def concat_images(image_names, sourcePath, cachePath, picName):
             if COL * row + col < len(image_names):
                 target.paste(image_files[COL * row + col], (0 + UNIT_WIDTH_SIZE * col, 0 + UNIT_HEIGHT_SIZE * row))
 
-    width,height=round(target.width*0.5),round(target.height*0.5)#去掉浮点，防报错
-    target=target.resize((width,height),Image.ANTIALIAS)
+    width, height = round(target.width * 0.5), round(target.height * 0.5)  # 去掉浮点，防报错
+    target = target.resize((width, height), Image.ANTIALIAS)
     target.save(cachePath + os.sep + picName + '.png', quality=SAVE_QUALITY)  # 成品图保存
 
 

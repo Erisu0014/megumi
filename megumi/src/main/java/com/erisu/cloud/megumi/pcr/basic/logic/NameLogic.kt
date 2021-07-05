@@ -37,7 +37,7 @@ class NameLogic {
     @Throws(Exception::class)
     suspend fun getAvatarImage(group: Group, princessId: String): Message {
         val (_, _, _, avatarUrl) = avatarMapper.searchMaxStarAvatar(princessId)
-        val imagePath = FileUtil.downloadHttpUrl(avatarUrl, "image", null)
+        val imagePath = FileUtil.downloadHttpUrl(avatarUrl, "image", null, null)
         return if (imagePath != null) {
             return MessageUtil.generateImage(group, imagePath.toFile(), true)
         } else PlainText("")

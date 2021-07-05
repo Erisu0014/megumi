@@ -6,6 +6,6 @@ data class RollResult(
     var s2_num: Int = 0,
     var s1_num: Int = 0,
     var reward: Int = 0,
-    var firstUp: Int = 0,
+    var firstUp: Int = 201,
     var memoryChip: Int = 0,
 )

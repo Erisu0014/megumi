@@ -23,7 +23,7 @@ class PcrEmojiLogic {
 
     suspend fun getRandomImage(group: Group): Image? {
         val (_, _, path) = emojiMapper.selectRandom()
-        val imagePath = FileUtil.downloadHttpUrl(path, "image", null)
+        val imagePath = FileUtil.downloadHttpUrl(path, "image", null, null)
         return imagePath?.let { MessageUtil.generateImage(group, imagePath.toFile(), true) }
     }
 }

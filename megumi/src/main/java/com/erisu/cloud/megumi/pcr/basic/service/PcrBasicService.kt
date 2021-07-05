@@ -107,12 +107,12 @@ class PcrBasicService {
     }
 
     @Command(commandType = CommandType.GROUP, value = "更新卡池", pattern = Pattern.PREFIX)
-    suspend fun updateGache(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+    suspend fun updateGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         return gacheLogic.updateUser(sender, messageChain, subject as Group)
     }
 
 
-    @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.EQUALS, alias = ["来一井"])
+    @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.PREFIX, alias = ["来一井"])
     fun getGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         return gacheLogic.getGache(sender, messageChain, subject as Group)
     }
