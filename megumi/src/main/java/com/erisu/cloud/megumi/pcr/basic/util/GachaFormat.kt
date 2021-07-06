@@ -8,6 +8,9 @@ import net.mamoe.mirai.message.data.messageChainOf
 
 object GachaFormat {
 
+    /**
+     * 您是🐕吧
+     */
     fun dog(rollResult: RollResult, image: Image): Message {
         return messageChainOf(
             PlainText("素敵な仲間が増えますよ！ \n"),
@@ -21,6 +24,9 @@ object GachaFormat {
         )
     }
 
+    /**
+     * 您是🐱吧
+     */
     fun cat(rollResult: RollResult, image: Image): Message {
         return messageChainOf(
             PlainText("素敵な仲間が増えませんよ~ \n"),

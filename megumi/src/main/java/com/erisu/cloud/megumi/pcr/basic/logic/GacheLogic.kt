@@ -33,7 +33,7 @@ class GacheLogic {
     @Resource
     private lateinit var redisUtil: RedisUtil
 
-    suspend fun updateUser(sender: User, messageChain: MessageChain, group: Group): Message {
+    fun updateUser(sender: User, messageChain: MessageChain, group: Group): Message {
         var json = ""
         val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
             "static", null, "gache.json")
@@ -67,25 +67,32 @@ class GacheLogic {
             "BL" -> getMaxRoll(gache.BL, 300)
             else -> getMaxRoll(gache.ALL, 300)
         }
-        var pyParam = ""
-        val avatarPath = "${System.getProperty("user.dir")}${File.separator}avatar"
-        val cachePath = "${System.getProperty("user.dir")}${File.separator}cache"
-        rollResult.result.forEach { pyParam += "${it}31.png," }
-        pyParam = pyParam.removeSuffix(",")
-        val fastUUID = UUID.fastUUID().toString(true)
-        PythonRunner.runPythonScript(
-            "${System.getProperty("user.dir")}${File.separator}script${File.separator}splice_pic.py",
-            arrayOf(pyParam, avatarPath, cachePath, fastUUID)
-        )
-        val image = MessageUtil.generateImageAsync(
-            group,
-            File("${cachePath}${File.separator}${fastUUID}.png"), true
-        ).get()
+
+        val image = spliceCacheImage(rollResult.result, group)
+
         return if (rollResult.firstUp != 201) {
             GachaFormat.dog(rollResult, image)
         } else {
             GachaFormat.cat(rollResult, image)
         }
+    }
+
+    fun spliceCacheImage(characterList: MutableList<Int>, group: Group): Image {
+        var pyParam = ""
+        characterList.forEach { pyParam += "${it}31.png," }
+        pyParam = pyParam.removeSuffix(",")
+        val avatarPath = "${System.getProperty("user.dir")}${File.separator}avatar"
+        val cachePath = "${System.getProperty("user.dir")}${File.separator}cache"
+
+        val fastUUID = UUID.fastUUID().toString(true)
+        PythonRunner.runPythonScript(
+            "${System.getProperty("user.dir")}${File.separator}script${File.separator}splice_pic.py",
+            arrayOf(pyParam, avatarPath, cachePath, fastUUID)
+        )
+        return MessageUtil.generateImageAsync(
+            group,
+            File("${cachePath}${File.separator}${fastUUID}.png"), true
+        ).get()
     }
 
     fun getMaxRoll(gache: PcrGache.SingleGache, num: Int): RollResult {
@@ -128,7 +135,6 @@ class GacheLogic {
             }
             i++
         }
-        // TODO: 2021/7/2 判断firstUp=0的情况
         return rollResult
     }
 }

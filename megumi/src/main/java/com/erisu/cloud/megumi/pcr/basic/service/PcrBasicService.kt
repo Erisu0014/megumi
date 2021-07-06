@@ -107,7 +107,7 @@ class PcrBasicService {
     }
 
     @Command(commandType = CommandType.GROUP, value = "更新卡池", pattern = Pattern.PREFIX)
-    suspend fun updateGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+    fun updateGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         return gacheLogic.updateUser(sender, messageChain, subject as Group)
     }
 
@@ -115,6 +115,14 @@ class PcrBasicService {
     @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.PREFIX, alias = ["来一井"])
     fun getGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         return gacheLogic.getGache(sender, messageChain, subject as Group)
+    }
+
+    /**
+     * 谁的xx是xx
+     */
+    @Command(commandType = CommandType.GROUP, value = "谁的(.+)是(.+)", pattern = Pattern.REGEX)
+    fun findCharacter(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        return nameLogic.findCharacter(sender, messageChain.contentToString(), subject as Group,"谁的(.+)是(.+)")
     }
 
 

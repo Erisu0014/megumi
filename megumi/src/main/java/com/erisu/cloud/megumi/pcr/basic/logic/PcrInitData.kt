@@ -60,7 +60,8 @@ class PcrInitData {
                 val profile = PcrPrincess(
                     t, temp.getString("名字"), temp.getString("公会"), temp.getString("生日"),
                     temp.getString("年龄"), temp.getString("身高"), temp.getString("体重"),
-                    temp.getString("血型"), temp.getString("种族"), temp.getString("喜好"), temp.getString("声优")
+                    temp.getString("血型"), temp.getString("种族"), temp.getString("喜好"), temp.getString("声优"),
+                    temp.getString("罩杯")
                 )
                 princessMap[t] = profile
             }
