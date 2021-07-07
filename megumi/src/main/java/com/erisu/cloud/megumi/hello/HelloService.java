@@ -69,10 +69,13 @@ public class HelloService {
 
     @Command(commandType = CommandType.GROUP, value = "火星文", pattern = Pattern.PREFIX)
     public Message mars(User sender, MessageChain messageChain, Contact subject) throws Exception {
-        String content = ((PlainText) messageChain.get(1)).getContent();
+        String content = messageChain.contentToString();
         String marsText = StrUtil.removePrefix(content, "火星文").trim();
         return new PlainText(marsUtil.getMars(marsText));
     }
 
-
+//    @Command(commandType = CommandType.GROUP, value = "727", pattern = Pattern.EQUALS)
+//    public Message insaneNum727(User sender, MessageChain messageChain, Contact subject) throws Exception {
+//
+//    }
 }

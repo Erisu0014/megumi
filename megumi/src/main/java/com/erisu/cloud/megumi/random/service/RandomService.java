@@ -14,12 +14,19 @@ import org.springframework.stereotype.Component;
 /**
  * @Description 随机相关
  * @Author alice
- *
  * @Date 2021/6/15 10:08
  **/
 @Component
 @Model(name = "random")
 public class RandomService {
+    /**
+     * /roll $num?  $num? $question?
+     *
+     * @param sender
+     * @param messageChain
+     * @param subject
+     * @return
+     */
     @Command(value = "/roll", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
     public Message roll(User sender, MessageChain messageChain, Contact subject) {
         return RandomLogic.INSTANCE.roll(messageChain);
