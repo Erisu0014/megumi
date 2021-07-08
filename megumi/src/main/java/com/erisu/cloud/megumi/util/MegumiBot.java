@@ -1,12 +1,8 @@
 package com.erisu.cloud.megumi.util;
 
-import com.erisu.cloud.megumi.exception.MegumiException;
-import kotlin.Unit;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.Group;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.utils.BotConfiguration;
@@ -14,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 
 
 /**

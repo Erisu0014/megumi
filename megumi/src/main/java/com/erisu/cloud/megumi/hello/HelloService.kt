@@ -44,7 +44,7 @@ class HelloService {
     @Command(commandType = CommandType.GROUP, value = "谁是曲奇", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun shigetora(sender: User, messageChain: MessageChain, group: Group): Message {
-        return MessageUtil.generateAudio(group, ClassPathResource("shigetora.m4a").inputStream)
+        return MessageUtil.generateAudio(group, ClassPathResource("shigetora.m4a").inputStream, "m4a")
     }
 
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "6cbd28fa91f0469698dff603d8635fca")

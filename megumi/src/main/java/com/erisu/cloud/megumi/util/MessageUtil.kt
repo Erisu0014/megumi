@@ -52,6 +52,13 @@ object MessageUtil {
         return voice
     }
 
+    suspend fun generateAudio(group: Group, inputStream: InputStream,formatName:String): Voice {
+        val externalResource = inputStream.toExternalResource(formatName)
+        val voice: Voice = group.uploadVoice(externalResource)
+        externalResource.close()
+        return voice
+    }
+
     suspend fun generateImage(group: Group, inputStream: InputStream): Image {
         val externalResource = inputStream.toExternalResource()
         val image: Image = group.uploadImage(externalResource)

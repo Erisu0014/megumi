@@ -27,14 +27,14 @@ class ImgService {
     @Resource
     private lateinit var imageLogic: ImageLogic
 
-    @Command(commandType = CommandType.GROUP,
-        value = ".jpg",
-        pattern = Pattern.SUFFIX,
-        uuid = "ff33a026c184430fb88fb1e49ee4bf25")
-    @Throws(Exception::class)
-   suspend fun generateImg(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        val (content) = messageChain[1] as PlainText
-        val text = content.removeSuffix(".jpg")
-        return imageLogic.generateImage(sender, subject, text)
-    }
+//    @Command(commandType = CommandType.GROUP,
+//        value = ".jpg",
+//        pattern = Pattern.SUFFIX,
+//        uuid = "ff33a026c184430fb88fb1e49ee4bf25")
+//    @Throws(Exception::class)
+//   suspend fun generateImg(sender: User, messageChain: MessageChain, subject: Contact): Message {
+//        val (content) = messageChain[1] as PlainText
+//        val text = content.removeSuffix(".jpg")
+//        return imageLogic.generateImage(sender, subject, text)
+//    }
 }

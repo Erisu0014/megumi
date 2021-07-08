@@ -31,7 +31,8 @@ class PcrInitData {
     fun initData() {
         if (!isMemoryInited) {
 //            val characterFile = ClassPathResource("basic/character.json").inputStream.reader(StandardCharsets.UTF_8)
-            val characterFile = File("static${File.separator}character.json")
+            val characterFile =
+                File("${System.getProperty("user.dir")}${File.separator}static${File.separator}character.json")
             // 1.初始化character和反向character
             val line = characterFile.readLines()
             var s = ""
@@ -68,7 +69,7 @@ class PcrInitData {
             // 3.更新卡池信息
 //            val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
 //                "static", null)
-            val gacheFile = File("static${File.separator}gache.json")
+            val gacheFile = File("${System.getProperty("user.dir")}${File.separator}static${File.separator}gache.json")
             gacheFile.readLines(StandardCharsets.UTF_8).forEach { gacheJson += it }
             isMemoryInited = true
 
