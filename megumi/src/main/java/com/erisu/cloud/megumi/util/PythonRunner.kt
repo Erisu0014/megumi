@@ -1,9 +1,5 @@
 package com.erisu.cloud.megumi.util
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.lang.ProcessBuilder
-
 object PythonRunner {
     //    final const val pythonPath="/root/yes/envs/megumi/bin/python3"
     private const val pythonPath = "D:\\anconda\\python"

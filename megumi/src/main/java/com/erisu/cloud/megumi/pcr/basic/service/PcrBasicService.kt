@@ -94,7 +94,7 @@ class PcrBasicService {
     @Throws(Exception::class)
     suspend fun checkProfile(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val (content) = messageChain[1] as PlainText
-        val name = content.removePrefix("体检")
+        val name = content.removePrefix("体检").trim()
         val character = pcrInitData.nameMap[name]
         return if (character == null) {
             PlainText("无体检数据")
@@ -123,7 +123,7 @@ class PcrBasicService {
      */
     @Command(commandType = CommandType.GROUP, value = "谁的(.+)是(.+)", pattern = Pattern.REGEX)
     fun findCharacter(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        return nameLogic.findCharacter(sender, messageChain.contentToString(), subject as Group,"谁的(.+)是(.+)")
+        return nameLogic.findCharacter(sender, messageChain.contentToString(), subject as Group, "谁的(.+)是(.+)")
     }
 
 
