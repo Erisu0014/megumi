@@ -21,19 +21,17 @@ public class GroupSchedulerEvent extends SimpleListenerHost {
      *
      * @param event
      * @return
-     * @throws Exception
      */
 
     @EventHandler
-    public ListeningStatus onBotOnline(BotOnlineEvent event) throws Exception {
-        event.getBot().getGroup(604515343).sendMessage(new PlainText("没人理我，走了"));
+    public ListeningStatus onBotOnline(BotOnlineEvent event) {
+        event.getBot().getGroup(604515343).sendMessage(new PlainText("我来了我来了我来了"));
         return ListeningStatus.STOPPED;
     }
 
 
-
     @EventHandler(priority = EventPriority.NORMAL)
-    public ListeningStatus onBotActive(BotActiveEvent event) throws Exception {
+    public ListeningStatus onBotActive(BotActiveEvent event) {
 //        event.getBot().getGroup(604515343).sendMessage(new PlainText(""));
         return ListeningStatus.LISTENING;
     }

@@ -7,20 +7,22 @@ import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.util.FileUtil
+import com.erisu.cloud.megumi.util.MessageModel
 import com.erisu.cloud.megumi.util.MessageUtil
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
+import com.erisu.cloud.megumi.util.RedisUtil
 import lombok.extern.slf4j.Slf4j
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.MessageChain
-import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import org.springframework.core.io.ClassPathResource
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.io.FileNotFoundException
 import javax.annotation.Resource
 
 /**
@@ -35,16 +37,43 @@ class HelloService {
     @Resource
     private lateinit var marsUtil: MarsUtil
 
+    @Resource
+    private lateinit var redisUtil: RedisUtil
+
     @Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = ["zaima", "zai"])
     @Throws(Exception::class)
     fun hello(sender: User, messageChain: MessageChain, subject: Contact): Message {
         return PlainText("はい！私はいつも貴方の側にいるよ～")
     }
 
+    @Command(commandType = CommandType.GROUP, value = "(.+)(？|\\?)", pattern = Pattern.REGEX)
+    @Throws(Exception::class)
+    fun test(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val forward: ForwardMessage = buildForwardMessage(subject) {
+            add(1503306252, "xcw", PlainText("不一定"))
+//            add(sender, PlainText("你说得对"))
+//            add(sender) {
+//                // this: MessageChainBuilder
+//                add(At(sender.id))
+//                add(PlainText("msg"))
+//            }
+//            add(event) // 可添加 MessageEvent
+        }
+        return forward
+    }
+
+
     @Command(commandType = CommandType.GROUP, value = "谁是曲奇", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun shigetora(sender: User, messageChain: MessageChain, group: Group): Message {
         return MessageUtil.generateAudio(group, ClassPathResource("shigetora.m4a").inputStream, "m4a")
+    }
+
+    @Command(commandType = CommandType.GROUP, value = "切换图片模式", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    fun changeModel(sender: User, messageChain: MessageChain, group: Group): Message {
+        redisUtil.set("model", MessageModel.IMAGE.type.toString())
+        return PlainText("切换成功")
     }
 
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CONTAINS, uuid = "6cbd28fa91f0469698dff603d8635fca")
@@ -81,8 +110,11 @@ class HelloService {
         val content = messageChain.contentToString()
         val marsText = content.removePrefix("火星文").trim()
         return PlainText(marsUtil.getMars(marsText))
-    } //    @Command(commandType = CommandType.GROUP, value = "727", pattern = Pattern.EQUALS)
-    //    public Message insaneNum727(User sender, MessageChain messageChain, Contact subject) throws Exception {
-    //
-    //    }
+    }
+
+    @Scheduled(cron = "00 27 19 * * ?")
+    @Throws(FileNotFoundException::class)
+    fun memeNum() {
+        // TODO: 2021/7/8  
+    }
 }

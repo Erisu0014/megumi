@@ -44,7 +44,7 @@ class SetuLogic {
                 num = num, r18 = isR18)
         }
         val responseJson =
-            HttpUtil.post("https://api.lolicon.app/setu/v2", JSON.toJSONString(setuRequest))
+            HttpUtil.post("https://api.lolicon.app/setu/v2", JSON.toJSONString(setuRequest),2000)
         val setuResponse = JSONObject.parseObject(responseJson, SetuResponse::class.java)
         return if (setuResponse.error == "") {
             val imageList: MutableList<Image> = mutableListOf()
