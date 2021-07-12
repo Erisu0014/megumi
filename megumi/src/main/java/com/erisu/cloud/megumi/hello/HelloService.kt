@@ -1,6 +1,5 @@
 package com.erisu.cloud.megumi.hello
 
-import cn.hutool.core.util.StrUtil
 import com.erisu.cloud.megumi.battle.util.MarsUtil
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
@@ -19,6 +18,7 @@ import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -60,6 +60,26 @@ class HelloService {
 //            add(event) // 可添加 MessageEvent
         }
         return forward
+    }
+
+    @MiraiExperimentalApi
+    @Command(commandType = CommandType.GROUP, value = "test2", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    fun test2(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        return buildXmlMessage(1) {
+            flag = 0
+            brief = "色xcw"
+            action = "web"
+            url = "https://redive.estertion.win/sound/unit_battle_voice/111101/vo_btl_111101_ub_200.m4a"
+            item {
+                layout = 2
+                title("xcw已加入该会话")
+                picture("http://gchat.qpic.cn/gchatpic_new/1269732086/826119271-2371198257-766C3EAF0B7DDE7AE876BBF5171BA325/0")
+                summary("xcw已开始监控聊天")
+            }
+            source("不许发xcw色图")
+        }
+
     }
 
 

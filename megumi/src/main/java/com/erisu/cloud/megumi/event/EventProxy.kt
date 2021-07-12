@@ -100,8 +100,9 @@ class EventProxy : SimpleListenerHost() {
         val model = redisUtil.get("model")
         val cachePath = "${System.getProperty("user.dir")}${File.separator}cache"
         message.contentToString()
-        return if ((message is PlainText || (message as Iterable<*>).all { it is PlainText })
-            && model.toInt() == MessageModel.IMAGE.type) {
+        return if ((message is PlainText || (message is Iterable<*> && (message as Iterable<*>).all { it is PlainText }))
+            && model.toInt() == MessageModel.IMAGE.type
+        ) {
             val uuid: String = UUID.fastUUID().toString(true)
             val msg = message.contentToString()
             val msgMax = msg.split("\n").maxByOrNull { it.length }!!.length
