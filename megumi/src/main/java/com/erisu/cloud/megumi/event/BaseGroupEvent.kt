@@ -29,9 +29,9 @@ class BaseGroupEvent : SimpleListenerHost() {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     suspend fun onMemberJoinEvent(event: MemberJoinEvent): ListeningStatus {
-        val name = event.member.nameCard
-        event.group.sendMessage(String.format("欢迎%s进群~", name))
-        return ListeningStatus.LISTENING // 表示继续监听事件
+//        val name = event.member.nameCard
+        event.group.sendMessage("你好呀~准备下面试材料哦")
+        return ListeningStatus.LISTENING
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

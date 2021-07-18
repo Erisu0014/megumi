@@ -30,7 +30,7 @@ class NameLogic {
     private lateinit var pcrInitData: PcrInitData
 
     @Resource
-    private lateinit var gacheLogic: GacheLogic
+    private lateinit var gachaLogic: GachaLogic
 
     @Throws(Exception::class)
     suspend fun getAvatar(sender: User, group: Group, princessId: String): Message {
@@ -65,7 +65,7 @@ class NameLogic {
         if (resultList.isEmpty()) {
             return PlainText("未找到符合的人选")
         }
-        val spliceCacheImage = gacheLogic.spliceCacheImage(resultList, group)
+        val spliceCacheImage = gachaLogic.spliceCacheImage(resultList, group)
         return messageChainOf(At(sender.id), PlainText("您可能在找:"), spliceCacheImage)
     }
 

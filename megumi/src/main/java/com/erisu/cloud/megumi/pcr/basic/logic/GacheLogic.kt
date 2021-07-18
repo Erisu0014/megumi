@@ -3,7 +3,7 @@ package com.erisu.cloud.megumi.pcr.basic.logic
 import cn.hutool.core.lang.UUID
 import com.alibaba.fastjson.JSON
 import com.erisu.cloud.megumi.pcr.basic.mapper.PcrAvatarMapper
-import com.erisu.cloud.megumi.pcr.basic.pojo.PcrGache
+import com.erisu.cloud.megumi.pcr.basic.pojo.PcrGacha
 import com.erisu.cloud.megumi.pcr.basic.pojo.RollResult
 import com.erisu.cloud.megumi.pcr.basic.util.GachaFormat
 import com.erisu.cloud.megumi.util.*
@@ -22,7 +22,7 @@ import kotlin.random.Random
  *@Date 2021/6/24 10:18
  **/
 @Component
-class GacheLogic {
+class GachaLogic {
 
     @Resource
     private lateinit var avatarMapper: PcrAvatarMapper
@@ -34,38 +34,41 @@ class GacheLogic {
     private lateinit var redisUtil: RedisUtil
 
     fun updateUser(sender: User, messageChain: MessageChain, group: Group): Message {
+        // 查看卡池版本号
+        val versionFile =
+            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}gacha_ver.json")
         var json = ""
-        val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
-            "static", null, "gache.json")
-//        val gacheFile = File("static${File.separator}gache.json")
-        gachePath.toFile().readLines(StandardCharsets.UTF_8).forEach { json += it }
+        val gachaPath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
+            "static", null, "gacha.json")
+//        val gachaFile = File("static${File.separator}gacha.json")
+        gachaPath.toFile().readLines(StandardCharsets.UTF_8).forEach { json += it }
         val avatarList: MutableList<String> = mutableListOf()
         File("avatar").listFiles()!!.forEach { avatarList.add(it.name) }
-        val gache = JSON.parseObject(json, PcrGache::class.java)
+        val gacha = JSON.parseObject(json, PcrGacha::class.java)
         val loseCharacterSet: MutableSet<Int> = mutableSetOf()
         // 日服
-        gache.ALL.star1.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
-        gache.ALL.star2.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
-        gache.ALL.star3.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
+        gacha.ALL.star1.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
+        gacha.ALL.star2.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
+        gacha.ALL.star3.forEach { if (!avatarList.contains("${it}11.png")) loseCharacterSet.add(it) }
         loseCharacterSet.forEach {
             FileUtil.downloadHttpUrl("https://redive.estertion.win/icon/unit/${it}31.webp", "avatar",
                 "png", null)
         }
-        pcrInitData.gacheJson = json
+        pcrInitData.gachaJson = json
         return messageChainOf(PlainText("缺失角色:$loseCharacterSet"))
     }
 
 
-    fun getGache(sender: User, messageChain: MessageChain, group: Group): Message {
+    fun getGacha(sender: User, messageChain: MessageChain, group: Group): Message {
 //        //  我的回合，抽卡
-        var gacheName = redisUtil.get("${RedisKey.GACHE.key}:${group.id}")
-        if (gacheName == null) gacheName = "JP"
-        val gache = JSON.parseObject(pcrInitData.gacheJson, PcrGache::class.java)
-        val rollResult: RollResult = when (gacheName) {
-            "JP" -> getMaxRoll(gache.JP, 200)
-            "TW" -> getMaxRoll(gache.TW, 300)
-            "BL" -> getMaxRoll(gache.BL, 300)
-            else -> getMaxRoll(gache.ALL, 300)
+        var gachaName = redisUtil.get("${RedisKey.GACHE.key}:${group.id}")
+        if (gachaName == null) gachaName = "JP"
+        val gacha = JSON.parseObject(pcrInitData.gachaJson, PcrGacha::class.java)
+        val rollResult: RollResult = when (gachaName) {
+            "JP" -> getMaxRoll(gacha.JP, 200)
+            "TW" -> getMaxRoll(gacha.TW, 300)
+            "BL" -> getMaxRoll(gacha.BL, 300)
+            else -> getMaxRoll(gacha.ALL, 300)
         }
 
         val image = spliceCacheImage(rollResult.result, group)
@@ -95,7 +98,7 @@ class GacheLogic {
         ).get()
     }
 
-    fun getMaxRoll(gache: PcrGache.SingleGache, num: Int): RollResult {
+    fun getMaxRoll(gacha: PcrGacha.SingleGacha, num: Int): RollResult {
         var i = 1
         val rollResult = RollResult()
 //        var result: MutableList<Int> = mutableListOf()
@@ -105,30 +108,30 @@ class GacheLogic {
 //        var reward = 0
         while (i <= num) {
             rollResult.reward += when (Random.nextInt(1000)) {
-                in 0..gache.up_prob -> {
-                    rollResult.result.add(gache.up[Random.nextInt(gache.up.size)])
+                in 0..gacha.up_prob -> {
+                    rollResult.result.add(gacha.up[Random.nextInt(gacha.up.size)])
                     rollResult.s3_num++
                     if (rollResult.firstUp == 201) rollResult.firstUp = i
                     rollResult.memoryChip += 100
                     50
                 }
-                in gache.up_prob + 1..gache.s3_prob -> {
+                in gacha.up_prob + 1..gacha.s3_prob -> {
                     var c_num: Int
                     do {
-                        c_num = Random.nextInt(gache.star3.size - gache.up.size)
-                    } while (gache.up.contains(c_num))
-                    rollResult.result.add(gache.star3[c_num])
+                        c_num = Random.nextInt(gacha.star3.size - gacha.up.size)
+                    } while (gacha.up.contains(c_num))
+                    rollResult.result.add(gacha.star3[c_num])
                     rollResult.s3_num++
                     50
                 }
-                in gache.s3_prob + 1..gache.s2_prob -> {
+                in gacha.s3_prob + 1..gacha.s2_prob -> {
                     // 2星不许up
-//                    result.add(gache.star2[Random.nextInt(gache.star2.size)])
+//                    result.add(gacha.star2[Random.nextInt(gacha.star2.size)])
                     rollResult.s2_num++
                     10
                 }
                 else -> {
-//                    result.add(gache.star1[Random.nextInt(gache.star1.size)])
+//                    result.add(gacha.star1[Random.nextInt(gacha.star1.size)])
                     rollResult.s1_num++
                     1
                 }

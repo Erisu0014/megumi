@@ -16,12 +16,15 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.MiraiExperimentalApi
+import net.mamoe.mirai.utils.MiraiInternalApi
 import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import sun.misc.MessageUtils
 import java.io.FileNotFoundException
 import javax.annotation.Resource
 
@@ -80,6 +83,15 @@ class HelloService {
             source("不许发xcw色图")
         }
 
+    }
+
+    @MiraiInternalApi
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_IMAGE)
+    @Throws(Exception::class)
+    suspend fun test3(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val i: GroupImage = messageChain[1] as GroupImage
+        print(i.queryUrl())
+        return null
     }
 
 

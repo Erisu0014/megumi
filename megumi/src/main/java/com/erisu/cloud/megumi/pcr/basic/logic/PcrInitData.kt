@@ -22,7 +22,7 @@ class PcrInitData {
     val nameMap: MutableMap<String, String> = mutableMapOf()
     val idMap: MutableMap<String, List<String>> = mutableMapOf()
     val princessMap: MutableMap<String, PcrPrincess> = mutableMapOf()
-    var gacheJson: String = ""
+    var gachaJson: String = ""
     private var isMemoryInited: Boolean = false
     private var isDatabaseInited: Boolean = false
 
@@ -67,10 +67,10 @@ class PcrInitData {
                 princessMap[t] = profile
             }
             // 3.更新卡池信息
-//            val gachePath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
+//            val gachaPath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
 //                "static", null)
-            val gacheFile = File("${System.getProperty("user.dir")}${File.separator}static${File.separator}gache.json")
-            gacheFile.readLines(StandardCharsets.UTF_8).forEach { gacheJson += it }
+            val gachaFile = File("${System.getProperty("user.dir")}${File.separator}static${File.separator}gacha.json")
+            gachaFile.readLines(StandardCharsets.UTF_8).forEach { gachaJson += it }
             isMemoryInited = true
 
         }

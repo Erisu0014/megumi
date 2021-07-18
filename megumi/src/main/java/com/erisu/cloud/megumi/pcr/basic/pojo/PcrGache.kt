@@ -2,20 +2,20 @@ package com.erisu.cloud.megumi.pcr.basic.pojo
 
 import com.alibaba.fastjson.annotation.JSONField
 
-data class PcrGache(
+data class PcrGacha(
     @JSONField(name = "JP")
-    val JP: SingleGache,
+    val JP: SingleGacha,
 
     @JSONField(name = "BL")
-    val BL: SingleGache,
+    val BL: SingleGacha,
 
     @JSONField(name = "TW")
-    val TW: SingleGache,
+    val TW: SingleGacha,
 
     @JSONField(name = "ALL")
-    val ALL: SingleGache,
+    val ALL: SingleGacha,
 ) {
-    data class SingleGache(
+    data class SingleGacha(
         @JSONField(name = "up_prob")
         val up_prob: Int,
 

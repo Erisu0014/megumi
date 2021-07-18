@@ -3,7 +3,7 @@ package com.erisu.cloud.megumi.pcr.basic.service
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
-import com.erisu.cloud.megumi.pcr.basic.logic.GacheLogic
+import com.erisu.cloud.megumi.pcr.basic.logic.GachaLogic
 import com.erisu.cloud.megumi.pcr.basic.logic.NameLogic
 import com.erisu.cloud.megumi.pcr.basic.logic.PcrInitData
 import com.erisu.cloud.megumi.plugin.pojo.Model
@@ -28,7 +28,7 @@ class PcrBasicService {
     private lateinit var nameLogic: NameLogic
 
     @Resource
-    private lateinit var gacheLogic: GacheLogic
+    private lateinit var gachaLogic: GachaLogic
 
     @Resource
     private lateinit var redisUtil: RedisUtil
@@ -107,14 +107,14 @@ class PcrBasicService {
     }
 
     @Command(commandType = CommandType.GROUP, value = "更新卡池", pattern = Pattern.PREFIX)
-    fun updateGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        return gacheLogic.updateUser(sender, messageChain, subject as Group)
+    fun updateGacha(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        return gachaLogic.updateUser(sender, messageChain, subject as Group)
     }
 
 
     @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.PREFIX, alias = ["来一井"])
-    fun getGache(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        return gacheLogic.getGache(sender, messageChain, subject as Group)
+    fun getGacha(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        return gachaLogic.getGacha(sender, messageChain, subject as Group)
     }
 
 
