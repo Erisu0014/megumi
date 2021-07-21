@@ -1,6 +1,7 @@
 package com.erisu.cloud.megumi.event
 
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
+import com.erisu.cloud.megumi.song.logic.MusicLogic
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.EventPriority
@@ -20,6 +21,9 @@ import javax.annotation.Resource
 class BaseGroupEvent : SimpleListenerHost() {
     @Resource
     private lateinit var emojiLogic: PcrEmojiLogic
+
+    @Resource
+    private lateinit var musicLogic: MusicLogic
 
     /**
      * 入群事件
@@ -58,8 +62,11 @@ class BaseGroupEvent : SimpleListenerHost() {
         val group = contact.group
         val nudge = contact.nudge()
         nudge.sendTo(group)
-        if (Math.random() > 0.5) {
-            bot.getGroup(contact.group.id)!!.sendMessage(emojiLogic.getRandomImage(group)!!)
+        val random = Math.random()
+        if (random < 0.3) {
+            bot.getGroup(group.id)!!.sendMessage(emojiLogic.getRandomImage(group)!!)
+        } else if (random < 0.8) {
+            musicLogic.getRandomSongs()?.let { bot.getGroup(group.id)!!.sendMessage(it) }
         }
         return ListeningStatus.LISTENING // 表示继续监听事件
     }

@@ -85,14 +85,16 @@ class HelloService {
 
     }
 
-    @MiraiInternalApi
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_IMAGE)
-    @Throws(Exception::class)
-    suspend fun test3(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val i: GroupImage = messageChain[1] as GroupImage
-        print(i.queryUrl())
-        return null
-    }
+//    @MiraiInternalApi
+//    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_IMAGE)
+//    @Throws(Exception::class)
+//    suspend fun test3(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        val i: GroupImage = messageChain[1] as GroupImage
+////        print(i.queryUrl())
+//        return null
+//    }
+
+
 
 
     @Command(commandType = CommandType.GROUP, value = "谁是曲奇", pattern = Pattern.EQUALS)
