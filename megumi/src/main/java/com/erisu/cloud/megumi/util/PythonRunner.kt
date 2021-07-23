@@ -18,7 +18,3 @@ object PythonRunner {
     }
 }
 
-fun main() {
-    val path = System.getProperty("user.dir")
-    println("工作目录 = $path")
-}

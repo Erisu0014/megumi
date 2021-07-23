@@ -58,6 +58,7 @@
             <version>1.18.12</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -135,6 +136,11 @@
             <artifactId>htmlunit</artifactId>
             <version>2.50.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.rometools.rome</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.16.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -157,7 +163,7 @@
                     <encoding>${build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
+            <!--            <plugin>-->
             <!--                <artifactId>maven-install-plugin</artifactId>-->
             <!--                <configuration>-->
             <!--                    <skip>true</skip>-->

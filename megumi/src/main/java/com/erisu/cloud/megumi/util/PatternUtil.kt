@@ -23,11 +23,24 @@ object PatternUtil {
         val regex = Regex(pattern)
         return regex.find(content)?.value
     }
+
+//    fun checkImg(content: String): MutableList<String>? {
+//        val imgTags = Regex("""<img src="(.+?)">""").findAll(content)
+//        val imgPattern = """(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|].(jpg|png|gif)"""
+//        val imgRegex = Regex(imgPattern)
+//        val result:MutableList<String> = mutableListOf()
+//        for (tag in imgTags) {
+//            val value = imgRegex.find(tag.value)!!.value
+//            result.add(value)
+//        }
+//        return result
+//    }
 }
 
 fun main() {
-    val checkCharacter = PatternUtil.checkCharacter("谁的年龄是12")
-    print(checkCharacter)
+//    val checkCharacter =
+//        PatternUtil.checkImg("【公主连结日服】 主线剧情从第一部到第二部第九章已经全部开放浏览啦，即使是未在Normal关卡中解锁的剧情也可直接浏览！ 各位小伙伴也不妨尝试一下“剧情连续阅览功能”，这样可以轻松地将自己融入故事中哦！ 【最新のメインストーリーまで解放中！】 第2部第9章までの各章を、全て解放できます！もちろん、第1部メインストーリーも引き続き解放可能！ プリコネのストーリーをぜひお楽しみください！ 「連続ストーリー閲覧機能」を使えば、物語へのダイブも快適になりますよ♪<br><br><img src=\"https://i0.hdslb.com/bfs/album/a2d84212cfb6ef432c246e615e19e04e6d4bf8c3.jpg\" referrerpolicy=\"no-referrer\">test<img src=\"1\">")
+//    print(checkCharacter)
 }
 
 
