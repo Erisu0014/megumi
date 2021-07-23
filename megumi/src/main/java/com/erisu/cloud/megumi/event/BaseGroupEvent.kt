@@ -1,7 +1,10 @@
 package com.erisu.cloud.megumi.event
 
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
+import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
+import com.erisu.cloud.megumi.util.MessageUtil
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.EventPriority
@@ -10,6 +13,9 @@ import net.mamoe.mirai.event.SimpleListenerHost
 import net.mamoe.mirai.event.events.MemberCardChangeEvent
 import net.mamoe.mirai.event.events.MemberJoinEvent
 import net.mamoe.mirai.event.events.NudgeEvent
+import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.messageChainOf
+import org.springframework.core.io.ClassPathResource
 import javax.annotation.Resource
 
 /**
@@ -24,6 +30,9 @@ class BaseGroupEvent : SimpleListenerHost() {
 
     @Resource
     private lateinit var musicLogic: MusicLogic
+
+    @Resource
+    private lateinit var setuLogic: SetuLogic
 
     /**
      * 入群事件
@@ -61,12 +70,31 @@ class BaseGroupEvent : SimpleListenerHost() {
         val contact = event.from as NormalMember
         val group = contact.group
         val nudge = contact.nudge()
-        nudge.sendTo(group)
+
         val random = Math.random()
-        if (random < 0.3) {
-            bot.getGroup(group.id)!!.sendMessage(emojiLogic.getRandomImage(group)!!)
-        } else if (random < 0.8) {
-            musicLogic.getRandomSongs()?.let { bot.getGroup(group.id)!!.sendMessage(it) }
+        when {
+            random < 0.01 -> {
+                val image =
+                    MessageUtil.generateImage(group, ClassPathResource("emoticon/kyaru.gif").inputStream)
+                val msg = "──●━━━━ 1:05/1:30\n" + "正在播放：New Year Burst\n" + "⇆ ㅤ◁ ㅤㅤ❚❚ ㅤㅤ▷ ㅤ↻"
+                bot.getGroup(group.id)!!.sendMessage(messageChainOf(image, PlainText(msg)))
+            }
+            // 随机表情
+            random < 0.3 -> {
+                bot.getGroup(group.id)!!.sendMessage(emojiLogic.getRandomImage(group)!!)
+            }
+            // 来点setu
+            random < 0.6 -> {
+                bot.getGroup(group.id)!!.sendMessage(setuLogic.getRollSetu("", 1, 0, group)!!)
+            }
+            // 来点歌
+            random < 0.8 -> {
+                musicLogic.getRandomSongs()?.let { bot.getGroup(group.id)!!.sendMessage(it) }
+            }
+            // 戳出事了你负责吗
+            else -> {
+                nudge.sendTo(group)
+            }
         }
         return ListeningStatus.LISTENING // 表示继续监听事件
     }

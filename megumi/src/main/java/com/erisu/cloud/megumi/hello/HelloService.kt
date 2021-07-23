@@ -11,22 +11,24 @@ import com.erisu.cloud.megumi.util.MessageUtil
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
 import com.erisu.cloud.megumi.util.RedisUtil
+import com.rometools.rome.feed.synd.SyndFeed
+import com.rometools.rome.io.SyndFeedInput
+import com.rometools.rome.io.XmlReader
 import lombok.extern.slf4j.Slf4j
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
-import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-import net.mamoe.mirai.utils.MiraiInternalApi
 import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import sun.misc.MessageUtils
 import java.io.FileNotFoundException
+import java.net.URL
 import javax.annotation.Resource
+
 
 /**
  * @Description hello world girl
@@ -43,11 +45,12 @@ class HelloService {
     @Resource
     private lateinit var redisUtil: RedisUtil
 
-    @Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.CONTAINS, alias = ["zaima", "zai"])
+    @Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.EQUALS, alias = ["zaima", "zai"])
     @Throws(Exception::class)
     fun hello(sender: User, messageChain: MessageChain, subject: Contact): Message {
         return PlainText("はい！私はいつも貴方の側にいるよ～")
     }
+
 
     @Command(commandType = CommandType.GROUP, value = "(.+)(？|\\?)", pattern = Pattern.REGEX)
     @Throws(Exception::class)
@@ -93,8 +96,6 @@ class HelloService {
 ////        print(i.queryUrl())
 //        return null
 //    }
-
-
 
 
     @Command(commandType = CommandType.GROUP, value = "谁是曲奇", pattern = Pattern.EQUALS)

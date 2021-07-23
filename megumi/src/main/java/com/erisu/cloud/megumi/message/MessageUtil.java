@@ -24,7 +24,8 @@ public class MessageUtil {
     private RedisUtil redisUtil;
 
     @Async
-    public void sendAsyncMessage(Group group, Message message) {
+    public void sendAsyncMessage(Group group, Message message, Integer time) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(time);
         Bot.getInstance(username).getGroup(group.getId()).sendMessage(message);
     }
 

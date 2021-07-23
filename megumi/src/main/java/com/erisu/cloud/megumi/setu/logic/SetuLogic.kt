@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
  **/
 @Component
 class SetuLogic {
-    suspend fun getRollSetu(sender: User, tag: String, num: Int, isR18: Int, group: Group): Message? {
+    suspend fun getRollSetu(tag: String, num: Int, isR18: Int, group: Group): Message? {
         val orTag = tag.split("|")
         val setuRequest: SetuRequest = if (tag.trim() == "") {
             SetuRequest(dateAfter = null,
