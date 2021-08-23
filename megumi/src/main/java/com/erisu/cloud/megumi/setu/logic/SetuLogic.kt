@@ -10,13 +10,14 @@ import com.erisu.cloud.megumi.util.MessageUtil
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.data.Image
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.PlainText
-import net.mamoe.mirai.message.data.messageChainOf
+import net.mamoe.mirai.message.data.*
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import javax.security.auth.Subject
 
 /**
  *@Description setu logic
@@ -25,6 +26,9 @@ import org.springframework.stereotype.Component
  **/
 @Component
 class SetuLogic {
+    @Value("\${qq.username}")
+    private val username: Long = 0
+
     suspend fun getRollSetu(tag: String, num: Int, isR18: Int, group: Group): Message? {
         val orTag = tag.split("|")
         val setuRequest: SetuRequest = if (tag.trim() == "") {
@@ -43,20 +47,39 @@ class SetuLogic {
                 keyword = null,
                 num = num, r18 = isR18)
         }
+        group.sendMessage(PlainText("setu正在下载中，请稍等~"))
         val responseJson =
-            HttpUtil.post("https://api.lolicon.app/setu/v2", JSON.toJSONString(setuRequest),2000)
+            HttpUtil.post("https://api.lolicon.app/setu/v2", JSON.toJSONString(setuRequest), 2000)
         val setuResponse = JSONObject.parseObject(responseJson, SetuResponse::class.java)
-        return if (setuResponse.error == "") {
-            val imageList: MutableList<Image> = mutableListOf()
+        if (setuResponse.error == "" && !setuResponse.data.isNullOrEmpty()) {
+//            val imageList: MutableList<Image> = mutableListOf()
             if (isR18 == 0) {
                 setuResponse.data.forEach {
                     val path = FileUtil.downloadHttpUrl(it.urls.original, "cache", null, null)
-                    if (path != null) imageList.add(MessageUtil.generateImage(group, path.toFile(), true))
+//                    if (path != null) imageList.add(MessageUtil.generateImage(group, path.toFile(), true))
+                    //单条发送
+                    val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
+                    if (path != null) {
+                        group.sendMessage(forwardSetuMessage(PlainText(text),
+                            MessageUtil.generateImage(group, path.toFile(), true), group))
+                    }
                 }
-                messageChainOf(*imageList.toTypedArray())
+//                messageChainOf(*imageList.toTypedArray())
             } else {
-                PlainText(setuResponse.data[0].urls.original.toString())
+                setuResponse.data.forEach { group.sendMessage(it.urls.original.toString()) }
+//                PlainText(setuResponse.data[0].urls.original.toString())
             }
-        } else null
+        } else if (setuResponse.data.isNullOrEmpty()) {
+            group.sendMessage("那是什么色图？")
+        } else {
+            group.sendMessage("色图下载失败")
+        }
+        return null
+    }
+
+    fun forwardSetuMessage(text: PlainText, image: Image, contact: Contact): Message {
+        return buildForwardMessage(contact) {
+            add(2854196306, "色图bot", messageChainOf(text, image))
+        }
     }
 }

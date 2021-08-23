@@ -8,6 +8,7 @@ import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.tuling.logic.TulingLogic
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
@@ -26,7 +27,7 @@ import kotlin.random.Random
 @Model(name = "tuling")
 class TulingService {
     companion object {
-        private var probability = 20
+        private var probability = 1
     }
 
     @Resource
@@ -50,7 +51,11 @@ class TulingService {
 
     @Command(commandType = CommandType.GROUP, value = "调整AI概率", pattern = Pattern.PREFIX)
     @Throws(Exception::class)
-    fun changeProbability(sender: User, messageChain: MessageChain, subject: Contact): Message {
+    fun changeProbability(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val member = sender as Member
+        if (member.permission.level == 0 || member.id != 1269732086L) {
+            return null
+        }
         probability = messageChain.contentToString().removePrefix("调整AI概率").trim().toInt()
         probability = if (probability > 100) 100 else probability
         return PlainText("当前AI概率为$probability")

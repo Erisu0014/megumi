@@ -26,31 +26,31 @@ class SetuService {
     @Resource
     lateinit var setuLogic: SetuLogic
 
-    @Command(value = "来张(.*)色图", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
-    suspend fun roll(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val find = Regex("来张(.*)色图").find(messageChain.contentToString())!!.groupValues
-        val tag: String = find[1]
-        return if (tag.startsWith("r18")) {
-            setuLogic.getRollSetu(tag.removePrefix("r18"), 1, 1, subject as Group)
-        } else {
-            setuLogic.getRollSetu(tag, 1, 0, subject as Group)
-        }
-    }
-
-    @Command(value = "来([0-9]+)张(.*)色图", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
-    suspend fun rollWithNum(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val find = Regex("来([0-9]+)张(.*)色图").find(messageChain.contentToString())!!.groupValues
-        val num: String = find[1]
-        if (num.toInt() >= 5) {
-            return PlainText("冲太多对身体不好ヽ(*。>Д<)o゜")
-        }
-        val tag: String = find[2]
-        return if (tag.startsWith("r18")) {
-            setuLogic.getRollSetu(tag.removePrefix("r18"), num.toInt(), 1, subject as Group)
-        } else {
-            setuLogic.getRollSetu(tag, num.toInt(), 0, subject as Group)
-        }
-    }
+//    @Command(value = "来张(.*)色图", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
+//    suspend fun roll(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        val find = Regex("来张(.*)色图").find(messageChain.contentToString())!!.groupValues
+//        val tag: String = find[1]
+//        return if (tag.startsWith("r18")) {
+//            setuLogic.getRollSetu(tag.removePrefix("r18"), 1, 1, subject as Group)
+//        } else {
+//            setuLogic.getRollSetu(tag, 1, 0, subject as Group)
+//        }
+//    }
+//
+//    @Command(value = "来([0-9]+)张(.*)色图", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
+//    suspend fun rollWithNum(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        val find = Regex("来([0-9]+)张(.*)色图").find(messageChain.contentToString())!!.groupValues
+//        val num: String = find[1]
+//        if (num.toInt() >= 5) {
+//            return PlainText("冲太多对身体不好ヽ(*。>Д<)o゜")
+//        }
+//        val tag: String = find[2]
+//        return if (tag.startsWith("r18")) {
+//            setuLogic.getRollSetu(tag.removePrefix("r18"), num.toInt(), 1, subject as Group)
+//        } else {
+//            setuLogic.getRollSetu(tag, num.toInt(), 0, subject as Group)
+//        }
+//    }
 
 
 }

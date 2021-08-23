@@ -26,7 +26,7 @@ public class HomoService {
     @Resource
     private HomoLogic homoLogic;
 
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK, probaility = 0.8)
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK, probaility = 0.05)
     public Message homoNum(User sender, MessageChain messageChain, Contact subject) {
         String homo = "";
         try {

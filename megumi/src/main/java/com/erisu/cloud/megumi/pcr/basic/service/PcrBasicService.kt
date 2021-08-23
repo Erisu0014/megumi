@@ -106,16 +106,16 @@ class PcrBasicService {
         }
     }
 
-    @Command(commandType = CommandType.GROUP, value = "更新卡池", pattern = Pattern.PREFIX)
-    fun updateGacha(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        return gachaLogic.updateUser(sender, messageChain, subject as Group)
-    }
-
-
-    @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.PREFIX, alias = ["来一井"])
-    fun getGacha(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        return gachaLogic.getGacha(sender, messageChain, subject as Group)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "更新卡池", pattern = Pattern.PREFIX)
+//    fun updateGacha(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        return gachaLogic.updateUser(sender, messageChain, subject as Group)
+//    }
+//
+//
+//    @Command(commandType = CommandType.GROUP, value = "alice来一井", pattern = Pattern.PREFIX, alias = ["来一井"])
+//    fun getGacha(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        return gachaLogic.getGacha(sender, messageChain, subject as Group)
+//    }
 
 
     /**
