@@ -1,16 +1,14 @@
 package com.erisu.cloud.megumi.img.logic
 
 import com.erisu.cloud.megumi.util.ImageUtil
-import com.erisu.cloud.megumi.util.MessageUtil.generateImage
+import com.erisu.cloud.megumi.util.StreamMessageUtil.generateImage
 import lombok.extern.slf4j.Slf4j
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Message
 import org.springframework.stereotype.Component
 import java.io.File
-import java.util.concurrent.CompletableFuture
 import javax.annotation.Resource
 
 /**

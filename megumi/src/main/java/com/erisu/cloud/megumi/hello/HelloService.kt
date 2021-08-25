@@ -6,8 +6,7 @@ import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.util.FileUtil
-import com.erisu.cloud.megumi.util.MessageModel
-import com.erisu.cloud.megumi.util.MessageUtil
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
 import com.erisu.cloud.megumi.util.RedisUtil
@@ -23,7 +22,6 @@ import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
@@ -60,7 +58,7 @@ class HelloService {
 //    @Command(commandType = CommandType.GROUP, value = "test1234", pattern = Pattern.EQUALS)
 //    @Throws(Exception::class)
 //    suspend fun test1234(sender: User, messageChain: MessageChain, subject: Contact): Message {
-//        return MessageUtil.generateAudio(subject as Group, ClassPathResource("test.mp3").inputStream)
+//        return StreamMessageUtil.generateAudio(subject as Group, ClassPathResource("test.mp3").inputStream)
 //    }
 
 
@@ -141,7 +139,7 @@ class HelloService {
     @Command(commandType = CommandType.GROUP, value = "谁是曲奇", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun shigetora(sender: User, messageChain: MessageChain, group: Group): Message {
-        return MessageUtil.generateAudio(group, ClassPathResource("shigetora.m4a").inputStream, "m4a")
+        return StreamMessageUtil.generateAudio(group, ClassPathResource("shigetora.m4a").inputStream, "m4a")
     }
 
 //    @Command(commandType = CommandType.GROUP, value = "切换图片模式", pattern = Pattern.EQUALS)
@@ -191,21 +189,28 @@ class HelloService {
     @Throws(Exception::class)
     suspend fun halfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/半月刊.jpg").inputStream }
-        return MessageUtil.generateImage(subject as Group, halfMonth)
+        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
     }
 
     @Command(commandType = CommandType.GROUP, value = "规划", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun bcrPlan(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/规划.jpg").inputStream }
-        return MessageUtil.generateImage(subject as Group, halfMonth)
+        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
+    }
+
+    @Command(commandType = CommandType.GROUP, value = "半周年", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    suspend fun bcrHalfAnniversary(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/半周年.jpg").inputStream }
+        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
     }
 
     @Command(commandType = CommandType.GROUP, value = "孤儿装", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun krEquipment(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/孤儿装.jpg").inputStream }
-        return MessageUtil.generateImage(subject as Group, halfMonth)
+        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
     }
 
     @Scheduled(cron = "00 27 19 * * ?")

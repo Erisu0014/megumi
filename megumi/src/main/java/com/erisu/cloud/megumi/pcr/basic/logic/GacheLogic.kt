@@ -92,7 +92,7 @@ class GachaLogic {
             "${System.getProperty("user.dir")}${File.separator}script${File.separator}splice_pic.py",
             arrayOf(pyParam, avatarPath, cachePath, fastUUID)
         )
-        return MessageUtil.generateImageAsync(
+        return StreamMessageUtil.generateImageAsync(
             group,
             File("${cachePath}${File.separator}${fastUUID}.png"), true
         ).get()

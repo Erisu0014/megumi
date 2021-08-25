@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture
  *@Author alice
  *@Date 2021/6/22 14:37
  **/
-object MessageUtil {
+object StreamMessageUtil {
     fun message(vararg message: Message): Message {
         return messageChainOf(*message)
     }

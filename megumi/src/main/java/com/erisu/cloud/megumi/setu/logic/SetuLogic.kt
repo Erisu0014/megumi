@@ -6,18 +6,12 @@ import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.setu.pojo.SetuRequest
 import com.erisu.cloud.megumi.setu.pojo.SetuResponse
 import com.erisu.cloud.megumi.util.FileUtil
-import com.erisu.cloud.megumi.util.MessageUtil
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import net.mamoe.mirai.Bot
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import javax.security.auth.Subject
 
 /**
  *@Description setu logic
@@ -56,12 +50,12 @@ class SetuLogic {
             if (isR18 == 0) {
                 setuResponse.data.forEach {
                     val path = FileUtil.downloadHttpUrl(it.urls.original, "cache", null, null)
-//                    if (path != null) imageList.add(MessageUtil.generateImage(group, path.toFile(), true))
+//                    if (path != null) imageList.add(StreamMessageUtil.generateImage(group, path.toFile(), true))
                     //单条发送
                     val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
                     if (path != null) {
                         group.sendMessage(forwardSetuMessage(PlainText(text),
-                            MessageUtil.generateImage(group, path.toFile(), true), group))
+                            StreamMessageUtil.generateImage(group, path.toFile(), true), group))
                     }
                 }
 //                messageChainOf(*imageList.toTypedArray())

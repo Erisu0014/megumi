@@ -2,8 +2,7 @@ package com.erisu.cloud.megumi.emoji.logic
 
 import com.erisu.cloud.megumi.emoji.mapper.PcrEmojiMapper
 import com.erisu.cloud.megumi.util.FileUtil
-import com.erisu.cloud.megumi.util.ImageUtil
-import com.erisu.cloud.megumi.util.MessageUtil
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import lombok.extern.slf4j.Slf4j
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.Image
@@ -24,6 +23,6 @@ class PcrEmojiLogic {
     suspend fun getRandomImage(group: Group): Image? {
         val (_, _, path) = emojiMapper.selectRandom()
         val imagePath = FileUtil.downloadHttpUrl(path, "image", null, null)
-        return imagePath?.let { MessageUtil.generateImage(group, imagePath.toFile(), true) }
+        return imagePath?.let { StreamMessageUtil.generateImage(group, imagePath.toFile(), true) }
     }
 }

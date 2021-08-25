@@ -3,8 +3,7 @@ package com.erisu.cloud.megumi.event
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
 import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
-import com.erisu.cloud.megumi.util.MessageUtil
-import net.mamoe.mirai.contact.Group
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.EventPriority
@@ -77,7 +76,7 @@ class BaseGroupEvent : SimpleListenerHost() {
         when {
             random < 0.01 -> {
                 val image =
-                    MessageUtil.generateImage(group, ClassPathResource("emoticon/kyaru.gif").inputStream)
+                    StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/kyaru.gif").inputStream)
                 val msg = "──●━━━━ 1:05/1:30\n" + "正在播放：New Year Burst\n" + "⇆ ㅤ◁ ㅤㅤ❚❚ ㅤㅤ▷ ㅤ↻"
                 group.sendMessage(messageChainOf(image, PlainText(msg)))
             }
@@ -95,7 +94,7 @@ class BaseGroupEvent : SimpleListenerHost() {
                     .filter { it.extension in listOf("mp3") }//选择扩展名为txt或者mp4的文件
                     .forEach { fileNames.add(it.name) }//循环 处理符合条件的文件
                 val fileName = fileNames[Random.nextInt(0, fileNames.size - 1)]
-                group.sendMessage(MessageUtil.generateAudio(group,
+                group.sendMessage(StreamMessageUtil.generateAudio(group,
                         File("$path${File.separator}$fileName").inputStream()))
             }
             // 来点setu

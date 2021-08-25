@@ -4,16 +4,12 @@ import com.erisu.cloud.megumi.pcr.basic.mapper.PcrAvatarMapper
 import com.erisu.cloud.megumi.pcr.basic.pojo.PcrPrincess
 import com.erisu.cloud.megumi.pcr.basic.util.CharacterField
 import com.erisu.cloud.megumi.util.FileUtil
-import com.erisu.cloud.megumi.util.MessageUtil
-import com.erisu.cloud.megumi.util.PythonRunner
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import org.springframework.stereotype.Component
-import java.io.File
 import javax.annotation.Resource
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.javaField
 
 /**
  *@Description NAME相关
@@ -47,7 +43,7 @@ class NameLogic {
         val (_, _, _, avatarUrl) = avatarMapper.searchMaxStarAvatar(princessId)
         val imagePath = FileUtil.downloadHttpUrl(avatarUrl, "image", null, null)
         return if (imagePath != null) {
-            return MessageUtil.generateImage(group, imagePath.toFile(), true)
+            return StreamMessageUtil.generateImage(group, imagePath.toFile(), true)
         } else PlainText("")
     }
 

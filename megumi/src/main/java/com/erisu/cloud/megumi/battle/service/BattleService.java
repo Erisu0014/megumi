@@ -55,7 +55,7 @@ public class BattleService {
 //        if (battleLogic.createBattleGroup(group)) {
 //            // TODO: 2021/6/4 后续改用数据库存储+程序init
 //            InputStream nico = new ClassPathResource("emoticon/nico.jpg").getInputStream();
-//            CompletableFuture<Image> future = MessageUtil.INSTANCE.generateImageAsync(group, nico);
+//            CompletableFuture<Image> future = StreamMessageUtil.INSTANCE.generateImageAsync(group, nico);
 //            return new PlainText("创建工会成功").plus(future.get());
 //        } else {
 //            return new PlainText("创建公会失败");

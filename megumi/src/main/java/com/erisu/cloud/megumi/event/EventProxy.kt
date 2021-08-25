@@ -7,7 +7,7 @@ import com.erisu.cloud.megumi.command.GlobalCommands
 import com.erisu.cloud.megumi.command.MethodLite
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.util.MessageModel
-import com.erisu.cloud.megumi.util.MessageUtil
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.PythonRunner
 import com.erisu.cloud.megumi.util.RedisUtil
 import lombok.extern.slf4j.Slf4j
@@ -110,7 +110,7 @@ class EventProxy : SimpleListenerHost() {
                 "${System.getProperty("user.dir")}${File.separator}script${File.separator}text_to_image.py",
                 arrayOf(msg, max(msgMax, 1).toString(), msg.split("\n").size.toString(), cachePath, "${uuid}.jpg")
             )
-            MessageUtil.generateImage(
+            StreamMessageUtil.generateImage(
                 group,
                 File("${cachePath}${File.separator}${uuid}.jpg"), true
             )

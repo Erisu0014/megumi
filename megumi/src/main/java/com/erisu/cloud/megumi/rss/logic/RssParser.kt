@@ -1,5 +1,6 @@
 package com.erisu.cloud.megumi.rss.logic
 
+import com.rometools.rome.feed.synd.SyndContent
 import org.springframework.stereotype.Component
 
 /**
@@ -28,7 +29,21 @@ class RssParser {
     }
 
     fun parseText(text: String): String {
-        val removeImgStr = Regex("""<img src="(.+?)">""").replace(text, "")
-        return Regex("""<br>""").replace(removeImgStr, "\n").removeSuffix("\n")
+        text.removeSurrounding("<![CDATA[ ", " ]]>").trim()
+        val var0 = Regex("""<img src="(.+?)">""").replace(text, "")
+        val var1 = Regex("""<iframe src="(.+?)"></iframe>""").replace(var0, "")
+        var var2 = Regex("""<br>""").replace(var1, "\n")
+        while (var2.endsWith("\n")) {
+            var2 = var2.removeSuffix("\n")
+        }
+        return var2
+    }
+
+    fun parseVideo(title: String, description: String): String {
+        var result = ""
+        result += title.removeSurrounding("<![CDATA[ ", " ]]>").trim()
+        val video_url = Regex("""视频地址：(.+?)<br>""").find(description)!!.groupValues[1]
+        result += "\n视频地址：$video_url"
+        return result
     }
 }
