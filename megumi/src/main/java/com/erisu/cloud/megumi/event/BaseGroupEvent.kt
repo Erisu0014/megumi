@@ -66,7 +66,10 @@ class BaseGroupEvent : SimpleListenerHost() {
     suspend fun onNudgedEvent(event: NudgeEvent): ListeningStatus {
         val bot = event.bot
         if (event.from !is NormalMember) {
-            return ListeningStatus.LISTENING // 表示继续监听事件
+            return ListeningStatus.LISTENING
+        }
+        if (event.target.id != bot.id) {
+            return ListeningStatus.LISTENING
         }
         val contact = event.from as NormalMember
         val group = contact.group
@@ -95,7 +98,7 @@ class BaseGroupEvent : SimpleListenerHost() {
                     .forEach { fileNames.add(it.name) }//循环 处理符合条件的文件
                 val fileName = fileNames[Random.nextInt(0, fileNames.size - 1)]
                 group.sendMessage(StreamMessageUtil.generateAudio(group,
-                        File("$path${File.separator}$fileName").inputStream()))
+                    File("$path${File.separator}$fileName").inputStream()))
             }
             // 来点setu
             random < 0.6 -> {

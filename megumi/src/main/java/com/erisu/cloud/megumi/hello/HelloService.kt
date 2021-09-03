@@ -188,7 +188,7 @@ class HelloService {
     @Command(commandType = CommandType.GROUP, value = "半月刊", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun halfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/半月刊.jpg").inputStream }
+        val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/半月刊.png").inputStream }
         return StreamMessageUtil.generateImage(subject as Group, halfMonth)
     }
 
