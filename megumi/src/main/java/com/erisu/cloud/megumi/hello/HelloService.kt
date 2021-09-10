@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.io.File
 import java.io.FileNotFoundException
 import javax.annotation.Resource
 
@@ -188,29 +189,33 @@ class HelloService {
     @Command(commandType = CommandType.GROUP, value = "半月刊", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun halfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/半月刊.png").inputStream }
-        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
+        val file =
+            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}半月刊.png")
+        return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
     @Command(commandType = CommandType.GROUP, value = "规划", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun bcrPlan(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/规划.jpg").inputStream }
-        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
+        val file =
+            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}规划.jpg")
+        return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
     @Command(commandType = CommandType.GROUP, value = "半周年", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun bcrHalfAnniversary(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/半周年.jpg").inputStream }
-        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
+        val file =
+            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}半周年.jpg")
+        return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
     @Command(commandType = CommandType.GROUP, value = "孤儿装", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun krEquipment(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val halfMonth = withContext(Dispatchers.IO) { ClassPathResource("basic/孤儿装.jpg").inputStream }
-        return StreamMessageUtil.generateImage(subject as Group, halfMonth)
+        val file =
+            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}孤儿装.jpg")
+        return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
     @Scheduled(cron = "00 27 19 * * ?")

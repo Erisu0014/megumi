@@ -11,6 +11,7 @@ import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
 import com.rometools.rome.io.XmlReader
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import lombok.extern.slf4j.Slf4j
@@ -36,6 +37,7 @@ import javax.annotation.Resource
 @Slf4j
 @Component
 @Model(name = "rssbusuo")
+
 class RssService {
     @Resource
     private lateinit var rssParser: RssParser
@@ -56,6 +58,7 @@ class RssService {
         return null
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(fixedDelay = 360_000)
     fun rssConsumption() {
         GlobalScope.future {
