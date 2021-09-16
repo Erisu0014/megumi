@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component
  *@Author alice
  *@Date 2021/6/24 9:00
  **/
-@PatternSupport(pattern = Pattern.PREFIX)
+@PatternSupport(pattern = Pattern.REGEX)
 @Component
-class PrefixStrategy : PatternStrategy {
+class RegexStrategy : PatternStrategy {
     /**
      * 正则匹配不需要alias(暂时)
      *
