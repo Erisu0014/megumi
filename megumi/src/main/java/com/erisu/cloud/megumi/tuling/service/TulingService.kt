@@ -36,7 +36,10 @@ class TulingService {
     @Resource
     private lateinit var messageUtil: MessageUtil
 
-    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CONTAINS)
+    @Command(commandType = CommandType.GROUP,
+        value = "",
+        pattern = Pattern.CONTAINS,
+        uuid = "8c7f68756891484aa2a7ee25e04f4c4a")
     fun onlineAnswering(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val group = subject as Group
         if (!probabilities.containsKey(group.id)) {
@@ -50,7 +53,7 @@ class TulingService {
 
         if (probability < probabilities[group.id]!!) {
             val answer = tulingLogic.onlineAnswering(contentToString)
-            messageUtil.sendAsyncMessage(subject as Group?, answer, 5)
+            messageUtil.sendAsyncMessage(subject as Group?, answer, 2)
         }
         return null
     }

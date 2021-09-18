@@ -234,4 +234,13 @@ class HelloService {
         val randomFile = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
         return StreamMessageUtil.generateImage(group, File(randomFile), false)
     }
+
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_AT, uuid = "bbd87b41253a4339a18f8013fa7a6700")
+    @Throws(Exception::class)
+    suspend fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+        val words = messageChain.contentToString().split(" ", limit = 2)[1]
+        return null
+    }
+
+
 }
