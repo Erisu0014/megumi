@@ -49,7 +49,7 @@ class SetuLogic {
 //            val imageList: MutableList<Image> = mutableListOf()
             if (isR18 == 0) {
                 setuResponse.data.forEach {
-                    val path = FileUtil.downloadHttpUrl(it.urls.original, "cache", null, null)
+                    val path = FileUtil.downloadHttpUrl(it.urls.original!!, "cache", null, null)
 //                    if (path != null) imageList.add(StreamMessageUtil.generateImage(group, path.toFile(), true))
                     //单条发送
                     val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"

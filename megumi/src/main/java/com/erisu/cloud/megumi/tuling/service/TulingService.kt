@@ -27,7 +27,7 @@ import kotlin.random.Random
 @Model(name = "tuling")
 class TulingService {
     companion object {
-        private var probability = 1
+        var probabilities: MutableMap<Long, Int> = mutableMapOf()
     }
 
     @Resource
@@ -38,11 +38,17 @@ class TulingService {
 
     @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CONTAINS)
     fun onlineAnswering(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val group = subject as Group
+        if (!probabilities.containsKey(group.id)) {
+            probabilities[group.id] = 1
+        }
         val contentToString = messageChain.contentToString()
         if (contentToString.startsWith("调整AI概率") || contentToString.startsWith("调整百度AI")) {
             return null
         }
-        if (Random.nextInt(100) < probability) {
+        val probability = Random.nextInt(100)
+
+        if (probability < probabilities[group.id]!!) {
             val answer = tulingLogic.onlineAnswering(contentToString)
             messageUtil.sendAsyncMessage(subject as Group?, answer, 5)
         }
@@ -53,11 +59,12 @@ class TulingService {
     @Throws(Exception::class)
     fun changeProbability(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val member = sender as Member
-        if (member.permission.level == 0 || member.id != 1269732086L) {
+        val group = subject as Group
+        if (member.permission.level == 0 && member.id != 1269732086L) {
             return null
         }
-        probability = messageChain.contentToString().removePrefix("调整AI概率").trim().toInt()
-        probability = if (probability > 100) 100 else probability
+        val probability = messageChain.contentToString().removePrefix("调整AI概率").trim().toInt()
+        probabilities[group.id] = if (probability > 100) 100 else probability
         return PlainText("当前AI概率为$probability")
     }
 

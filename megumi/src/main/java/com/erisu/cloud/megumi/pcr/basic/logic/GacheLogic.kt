@@ -41,7 +41,7 @@ class GachaLogic {
         val gachaPath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
             "static", null, "gacha.json")
 //        val gachaFile = File("static${File.separator}gacha.json")
-        gachaPath.toFile().readLines(StandardCharsets.UTF_8).forEach { json += it }
+        gachaPath!!.toFile().readLines(StandardCharsets.UTF_8).forEach { json += it }
         val avatarList: MutableList<String> = mutableListOf()
         File("avatar").listFiles()!!.forEach { avatarList.add(it.name) }
         val gacha = JSON.parseObject(json, PcrGacha::class.java)

@@ -31,6 +31,7 @@ class AsoulLogic {
         val asoulCheckResponse = JSON.parseObject(response, AsoulCheckResponse::class.java)
         if (asoulCheckResponse.code != 0 || asoulCheckResponse.data == null) return null
         rate = asoulCheckResponse.data.rate
+        if (rate == 0.0) return null
         reply_url = asoulCheckResponse.data.related[0].reply_url
         content = asoulCheckResponse.data.related[0].reply.content
         return messageChainOf(PlainText("查重率:${rate}\n原文链接:${reply_url}\n" +

@@ -1,0 +1,20 @@
+{
+  "foods": [
+    {
+      "name": "毛玉牛乳",
+      "url": "http://todo",
+      "pic": "毛玉牛乳-test.jpg"
+    },
+    {
+      "name": "大莱莱",
+      "url": "http://todo",
+      "pic": "大莱莱-test.jpg"
+    },
+    {
+      "name": "福瑞",
+      "url": "http://todo",
+      "pic": "福瑞-test.jpg"
+    }
+
+  ]
+}

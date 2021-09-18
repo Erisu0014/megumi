@@ -3,6 +3,7 @@ package com.erisu.cloud.megumi.event
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
 import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
+import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
@@ -65,15 +66,24 @@ class BaseGroupEvent : SimpleListenerHost() {
     @EventHandler(priority = EventPriority.NORMAL)
     suspend fun onNudgedEvent(event: NudgeEvent): ListeningStatus {
         val bot = event.bot
+        val contact = event.from as NormalMember
+        val group = contact.group
+        val nudge = contact.nudge()
         if (event.from !is NormalMember) {
+            return ListeningStatus.LISTENING
+        }
+        //  迫害诗酱小助手
+        if (event.target.id == 3099396879L) {
+            val randomFile =
+                FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
+            val image = StreamMessageUtil.generateImage(group, File(randomFile), false)
+            group.sendMessage(image)
             return ListeningStatus.LISTENING
         }
         if (event.target.id != bot.id) {
             return ListeningStatus.LISTENING
         }
-        val contact = event.from as NormalMember
-        val group = contact.group
-        val nudge = contact.nudge()
+
 
         val random = Math.random()
         when {
@@ -88,17 +98,10 @@ class BaseGroupEvent : SimpleListenerHost() {
                 group.sendMessage(emojiLogic.getRandomImage(group)!!)
             }
             random < 0.5 -> {
-                val path = "${System.getProperty("user.dir")}${File.separator}static${File.separator}hutao"
-                val fileNames: MutableList<String> = mutableListOf()
-                val fileTree: FileTreeWalk =
-                    File((path)).walk()
-                fileTree.maxDepth(1) //需遍历的目录层次为1，即无须检查子目录
-                    .filter { it.isFile } //只挑选文件，不处理文件夹
-                    .filter { it.extension in listOf("mp3") }//选择扩展名为txt或者mp4的文件
-                    .forEach { fileNames.add(it.name) }//循环 处理符合条件的文件
-                val fileName = fileNames[Random.nextInt(0, fileNames.size - 1)]
+                val path = "${FileUtil.localStaticPath}${File.separator}hutao"
+                val randomFile = FileUtil.getRandomFile(path, "mp3")
                 group.sendMessage(StreamMessageUtil.generateAudio(group,
-                    File("$path${File.separator}$fileName").inputStream()))
+                    File(randomFile).inputStream()))
             }
             // 来点setu
             random < 0.6 -> {

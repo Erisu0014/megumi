@@ -223,4 +223,15 @@ class HelloService {
     fun memeNum() {
         // TODO: 2021/7/8  
     }
+
+    @Command(commandType = CommandType.GROUP, value = "迫害", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    suspend fun memento(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+        val group = subject as Group
+        if (group.id != 705366200L) {
+            return null
+        }
+        val randomFile = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
+        return StreamMessageUtil.generateImage(group, File(randomFile), false)
+    }
 }
