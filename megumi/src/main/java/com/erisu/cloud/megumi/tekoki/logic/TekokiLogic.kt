@@ -22,7 +22,10 @@ import kotlin.random.Random
 @Component
 class TekokiLogic {
     private val basicPath = "${FileUtil.localStaticPath}${File.separator}tekoki"
-    suspend fun tekoki(sender: User, group: Group): Message {
+    suspend fun tekoki(sender: User, group: Group): Message? {
+        if (group.id != 705366200L) {
+            return null
+        }
         val file =
             File("${basicPath}${File.separator}tekoki.json")
         val jsonStr = file.readLines().joinToString(separator = "") { it }
@@ -30,6 +33,6 @@ class TekokiLogic {
         val food = tekoki.foods[Random.nextInt(0, tekoki.foods.size)]
         val foodFile = File("${basicPath}${File.separator}food${File.separator}${food.pic}")
         val image = StreamMessageUtil.generateImage(group, foodFile, false)
-        return messageChainOf(At(sender.id), PlainText("今天冲${food.name}吧\n${food.url}"), image)
+        return messageChainOf(At(sender.id), PlainText("今天冲${food.name}(${food.website})吧\n${food.url}"), image)
     }
 }

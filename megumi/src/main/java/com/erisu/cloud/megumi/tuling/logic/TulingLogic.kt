@@ -25,8 +25,7 @@ class TulingLogic {
 
     fun onlineAnswering(text: String): Message? {
         val request =
-            TulingRequest(0, Perception(Text(text), null, null, null),
-                UserInfo(apikey, UUID.fastUUID().toString(true)))
+            TulingRequest(0, Perception(Text(text), null, null, null), UserInfo(apikey, UUID.fastUUID().toString(true)))
         val response = HttpUtil.post(tulingUrl, JSON.toJSONString(request), 2000)
         val tulingResponse = JSONObject.parseObject(response, TulingResponse::class.java)
         return if (tulingResponse.results.isNotEmpty() && tulingResponse.results[0].resultType == "text") {

@@ -166,11 +166,13 @@
             <artifactId>htmlunit</artifactId>
             <version>2.50.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.rometools/rome -->
         <dependency>
-            <groupId>com.github.rometools.rome</groupId>
+            <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
             <version>1.16.0</version>
         </dependency>
+
         <!--        <dependency>-->
         <!--            <groupId>net.mamoe</groupId>-->
         <!--            <artifactId>mirai-core-all</artifactId>-->

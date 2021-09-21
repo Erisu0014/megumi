@@ -29,7 +29,7 @@ class TekokiService {
 
     @Command(commandType = CommandType.GROUP, value = "今天冲什么", pattern = Pattern.REGEX)
     @Throws(Exception::class)
-    suspend fun tekoki(sender: User, messageChain: MessageChain, subject: Contact): Message {
+    suspend fun tekoki(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         return tekokiLogic.tekoki(sender, subject as Group)
     }
 

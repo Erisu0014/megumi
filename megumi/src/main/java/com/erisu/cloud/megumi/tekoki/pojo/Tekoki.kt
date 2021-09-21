@@ -5,5 +5,6 @@ data class Tekoki(var foods: MutableList<Food>) {
         var name: String,
         var url: String,
         var pic: String,
+        var website: String
     )
 }

@@ -1,6 +1,6 @@
 package com.erisu.cloud.megumi.rss.logic
 
-import com.rometools.rome.feed.synd.SyndContent
+
 import org.springframework.stereotype.Component
 
 /**

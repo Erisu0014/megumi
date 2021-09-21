@@ -10,6 +10,7 @@ import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
 import com.erisu.cloud.megumi.util.RedisUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
@@ -82,6 +83,7 @@ class HelloService {
     /**
      * 打卡下班
      */
+    @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "0 30 17 * * ?")
     fun clockOut() {
         GlobalScope.future {
@@ -240,6 +242,19 @@ class HelloService {
     suspend fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
         val words = messageChain.contentToString().split(" ", limit = 2)[1]
         return null
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    @Scheduled(cron = "00 00 23 * * ?")
+    @Throws(FileNotFoundException::class)
+    fun alertNothing() {
+        GlobalScope.future {
+            val bot = Bot.getInstance(username)
+            val groupId = 705366200L
+            val group = bot.getGroup(groupId) as Group
+            group.sendMessage(messageChainOf(PlainText("诗酱别冲了~")))
+
+        }
     }
 
 
