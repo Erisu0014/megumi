@@ -27,7 +27,7 @@ class TekokiService {
     @Resource
     private lateinit var tekokiLogic: TekokiLogic
 
-    @Command(commandType = CommandType.GROUP, value = "今天冲什么", pattern = Pattern.REGEX)
+    @Command(commandType = CommandType.GROUP, value = "今天冲什么", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun tekoki(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         return tekokiLogic.tekoki(sender, subject as Group)

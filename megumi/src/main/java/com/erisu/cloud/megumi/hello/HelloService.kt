@@ -5,6 +5,7 @@ import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
+import com.erisu.cloud.megumi.tuling.logic.TulingLogic
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
@@ -50,6 +51,8 @@ class HelloService {
     @Resource
     private lateinit var redisUtil: RedisUtil
 
+    @Resource
+    private lateinit var tulingLogic: TulingLogic
 //    @Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.EQUALS, alias = ["zaima", "zai"])
 //    @Throws(Exception::class)
 //    fun hello(sender: User, messageChain: MessageChain, subject: Contact): Message {
@@ -240,7 +243,11 @@ class HelloService {
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_AT, uuid = "bbd87b41253a4339a18f8013fa7a6700")
     @Throws(Exception::class)
     suspend fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-        val words = messageChain.contentToString().split(" ", limit = 2)[1]
+        val splitWords = messageChain.contentToString().split(" ", limit = 2)
+        if (splitWords[0] == "@3347359415"){
+            val words = splitWords[1]
+            return tulingLogic.eroOnlineAnswering(words)
+        }
         return null
     }
 
@@ -253,6 +260,20 @@ class HelloService {
             val groupId = 705366200L
             val group = bot.getGroup(groupId) as Group
             group.sendMessage(messageChainOf(PlainText("诗酱别冲了~")))
+
+        }
+    }
+
+
+    @OptIn(DelicateCoroutinesApi::class)
+    @Scheduled(cron = "00 30 08 * * ?")
+    @Throws(FileNotFoundException::class)
+    fun goSleep() {
+        GlobalScope.future {
+            val bot = Bot.getInstance(username)
+            val groupId = 705366200L
+            val group = bot.getGroup(groupId) as Group
+            group.sendMessage(messageChainOf(PlainText("alice快睡吧~")))
 
         }
     }
