@@ -24,6 +24,10 @@ object PatternUtil {
         return regex.find(content)?.value
     }
 
+    fun checkTime(timeline: String) {
+        timeline.replace(Regex("[0-9]{2}:[0-9]{2}")) { it.groupValues[0]}
+    }
+
 //    fun checkImg(content: String): MutableList<String>? {
 //        val imgTags = Regex("""<img src="(.+?)">""").findAll(content)
 //        val imgPattern = """(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|].(jpg|png|gif)"""
@@ -38,10 +42,23 @@ object PatternUtil {
 }
 
 fun main() {
-    print(Regex("""视频地址：(.+?)<br>""").find("<![CDATA[ #音乐游戏##音游##OSU##osu##osu!##Akatsuki##RX#<br><br>视频地址：https://www.bilibili.com/video/av974552008<br><br><iframe src=\"https://player.bilibili.com/player.html?aid=974552008&high_quality=1\" width=\"650\" height=\"477\" scrolling=\"no\" border=\"0\" frameborder=\"no\" framespacing=\"0\" allowfullscreen=\"true\"></iframe><br><br><img src=\"https://i2.hdslb.com/bfs/archive/1a8d2ab1a2cdd3bb36dc243e82941ee43e1aeaef.jpg\" referrerpolicy=\"no-referrer\"> ]]>")!!.groupValues[1])
-//    val checkCharacter =
-//        PatternUtil.checkImg("【公主连结日服】 主线剧情从第一部到第二部第九章已经全部开放浏览啦，即使是未在Normal关卡中解锁的剧情也可直接浏览！ 各位小伙伴也不妨尝试一下“剧情连续阅览功能”，这样可以轻松地将自己融入故事中哦！ 【最新のメインストーリーまで解放中！】 第2部第9章までの各章を、全て解放できます！もちろん、第1部メインストーリーも引き続き解放可能！ プリコネのストーリーをぜひお楽しみください！ 「連続ストーリー閲覧機能」を使えば、物語へのダイブも快適になりますよ♪<br><br><img src=\"https://i0.hdslb.com/bfs/album/a2d84212cfb6ef432c246e615e19e04e6d4bf8c3.jpg\" referrerpolicy=\"no-referrer\">test<img src=\"1\">")
-//    print(checkCharacter)
+    PatternUtil.checkTime("01:30 战斗開始\n" +
+            "01:22 晶\n" +
+            "01:17 姬塔　王晶技能加攻后ub\n" +
+            "01:11 水狼\n" +
+            "01:11 狗\n" +
+            "01:09 姬塔　自动\n" +
+            "01:09 野性狮鹫\n" +
+            "01:05 姬塔\n" +
+            "01:00 晶\n" +
+            "01:00 狗\n" +
+            "01:00 水狼\n" +
+            "01:00 黄骑\n" +
+            "00:54 姬塔\n" +
+            "00:53 野性狮鹫\n" +
+            "00:49 狗　ムーンライト前に(うまくいかない場合1:00黄骑UBやめ)\n" +
+            "00:47 狗　1:00黄骑UBやめた場合0:46に\n" +
+            "00:47 战斗終了　狼も残っているので0:46目標で")
 }
 
 

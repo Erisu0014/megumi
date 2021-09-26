@@ -240,11 +240,21 @@ class HelloService {
         return StreamMessageUtil.generateImage(group, File(randomFile), false)
     }
 
+    @Command(commandType = CommandType.GROUP, value = "憨批诗酱", pattern = Pattern.PREFIX)
+    suspend fun hanpi(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+        val group = subject as Group
+        if (group.id != 705366200L) {
+            return null
+        }
+        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}憨批诗酱.png")
+        return StreamMessageUtil.generateImage(group, file, false)
+    }
+
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_AT, uuid = "bbd87b41253a4339a18f8013fa7a6700")
     @Throws(Exception::class)
     suspend fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
         val splitWords = messageChain.contentToString().split(" ", limit = 2)
-        if (splitWords[0] == "@3347359415"){
+        if (splitWords[0] == "@3347359415") {
             val words = splitWords[1]
             return tulingLogic.eroOnlineAnswering(words)
         }
@@ -276,6 +286,36 @@ class HelloService {
             group.sendMessage(messageChainOf(PlainText("alice快睡吧~")))
 
         }
+    }
+
+    @Command(commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX,
+        value = "补时([0-9]+)([秒s])(.*)",
+        uuid = "6b7f91bdc34b4aa3a09527ee976ca622")
+    fun timeChecker(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val values = Regex("补时([0-9]+)([秒s])(.*)",
+            RegexOption.DOT_MATCHES_ALL).find(messageChain.contentToString())!!.groupValues
+        val timeLine = values[3]
+        val sub = 90 - values[1].toInt()
+        if (sub < 0 || sub > 90) {
+            return null
+        }
+        val newTimeLine = timeLine.replace(Regex("[0-9]{1,2}:[0-9]{2}")) {
+            val split = it.groupValues[0].split(":")
+            val now = split[0].toInt() * 60 + split[1].toInt() - sub
+            if (now < 0) "??:??"
+            else {
+                var t1 = ""
+                var t2 = ""
+                if ((now % 60).toString().length == 1) t2 = "0"
+                t2 += (now % 60).toString()
+                if ((now / 60).toString().length == 1) t1 = "0"
+                t1 += (now / 60).toString()
+                "$t1:$t2"
+            }
+
+        }
+        return messageChainOf(At(sender.id), PlainText("\n" + newTimeLine))
     }
 
 
