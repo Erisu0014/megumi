@@ -48,15 +48,15 @@ class RssService {
     @Value("\${qq.username}")
     private var username: Long = 0
 
-    @Command(commandType = CommandType.GROUP,
-        value = "test123",
-        pattern = Pattern.EQUALS,
-        uuid = "ab3d79a0df344cce93a7ad0ff52cf46b")
-    @Throws(Exception::class)
-    fun test(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        bangumi()
-        return null
-    }
+//    @Command(commandType = CommandType.GROUP,
+//        value = "test123",
+//        pattern = Pattern.EQUALS,
+//        uuid = "ab3d79a0df344cce93a7ad0ff52cf46b")
+//    @Throws(Exception::class)
+//    fun test(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        bangumi()
+//        return null
+//    }
 
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(fixedDelay = 360_000)

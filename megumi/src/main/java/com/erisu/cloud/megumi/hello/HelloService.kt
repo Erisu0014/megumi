@@ -1,5 +1,7 @@
 package com.erisu.cloud.megumi.hello
 
+import cn.hutool.core.img.ImgUtil
+import cn.hutool.core.lang.UUID
 import com.erisu.cloud.megumi.battle.util.MarsUtil
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
@@ -7,15 +9,13 @@ import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.tuling.logic.TulingLogic
 import com.erisu.cloud.megumi.util.FileUtil
-import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
 import com.erisu.cloud.megumi.util.RedisUtil
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
-import kotlinx.coroutines.withContext
 import lombok.extern.slf4j.Slf4j
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.awt.Color
+import java.awt.Font
 import java.io.File
 import java.io.FileNotFoundException
 import javax.annotation.Resource
@@ -316,6 +318,57 @@ class HelloService {
 
         }
         return messageChainOf(At(sender.id), PlainText("\n" + newTimeLine))
+    }
+
+    @Command(commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX,
+        value = "用时([0-9]+)([秒s])([0-9]+) ([0-9]+)",
+        uuid = "0c698a4360014d45865640ec6f2a6a98")
+    fun rewardTime(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val values = Regex("用时([0-9]+) ([0-9]+)",
+            RegexOption.DOT_MATCHES_ALL).find(messageChain.contentToString())!!.groupValues
+        val damage = values[1].toInt()
+        val hp = values[3].toInt()
+        if (damage < hp) {
+            return PlainText("这能打死boss吗？你再想想")
+        }
+        // TODO: 2021/9/27 这没啥意义啊感觉
+        return null
+    }
+
+    @Command(commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX,
+        value = "https://www.pixiv.net/artworks/(.+)",
+        uuid = "92d7d54b7803459e8b8a2a6b1dbffe2d")
+    suspend fun pixivToCat(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val group = subject as Group
+        val artwork = Regex("https://www.pixiv.net/artworks/(.+)").find(messageChain.contentToString())!!.groupValues[1]
+        val pic = FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}.png", "cache", null, null) ?: return null
+        val trueFileName =
+            "${System.getProperty("user.dir")}${File.separator}cache${File.separator}${UUID.fastUUID()}.png"
+        ImgUtil.pressText(pic.toFile(),
+            File(trueFileName),
+            "版权所有:alice${UUID.fastUUID()}",
+            Color.WHITE,
+            Font("黑体", Font.BOLD, 1),
+            0,
+            0,
+            0.0f)
+        var image: Image? = null
+        try {
+            image = StreamMessageUtil.generateImage(group, File(trueFileName), true)
+        } catch (e: Exception) {
+            println("图片下载失败")
+        }
+
+        return if (image != null) {
+            buildForwardMessage(subject) {
+                add(3347359415, "香草光钻", PlainText("http://www.pixiv.cat/${artwork}.png"))
+                add(3347359415, "香草光钻", image)
+            }
+        } else {
+            PlainText("http://www.pixiv.cat/${artwork}.png")
+        }
     }
 
 
