@@ -1,14 +1,12 @@
 package com.erisu.cloud.megumi.util
 
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.future.future
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.message.data.Image
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.Voice
-import net.mamoe.mirai.message.data.messageChainOf
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.util.concurrent.CompletableFuture
 
@@ -23,47 +21,72 @@ object StreamMessageUtil {
     }
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun generateImageAsync(group: Group, file: File, delete: Boolean): CompletableFuture<Image> =
         GlobalScope.future { generateImage(group, file, delete) }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun generateImageAsync(group: Group, inputStream: InputStream): CompletableFuture<Image> =
         GlobalScope.future { generateImage(group, inputStream) }
 
     suspend fun generateImage(group: Group, file: File, delete: Boolean): Image {
         val externalResource = file.toExternalResource()
         val image: Image = group.uploadImage(externalResource)
-        externalResource.close()
+        CoroutineScope(Dispatchers.IO).launch {
+            kotlin.runCatching {
+                externalResource.close()
+            }
+        }
         if (delete) file.delete()
         return image
     }
 
-    suspend fun generateAudio(group: Group, file: File, delete: Boolean): Voice {
+    suspend fun generateAudio(group: Group, file: File, delete: Boolean): Audio {
         val externalResource = file.toExternalResource()
-        val voice: Voice = group.uploadVoice(externalResource)
-        externalResource.close()
+        val audio: OfflineAudio = group.uploadAudio(externalResource)
+        CoroutineScope(Dispatchers.IO).launch {
+            kotlin.runCatching {
+                externalResource.close()
+            }
+        }
         if (delete) file.delete()
-        return voice
+        return audio
     }
 
-    suspend fun generateAudio(group: Group, inputStream: InputStream): Voice {
+    suspend fun generateAudio(group: Group, inputStream: InputStream): Audio {
         val externalResource = inputStream.toExternalResource()
-        val voice: Voice = group.uploadVoice(externalResource)
-        externalResource.close()
-        return voice
+        val audio: OfflineAudio = group.uploadAudio(externalResource)
+        CoroutineScope(Dispatchers.IO).launch {
+            kotlin.runCatching {
+                externalResource.close()
+                inputStream.close()
+            }
+        }
+        return audio
     }
 
-    suspend fun generateAudio(group: Group, inputStream: InputStream,formatName:String): Voice {
+    suspend fun generateAudio(group: Group, inputStream: InputStream, formatName: String): Audio {
         val externalResource = inputStream.toExternalResource(formatName)
-        val voice: Voice = group.uploadVoice(externalResource)
-        externalResource.close()
-        return voice
+        val audio: OfflineAudio = group.uploadAudio(externalResource)
+        CoroutineScope(Dispatchers.IO).launch {
+            kotlin.runCatching {
+                externalResource.close()
+                inputStream.close()
+            }
+        }
+        return audio
     }
 
+    @Throws(IOException::class)
     suspend fun generateImage(group: Group, inputStream: InputStream): Image {
         val externalResource = inputStream.toExternalResource()
         val image: Image = group.uploadImage(externalResource)
-        externalResource.close()
-        inputStream.close()
+        CoroutineScope(Dispatchers.IO).launch {
+            kotlin.runCatching {
+                externalResource.close()
+                inputStream.close()
+            }
+        }
         return image
     }
 
