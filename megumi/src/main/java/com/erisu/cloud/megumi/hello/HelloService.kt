@@ -13,10 +13,12 @@ import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
 import com.erisu.cloud.megumi.util.RedisUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
+import com.erisu.cloud.megumi.util.VoiceUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import lombok.extern.slf4j.Slf4j
+import net.bramp.ffmpeg.FFmpeg
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -25,7 +27,6 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.awt.Color
@@ -147,7 +148,10 @@ class HelloService {
     @Command(commandType = CommandType.GROUP, value = "谁是曲奇", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun shigetora(sender: User, messageChain: MessageChain, group: Group): Message {
-        return StreamMessageUtil.generateAudio(group, ClassPathResource("shigetora.m4a").inputStream, "m4a")
+        val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}shigetora.m4a"
+        VoiceUtil.convertToAmr(path)
+        val file = File("${FileUtil.localCachePath}${File.separator}output.pcm")
+        return StreamMessageUtil.generateAudio(group, file, false)
     }
 
 //    @Command(commandType = CommandType.GROUP, value = "切换图片模式", pattern = Pattern.EQUALS)
@@ -343,7 +347,13 @@ class HelloService {
     suspend fun pixivToCat(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val group = subject as Group
         val artwork = Regex("https://www.pixiv.net/artworks/(.+)").find(messageChain.contentToString())!!.groupValues[1]
-        val pic = FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}.png", "cache", null, null) ?: return null
+        val artName = if (artwork.toIntOrNull() == null) {
+            val find = Regex("([0-9]+)#big_([0-9])").find(artwork) ?: return null
+            """${find.groupValues[1]}-${find.groupValues[2].toInt() + 1}"""
+        } else {
+            artwork
+        }
+        val pic = FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artName}.png", "cache", null, null) ?: return null
         val trueFileName =
             "${System.getProperty("user.dir")}${File.separator}cache${File.separator}${UUID.fastUUID()}.png"
         ImgUtil.pressText(pic.toFile(),
@@ -363,7 +373,7 @@ class HelloService {
 
         return if (image != null) {
             buildForwardMessage(subject) {
-                add(3347359415, "香草光钻", PlainText("http://www.pixiv.cat/${artwork}.png"))
+                add(3347359415, "香草光钻", PlainText("http://www.pixiv.cat/${artName}.png"))
                 add(3347359415, "香草光钻", image)
             }
         } else {

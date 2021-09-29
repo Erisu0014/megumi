@@ -16,6 +16,8 @@ import kotlin.random.Random
 object FileUtil {
     val localStaticPath = "${System.getProperty("user.dir")}${File.separator}static"
 
+    val localCachePath = "${System.getProperty("user.dir")}${File.separator}cache"
+
     /**
      * 下载文件---返回下载后的文件存储路径
      *
