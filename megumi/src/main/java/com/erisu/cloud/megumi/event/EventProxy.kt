@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Lazy
 import java.io.File
 import javax.annotation.PostConstruct
 import javax.annotation.Resource
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.max
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.jvm.kotlinFunction
@@ -88,7 +89,7 @@ class EventProxy : SimpleListenerHost() {
                 }
 //               answer = method.invoke(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
             } catch (e: Exception) {
-                handleException(e, messageEvent)
+                handleException(coroutineContext, e)
             }
             if (answer !is Message || answer is EmptyMessageChain) continue
             else messageEvent.subject.sendMessage(buildMessage(messageEvent.subject as Group, answer))
@@ -119,8 +120,8 @@ class EventProxy : SimpleListenerHost() {
         }
     }
 
-    private fun handleException(e: Throwable, event: MessageEvent) {
-        e.printStackTrace()
-//        event.subject.sendMessage("唔，出问题了，联系爱丽丝姐姐看看吧")
+    override fun handleException(context: CoroutineContext, exception: Throwable) {
+        println("进入异常处理")
+        super.handleException(context, exception)
     }
 }

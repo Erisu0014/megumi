@@ -24,8 +24,10 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
+import net.mamoe.mirai.utils.MiraiInternalApi
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -205,6 +207,27 @@ class HelloService {
         return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
+    @OptIn(MiraiInternalApi::class)
+    @Command(commandType = CommandType.GROUP,
+        value = "更新半月刊",
+        pattern = Pattern.PREFIX,
+        uuid = "2f37e8fd963c410e88ecaeaf5fe8086a")
+    @Throws(Exception::class)
+    suspend fun updateHalfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        if (sender.id == 1269732086L) {
+            if (messageChain[2] is GroupImage) {
+                val image = messageChain[2] as GroupImage
+                val url = image.queryUrl()
+                val path =
+                    FileUtil.downloadHttpUrl(url, "${FileUtil.localStaticPath}${File.separator}basic", "png", "半月刊")
+                if (path != null) {
+                    return PlainText("更新半月刊成功喵")
+                }
+            }
+        }
+        return PlainText("更新半月刊失败喵")
+    }
+
     @Command(commandType = CommandType.GROUP, value = "规划", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun bcrPlan(sender: User, messageChain: MessageChain, subject: Contact?): Message {
@@ -226,6 +249,15 @@ class HelloService {
     suspend fun krEquipment(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val file =
             File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}孤儿装.jpg")
+        return StreamMessageUtil.generateImage(subject as Group, file, false)
+    }
+
+
+    @Command(commandType = CommandType.GROUP, value = "赛程", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    suspend fun s11lol(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        val file =
+            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}lol${File.separator}s11赛程.jpg")
         return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
@@ -342,35 +374,39 @@ class HelloService {
 
     @Command(commandType = CommandType.GROUP,
         pattern = Pattern.REGEX,
-        value = "https://www.pixiv.net/artworks/(.+)",
+        value = "https?://www.pixiv.net/artworks/(.+)",
         uuid = "92d7d54b7803459e8b8a2a6b1dbffe2d")
     suspend fun pixivToCat(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val group = subject as Group
-        val artwork = Regex("https://www.pixiv.net/artworks/(.+)").find(messageChain.contentToString())!!.groupValues[1]
+        val artwork =
+            Regex("https?://www.pixiv.net/artworks/(.+)").find(messageChain.contentToString())!!.groupValues[1]
         val artName = if (artwork.toIntOrNull() == null) {
             val find = Regex("([0-9]+)#big_([0-9])").find(artwork) ?: return null
             """${find.groupValues[1]}-${find.groupValues[2].toInt() + 1}"""
         } else {
             artwork
         }
-        val pic = FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artName}.png", "cache", null, null) ?: return null
         val trueFileName =
-            "${System.getProperty("user.dir")}${File.separator}cache${File.separator}${UUID.fastUUID()}.png"
-        ImgUtil.pressText(pic.toFile(),
-            File(trueFileName),
-            "版权所有:alice${UUID.fastUUID()}",
-            Color.WHITE,
-            Font("黑体", Font.BOLD, 1),
-            0,
-            0,
-            0.0f)
+            "${System.getProperty("user.dir")}${File.separator}cache${File.separator}${artName}.png"
         var image: Image? = null
+        if (!File(trueFileName).exists()) {
+            // 下载图片
+            val pic =
+                FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artName}.png", "cache", null, null) ?: return null
+            ImgUtil.pressText(pic.toFile(),
+                File(trueFileName),
+                "版权所有:alice${UUID.fastUUID()}",
+                Color.WHITE,
+                Font("黑体", Font.BOLD, 1),
+                0,
+                0,
+                0.0f)
+        }
         try {
-            image = StreamMessageUtil.generateImage(group, File(trueFileName), true)
+            image = StreamMessageUtil.generateImage(group, File(trueFileName), false)
         } catch (e: Exception) {
             println("图片下载失败")
         }
-
         return if (image != null) {
             buildForwardMessage(subject) {
                 add(3347359415, "香草光钻", PlainText("http://www.pixiv.cat/${artName}.png"))

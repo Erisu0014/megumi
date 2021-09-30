@@ -6,6 +6,7 @@ import okhttp3.Request
 import java.io.File
 import java.nio.file.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -30,7 +31,8 @@ object FileUtil {
     @Throws(Exception::class)
     fun downloadHttpUrl(url: String, folder: String, suffix: String?, name: String?): Path? {
         try {
-            val client = OkHttpClient()
+            val client =
+                OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).build()
             val request = Request.Builder().url(url).build()
             val response = client.newCall(request).execute()
             //转化成byte数组
