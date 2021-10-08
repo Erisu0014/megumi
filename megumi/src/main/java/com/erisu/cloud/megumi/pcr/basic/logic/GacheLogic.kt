@@ -39,9 +39,9 @@ class GachaLogic {
             File("${System.getProperty("user.dir")}${File.separator}static${File.separator}gacha_ver.json")
         var json = ""
         val gachaPath = FileUtil.downloadHttpUrl("https://api.redive.lolikon.icu/gacha/default_gacha.json",
-            "static", null, "gacha.json")
-//        val gachaFile = File("static${File.separator}gacha.json")
-        gachaPath!!.toFile().readLines(StandardCharsets.UTF_8).forEach { json += it }
+            "static", null, "gacha.json") ?: return PlainText("更新失败")
+        if (gachaPath.code != 200) return PlainText("更新失败")
+        gachaPath.path!!.toFile().readLines(StandardCharsets.UTF_8).forEach { json += it }
         val avatarList: MutableList<String> = mutableListOf()
         File("avatar").listFiles()!!.forEach { avatarList.add(it.name) }
         val gacha = JSON.parseObject(json, PcrGacha::class.java)

@@ -30,21 +30,29 @@ class NameLogic {
 
     @Throws(Exception::class)
     suspend fun getAvatar(sender: User, group: Group, princessId: String): Message {
-        return messageChainOf(
-            At(sender.id),
-            getAvatarImage(group, princessId),
-            PlainText(pcrInitData.idMap[princessId]!![0])
-        )
+        val avatarImage = getAvatarImage(group, princessId)
+        return if (avatarImage == null) {
+            messageChainOf(
+                At(sender.id),
+                PlainText(pcrInitData.idMap[princessId]!![0])
+            )
+        } else {
+            messageChainOf(
+                At(sender.id),
+                avatarImage,
+                PlainText(pcrInitData.idMap[princessId]!![0])
+            )
+        }
+
     }
 
 
     @Throws(Exception::class)
-    suspend fun getAvatarImage(group: Group, princessId: String): Message {
+    suspend fun getAvatarImage(group: Group, princessId: String): Message? {
         val (_, _, _, avatarUrl) = avatarMapper.searchMaxStarAvatar(princessId)
-        val imagePath = FileUtil.downloadHttpUrl(avatarUrl, "image", null, null)
-        return if (imagePath != null) {
-            return StreamMessageUtil.generateImage(group, imagePath.toFile(), true)
-        } else PlainText("")
+        val imageResponse = FileUtil.downloadHttpUrl(avatarUrl, "image", null, null) ?: return null
+        if (imageResponse.code != 200) return null
+        return StreamMessageUtil.generateImage(group, imageResponse.path!!.toFile(), true)
     }
 
     fun findCharacter(sender: User, rawMessage: String, group: Group, regexStr: String): Message {

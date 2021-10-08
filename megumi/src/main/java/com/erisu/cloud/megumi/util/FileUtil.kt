@@ -29,13 +29,16 @@ object FileUtil {
      * @return
      */
     @Throws(Exception::class)
-    fun downloadHttpUrl(url: String, folder: String, suffix: String?, name: String?): Path? {
+    fun downloadHttpUrl(url: String, folder: String, suffix: String?, name: String?): FileResponse? {
         try {
             val client =
                 OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).build()
             val request = Request.Builder().url(url).build()
             val response = client.newCall(request).execute()
             //转化成byte数组
+            if (!response.isSuccessful) {
+                return FileResponse(response.code(), response.body()!!.string(), null)
+            }
             val bytes = Objects.requireNonNull(response.body())!!.bytes()
             var filename = name ?: url.substringAfterLast("/")
             val folderPath = Paths.get(folder)
@@ -47,7 +50,8 @@ object FileUtil {
             val filePath = Paths.get(folder + File.separator + filename)
             val exists = Files.exists(filePath, LinkOption.NOFOLLOW_LINKS)
             if (exists) Files.delete(filePath)
-            return Files.write(filePath, bytes, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)
+            val path = Files.write(filePath, bytes, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)
+            return FileResponse(response.code(), null, path)
         } catch (e: Exception) {
             e.printStackTrace()
         }

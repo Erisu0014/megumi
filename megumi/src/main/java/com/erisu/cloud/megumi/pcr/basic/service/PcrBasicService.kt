@@ -100,7 +100,7 @@ class PcrBasicService {
             PlainText("无体检数据")
         } else {
             val pcrPrincess = pcrInitData.princessMap[character]
-            val image = nameLogic.getAvatarImage(subject as Group, character)
+            val image = nameLogic.getAvatarImage(subject as Group, character) ?: return PlainText("体检发生异常，请联系alice")
             return if (pcrPrincess != null) messageChainOf(At(sender.id), image, PlainText(pcrPrincess.toString()))
             else PlainText("无体检数据")
         }

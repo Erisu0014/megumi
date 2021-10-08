@@ -83,10 +83,9 @@ class RssService {
                     chainBuilder.append(PlainText("$title\n- - - - - -\n"))
                     chainBuilder.append(PlainText(parseText))
                     parseImage.forEach { it2 ->
-                        println(it2)
-                        val path = FileUtil.downloadHttpUrl(it2, "cache", null, null)
-                        if (path != null) {
-                            val image = StreamMessageUtil.generateImage(group, path.toFile(), true)
+                        val pathResponse = FileUtil.downloadHttpUrl(it2, "cache", null, null)
+                        if (pathResponse != null && pathResponse.code == 200) {
+                            val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile(), true)
                             chainBuilder.append(image)
                         }
                     }
@@ -97,7 +96,7 @@ class RssService {
         }
     }
 
-//    @Scheduled(cron = "0 0 9 * * ?")
+    //    @Scheduled(cron = "0 0 9 * * ?")
     fun bangumi() {
         GlobalScope.future {
             val url = "http://1.117.219.198:1200/bangumi/calendar/today"
@@ -114,10 +113,9 @@ class RssService {
                 chainBuilder.append(PlainText("$title\n- - - - - -\n"))
                 chainBuilder.append(PlainText(parseText))
                 parseImage.forEach { it2 ->
-                    println(it2)
-                    val path = FileUtil.downloadHttpUrl(it2, "cache", null, null)
-                    if (path != null) {
-                        val image = StreamMessageUtil.generateImage(group, path.toFile(), true)
+                    val pathResponse = FileUtil.downloadHttpUrl(it2, "cache", null, null)
+                    if (pathResponse != null && pathResponse.code == 200) {
+                        val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile(), true)
                         chainBuilder.append(image)
                     }
                 }

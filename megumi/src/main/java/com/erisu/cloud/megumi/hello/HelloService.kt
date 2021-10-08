@@ -169,9 +169,9 @@ class HelloService {
     suspend fun showImage(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val content = messageChain.contentToString()
         val imageUrl = checkRemoteImage(content) ?: return null
-        val path = FileUtil.downloadHttpUrl(imageUrl, "image", null, null)
-        return if (path != null) {
-            val externalResource: ExternalResource = path.toFile().toExternalResource()
+        val pathResponse = FileUtil.downloadHttpUrl(imageUrl, "image", null, null) ?: return null
+        return if (pathResponse.code != 200) {
+            val externalResource: ExternalResource = pathResponse.path!!.toFile().toExternalResource()
             subject.uploadImage(externalResource)
         } else {
             null
@@ -183,9 +183,9 @@ class HelloService {
     suspend fun showAudio(sender: User, messageChain: MessageChain, group: Group): Message? {
         val content = messageChain.contentToString()
         val audioUrl = checkRemoteAudio(content) ?: return null
-        val path = FileUtil.downloadHttpUrl(audioUrl, "audio", null, null)
-        return if (path != null) {
-            val externalResource: ExternalResource = path.toFile().toExternalResource()
+        val pathResponse = FileUtil.downloadHttpUrl(audioUrl, "audio", null, null) ?: return null
+        return if (pathResponse.code != 200) {
+            val externalResource: ExternalResource = pathResponse.path!!.toFile().toExternalResource()
             group.uploadVoice(externalResource)
         } else {
             null
@@ -377,51 +377,6 @@ class HelloService {
         }
         // TODO: 2021/9/27 这没啥意义啊感觉
         return null
-    }
-
-    @Command(commandType = CommandType.GROUP,
-        pattern = Pattern.REGEX,
-        value = "https?://www.pixiv.net/artworks/(.+)",
-        uuid = "92d7d54b7803459e8b8a2a6b1dbffe2d")
-    suspend fun pixivToCat(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val group = subject as Group
-        val artwork =
-            Regex("https?://www.pixiv.net/artworks/(.+)").find(messageChain.contentToString())!!.groupValues[1]
-        val artName = if (artwork.toIntOrNull() == null) {
-            val find = Regex("([0-9]+)#big_([0-9])").find(artwork) ?: return null
-            """${find.groupValues[1]}-${find.groupValues[2].toInt() + 1}"""
-        } else {
-            artwork
-        }
-        val trueFileName =
-            "${System.getProperty("user.dir")}${File.separator}cache${File.separator}${artName}.png"
-        var image: Image? = null
-        if (!File(trueFileName).exists()) {
-            // 下载图片
-            val pic =
-                FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artName}.png", "cache", null, null) ?: return null
-            ImgUtil.pressText(pic.toFile(),
-                File(trueFileName),
-                "版权所有:alice${UUID.fastUUID()}",
-                Color.WHITE,
-                Font("黑体", Font.BOLD, 1),
-                0,
-                0,
-                0.0f)
-        }
-        try {
-            image = StreamMessageUtil.generateImage(group, File(trueFileName), false)
-        } catch (e: Exception) {
-            println("图片下载失败")
-        }
-        return if (image != null) {
-            buildForwardMessage(subject) {
-                add(3347359415, "香草光钻", PlainText("http://www.pixiv.cat/${artName}.png"))
-                add(3347359415, "香草光钻", image)
-            }
-        } else {
-            PlainText("http://www.pixiv.cat/${artwork}.png")
-        }
     }
 
 

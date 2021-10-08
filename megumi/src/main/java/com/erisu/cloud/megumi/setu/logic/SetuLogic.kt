@@ -49,13 +49,13 @@ class SetuLogic {
 //            val imageList: MutableList<Image> = mutableListOf()
             if (isR18 == 0) {
                 setuResponse.data.forEach {
-                    val path = FileUtil.downloadHttpUrl(it.urls.original!!, "cache", null, null)
+                    val response = FileUtil.downloadHttpUrl(it.urls.original!!, "cache", null, null) ?: return null
 //                    if (path != null) imageList.add(StreamMessageUtil.generateImage(group, path.toFile(), true))
                     //单条发送
                     val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
-                    if (path != null) {
+                    if (response.code != 200) {
                         group.sendMessage(forwardSetuMessage(PlainText(text),
-                            StreamMessageUtil.generateImage(group, path.toFile(), true), group))
+                            StreamMessageUtil.generateImage(group, response.path!!.toFile(), true), group))
                     }
                 }
 //                messageChainOf(*imageList.toTypedArray())
@@ -63,7 +63,7 @@ class SetuLogic {
                 setuResponse.data.forEach { group.sendMessage(it.urls.original.toString()) }
 //                PlainText(setuResponse.data[0].urls.original.toString())
             }
-        } else if (setuResponse.data.isNullOrEmpty()) {
+        } else if (setuResponse.data.isEmpty()) {
             group.sendMessage("那是什么色图？")
         } else {
             group.sendMessage("色图下载失败")

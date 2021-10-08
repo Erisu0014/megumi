@@ -22,7 +22,8 @@ class PcrEmojiLogic {
 
     suspend fun getRandomImage(group: Group): Image? {
         val (_, _, path) = emojiMapper.selectRandom()
-        val imagePath = FileUtil.downloadHttpUrl(path, "image", null, null)
-        return imagePath?.let { StreamMessageUtil.generateImage(group, imagePath.toFile(), true) }
+        val imageResponse = FileUtil.downloadHttpUrl(path, "image", null, null) ?: return null
+        if (imageResponse.code != 200) return null
+        return imageResponse.path?.let { StreamMessageUtil.generateImage(group, it.toFile(), true) }
     }
 }
