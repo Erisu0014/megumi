@@ -65,7 +65,6 @@ class PixivLogic {
 //        }
 //    }
 
-    @MiraiExperimentalApi
     suspend fun getPixivCatImage(messageChain: MessageChain, subject: Contact): Message? {
         val group = subject as Group
         val artwork =
@@ -93,7 +92,7 @@ class PixivLogic {
                         val p = FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}-$i.png", "cache", null, null)
                             ?: return null
                         if (p.code == 200) {
-                            pic.path?.let { paths.add(it) }
+                            p.path?.let { paths.add(it) }
                         }
                     } else {
                         paths.add(Paths.get(fn))
@@ -103,29 +102,33 @@ class PixivLogic {
             } else {
                 pic.path?.let { paths.add(it) }
             }
-//            val builder: ForwardMessageBuilder = ForwardMessageBuilder(group)
-//            val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
+            val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
             paths.forEach {
                 val image = getImage(group, it)
-                images.add(image)
+//                images.add(image)
+                val node: ForwardMessage.Node =
+                    ForwardMessage.Node(3099396879L, System.currentTimeMillis().toInt(), "诗姐姐", image)
+                nodes.add(node)
             }
-            return messageChainOf(*images.toTypedArray())
-//            return buildForwardMessage(subject) {
-//                addAll(nodes)
-//            }
+//            return messageChainOf(*images.toTypedArray())
+            return buildForwardMessage(subject) {
+                addAll(nodes)
+            }
         }
         return null
     }
 
     suspend fun getImage(group: Group, path: Path): Image {
-        ImgUtil.pressText(path.toFile(),
+        ImgUtil.pressText(
+            path.toFile(),
             File(path.pathString),  //  覆盖式重写
             "版权所有:alice${UUID.fastUUID()}",
             Color.WHITE,
             Font("黑体", Font.BOLD, 1),
             0,
             0,
-            0.0f)
+            0.0f
+        )
         return StreamMessageUtil.generateImage(group, File(path.pathString), false)
     }
 

@@ -23,10 +23,12 @@ class PixivService {
     @Resource
     private lateinit var pixivLogic: PixivLogic
 
-    @Command(commandType = CommandType.GROUP,
+    @Command(
+        commandType = CommandType.GROUP,
         pattern = Pattern.REGEX,
         value = "https?://www.pixiv.net/artworks/(.+)",
-        uuid = "92d7d54b7803459e8b8a2a6b1dbffe2d")
+        uuid = "92d7d54b7803459e8b8a2a6b1dbffe2d"
+    )
     suspend fun pixivToCat(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         return pixivLogic.getPixivCatImage(messageChain, subject)
     }
