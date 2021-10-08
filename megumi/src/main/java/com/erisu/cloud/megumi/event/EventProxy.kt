@@ -78,7 +78,7 @@ class EventProxy : SimpleListenerHost() {
         for ((method, bean) in methodLites) {
             var answer: Any? = null
             val command = method.getAnnotation(Command::class.java)
-            if (Math.random() > command.probaility) return ListeningStatus.LISTENING
+            if (Math.random() > command.probaility) continue
             //  随机概率小于设定概率，执行
             try {
                 val a = method.kotlinFunction

@@ -245,7 +245,10 @@ class HelloService {
         return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
-    @Command(commandType = CommandType.GROUP, value = "孤儿装", pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP,
+        value = "孤儿装",
+        pattern = Pattern.EQUALS,
+        uuid = "530108b76cf440ab8551d17ea2cb9e12")
     @Throws(Exception::class)
     suspend fun krEquipment(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val file =
@@ -254,7 +257,10 @@ class HelloService {
     }
 
 
-    @Command(commandType = CommandType.GROUP, value = "赛程", pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP,
+        value = "赛程",
+        pattern = Pattern.EQUALS,
+        uuid = "95825f0b39c240ce8e6f11dcb0bc86d6")
     @Throws(Exception::class)
     suspend fun s11lol(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val file =
