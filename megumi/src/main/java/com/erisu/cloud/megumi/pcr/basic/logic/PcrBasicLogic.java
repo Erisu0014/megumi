@@ -1,7 +1,5 @@
 package com.erisu.cloud.megumi.pcr.basic.logic;
 
-import com.erisu.cloud.megumi.pcr.basic.mapper.PcrAvatarMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -15,10 +13,10 @@ import javax.annotation.Resource;
  **/
 @Component
 public class PcrBasicLogic implements ApplicationRunner {
-    @Value("${basicUrl}")
-    private String basicUrl;
-    @Resource
-    private PcrAvatarMapper avatarMapper;
+    //    @Value("${basicUrl}")
+//    private String basicUrl;
+//    @Resource
+//    private PcrAvatarMapper avatarMapper;
     @Resource
     private PcrInitData pcrInitData;
 

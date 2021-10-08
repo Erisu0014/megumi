@@ -37,8 +37,7 @@ class TulingService {
     private lateinit var messageUtil: MessageUtil
 
     @Command(commandType = CommandType.GROUP,
-        value = "",
-        pattern = Pattern.CONTAINS,
+        pattern = Pattern.CHECK,
         uuid = "8c7f68756891484aa2a7ee25e04f4c4a")
     fun onlineAnswering(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val group = subject as Group

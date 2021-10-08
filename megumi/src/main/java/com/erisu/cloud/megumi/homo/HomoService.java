@@ -1,5 +1,6 @@
 package com.erisu.cloud.megumi.homo;
 
+import cn.hutool.core.util.NumberUtil;
 import com.erisu.cloud.megumi.command.CommandType;
 import com.erisu.cloud.megumi.command.Command;
 import com.erisu.cloud.megumi.plugin.pojo.Model;
@@ -28,9 +29,13 @@ public class HomoService {
 
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK, probaility = 0.05)
     public Message homoNum(User sender, MessageChain messageChain, Contact subject) {
+        String num = messageChain.contentToString();
+        if (!NumberUtil.isNumber(num)) {
+            return null;
+        }
         String homo = "";
         try {
-            homo = homoLogic.homo(((PlainText) messageChain.get(1)).getContent());
+            homo = homoLogic.homo(num);
             return new PlainText(homo);
         } catch (Exception e) {
             e.printStackTrace();

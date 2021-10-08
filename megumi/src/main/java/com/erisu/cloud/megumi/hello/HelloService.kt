@@ -58,11 +58,12 @@ class HelloService {
 
     @Resource
     private lateinit var tulingLogic: TulingLogic
-//    @Command(commandType = CommandType.GROUP, value = "在吗", pattern = Pattern.EQUALS, alias = ["zaima", "zai"])
-//    @Throws(Exception::class)
-//    fun hello(sender: User, messageChain: MessageChain, subject: Contact): Message {
-//        return PlainText("はい！私はいつも貴方の側にいるよ～")
-//    }
+
+    @Command(commandType = CommandType.GROUP, value = "alice死了吗", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    fun hello(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        return PlainText("alice没死哦")
+    }
 
 
 //    @Command(commandType = CommandType.GROUP, value = "test1234", pattern = Pattern.EQUALS)

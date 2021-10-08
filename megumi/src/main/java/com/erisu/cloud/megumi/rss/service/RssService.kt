@@ -97,7 +97,7 @@ class RssService {
         }
     }
 
-    @Scheduled(cron = "0 0 9 * * ?")
+//    @Scheduled(cron = "0 0 9 * * ?")
     fun bangumi() {
         GlobalScope.future {
             val url = "http://1.117.219.198:1200/bangumi/calendar/today"

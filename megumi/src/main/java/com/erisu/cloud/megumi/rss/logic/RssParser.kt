@@ -42,8 +42,8 @@ class RssParser {
     fun parseVideo(title: String, description: String): String {
         var result = ""
         result += title.removeSurrounding("<![CDATA[ ", " ]]>").trim()
-        val video_url = Regex("""视频地址：(.+?)<br>""").find(description)!!.groupValues[1]
-        result += "\n视频地址：$video_url"
+        val videoUrl = Regex("""视频地址：(.+?)<br>""").find(description)!!.groupValues[1]
+        result += "\n视频地址：$videoUrl"
         return result
     }
 }
