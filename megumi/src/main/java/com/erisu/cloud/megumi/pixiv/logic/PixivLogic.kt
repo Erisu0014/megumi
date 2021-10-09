@@ -71,14 +71,13 @@ class PixivLogic {
             Regex("https?://www.pixiv.net/artworks/(.+)").find(messageChain.contentToString())!!.groupValues[1]
         val trueFileName =
             "${System.getProperty("user.dir")}${File.separator}cache${File.separator}${artwork}.png"
-        val images: MutableList<Image> = mutableListOf()
         val paths: MutableList<Path> = mutableListOf()
         if (!File(trueFileName).exists()) {
             // 下载图片
             val pic =
                 FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}.png", "cache", null, null) ?: return null
             if (pic.code == 404) {
-                var pixivNum: Int = 0
+                var pixivNum = 0
                 val regex = Regex("<p>這個作品ID中有 ([0-9]+) 張圖片", RegexOption.DOT_MATCHES_ALL)
                 pic.response?.let {
                     val find = regex.find(it)
@@ -94,26 +93,22 @@ class PixivLogic {
                         if (p.code == 200) {
                             p.path?.let { paths.add(it) }
                         }
-                    } else {
-                        paths.add(Paths.get(fn))
-                    }
-
+                    } else paths.add(Paths.get(fn))
                 }
-            } else {
-                pic.path?.let { paths.add(it) }
-            }
-            val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
-            paths.forEach {
-                val image = getImage(group, it)
+            } else pic.path?.let { paths.add(it) }
+        } else paths.add(Paths.get(trueFileName))
+        // 构建消息主体
+        val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
+        paths.forEach {
+            val image = getImage(group, it)
 //                images.add(image)
-                val node: ForwardMessage.Node =
-                    ForwardMessage.Node(3099396879L, System.currentTimeMillis().toInt(), "诗姐姐", image)
-                nodes.add(node)
-            }
+            val node: ForwardMessage.Node =
+                ForwardMessage.Node(3099396879L, System.currentTimeMillis().toInt(), "诗姐姐", image)
+            nodes.add(node)
+        }
 //            return messageChainOf(*images.toTypedArray())
-            return buildForwardMessage(subject) {
-                addAll(nodes)
-            }
+        return buildForwardMessage(subject) {
+            addAll(nodes)
         }
         return null
     }

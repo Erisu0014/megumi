@@ -92,7 +92,11 @@ class EventProxy : SimpleListenerHost() {
                 handleException(coroutineContext, e)
             }
             if (answer !is Message || answer is EmptyMessageChain) continue
-            else messageEvent.subject.sendMessage(buildMessage(messageEvent.subject as Group, answer))
+            else {
+                val messageReceipt =
+                    messageEvent.subject.sendMessage(buildMessage(messageEvent.subject as Group, answer))
+                if (command.isRecalled) messageReceipt.recallIn(command.recallTime * 1000)
+            }
         }
         return ListeningStatus.LISTENING
     }

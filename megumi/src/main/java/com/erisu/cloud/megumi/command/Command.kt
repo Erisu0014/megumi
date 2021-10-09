@@ -15,5 +15,8 @@ annotation class Command(
      *
      */
     val probaility: Double = 1.0, //没想好怎么实现更优雅
+
+    val isRecalled: Boolean = false,//是否撤回消息
+    val recallTime: Long = 0,// 撤回时间:s
 )
 
