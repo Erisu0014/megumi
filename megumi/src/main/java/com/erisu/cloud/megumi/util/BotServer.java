@@ -31,9 +31,6 @@ public class BotServer implements ApplicationRunner {
 
 
 
-//    @Value("${log.path}")
-//    String logs;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         MegumiBot.startBot(username, password, "deviceInfo.json", events);

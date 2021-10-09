@@ -6,9 +6,7 @@ import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.utils.BotConfiguration;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
 import java.util.List;
 
 
@@ -19,16 +17,13 @@ import java.util.List;
  **/
 @Slf4j
 public class MegumiBot {
-    @Value("${qq.username}")
-    private static long username;
-
 
     public static void startBot(Long account, String pwd, String deviceInfo, List<ListenerHost> events) {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo(deviceInfo);
         config.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PHONE);
         config.setNetworkLoggerSupplier(Bot::getLogger);
-        config.redirectNetworkLogToDirectory(new File("logs"));
+        config.redirectBotLogToDirectory();
         final Bot megumi = BotFactory.INSTANCE.newBot(account, pwd, config);
         megumi.login();
         // 注册事件
