@@ -7,6 +7,7 @@ import com.erisu.cloud.megumi.song.pojo.RecommendSongResponse
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MusicKind
 import net.mamoe.mirai.message.data.MusicShare
+import net.mamoe.mirai.message.data.PlainText
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import kotlin.random.Random
@@ -30,7 +31,7 @@ class MusicLogic {
     /**
      *
      */
-    public fun getMusic(type: Int, keywords: String): Pair<Message, String?>? {
+    fun getMusic(type: Int, keywords: String): Pair<Message, String?>? {
         if (keywords.length > 100) {
             return null
         }
@@ -39,8 +40,11 @@ class MusicLogic {
         if (musicResponse.code != 200 || musicResponse.result.songCount < 1) {
             return null
         }
-
         val song = musicResponse.result.songs[0]
+        // TODO: 2021/10/18 改成所有as人开关
+        if (song.ar.joinToString(separator = "/") { it.name } == "嘉然Diana") {
+            return Pair(PlainText("你可少看点as吧\uD83D\uDC7F"), null)
+        }
         val musicShare = MusicShare(
             kind = MusicKind.NeteaseCloudMusic,
             title = song.name,
@@ -69,7 +73,7 @@ class MusicLogic {
     }
 
     fun getRandomSongs(): Message? {
-        if (!login()){
+        if (!login()) {
             return null
         }
         val response = HttpUtil.get("$basicUrl:3000/recommend/songs", 2000)
