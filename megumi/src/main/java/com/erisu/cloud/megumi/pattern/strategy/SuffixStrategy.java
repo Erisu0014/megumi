@@ -21,8 +21,16 @@ import java.util.Optional;
 @PatternSupport(pattern = Pattern.SUFFIX)
 @Component
 public class SuffixStrategy implements PatternStrategy {
+    /**
+     *
+     * @param messageChain
+     * @param botPrefix 在suffix中不起作用
+     * @param command
+     * @param alias
+     * @return
+     */
     @Override
-    public Boolean isMatch(MessageChain messageChain, String command, String... alias) {
+    public Boolean isMatch(MessageChain messageChain,String botPrefix, String command, String... alias) {
         SingleMessage singleMessage = messageChain.get(1);
         List<String> commands = new ArrayList<>();
         commands.add(command);

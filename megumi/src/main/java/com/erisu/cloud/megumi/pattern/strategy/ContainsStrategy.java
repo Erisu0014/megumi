@@ -17,7 +17,8 @@ import org.springframework.stereotype.Component;
 public class ContainsStrategy implements PatternStrategy {
 
     @Override
-    public Boolean isMatch(MessageChain messageChain, String command, String... alias) {
-        return StrUtil.contains(messageChain.contentToString().trim(), command);
+    public Boolean isMatch(MessageChain messageChain, String botPrefix, String command, String... alias) {
+        // TODO: 2021/10/20 alias 
+        return StrUtil.contains(messageChain.contentToString().trim(), botPrefix + command);
     }
 }

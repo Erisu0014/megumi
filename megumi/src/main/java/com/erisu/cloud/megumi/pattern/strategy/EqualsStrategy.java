@@ -4,9 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.erisu.cloud.megumi.pattern.Pattern;
 import com.erisu.cloud.megumi.pattern.PatternStrategy;
 import com.erisu.cloud.megumi.pattern.PatternSupport;
-import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
-import net.mamoe.mirai.message.data.PlainText;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,15 +21,12 @@ import java.util.Optional;
 @Component
 public class EqualsStrategy implements PatternStrategy {
     @Override
-    public Boolean isMatch(MessageChain messageChain, String command, String... alias) {
+    public Boolean isMatch(MessageChain messageChain, String botPrefix, String command, String... alias) {
         List<String> commands = new ArrayList<>();
         commands.add(command);
         commands.addAll(Arrays.asList(alias));
-        if (messageChain.get(1) instanceof PlainText) {
-            String context = ((PlainText) messageChain.get(1)).getContent();
-            Optional<String> any = commands.stream().filter(c -> StrUtil.equals(c, context.trim())).findAny();
-            return any.isPresent();
-        }
-        return false;
+        String context = messageChain.contentToString();
+        Optional<String> any = commands.stream().filter(c -> StrUtil.equals(botPrefix + c, context.trim())).findAny();
+        return any.isPresent();
     }
 }

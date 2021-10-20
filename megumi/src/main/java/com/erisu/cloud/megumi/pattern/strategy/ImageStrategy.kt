@@ -23,7 +23,7 @@ class ImageStrategy : PatternStrategy {
      * @param alias
      * @return
      */
-    override fun isMatch(messageChain: MessageChain, command: String, vararg alias: String?): Boolean {
-        return messageChain[1] is Image
+    override fun isMatch(messageChain: MessageChain,botPrefix:String, command: String, vararg alias: String?): Boolean {
+        return messageChain[1] is Image&&messageChain.size==2
     }
 }

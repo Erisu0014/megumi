@@ -10,5 +10,5 @@ import net.mamoe.mirai.message.data.MessageChain;
  **/
 
 public interface PatternStrategy {
-    public Boolean isMatch(MessageChain messageChain, String command, String... alias);
+    public Boolean isMatch(MessageChain messageChain, String botPrefix, String command, String... alias);
 }

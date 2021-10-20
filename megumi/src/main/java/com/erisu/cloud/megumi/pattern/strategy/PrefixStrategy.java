@@ -20,13 +20,13 @@ import java.util.Optional;
 @Component
 public class PrefixStrategy implements PatternStrategy {
     @Override
-    public Boolean isMatch(MessageChain messageChain, String command, String... alias) {
+    public Boolean isMatch(MessageChain messageChain, String botPrefix, String command, String... alias) {
         List<String> commands = new ArrayList<>();
         commands.add(command);
         commands.addAll(Arrays.asList(alias));
-            String context = messageChain.contentToString();
-            Optional<String> any = commands.stream().filter(context::startsWith).findAny();
-            return any.isPresent();
+        String context = messageChain.contentToString();
+        Optional<String> any = commands.stream().filter(c -> context.startsWith(botPrefix + c)).findAny();
+        return any.isPresent();
     }
 
 }

@@ -20,11 +20,17 @@ class CheckAtStrategy : PatternStrategy {
      *
      *
      * @param messageChain
+     * @param botPrefix 在此处无作用
      * @param command
      * @param alias
      * @return
      */
-    override fun isMatch(messageChain: MessageChain, command: String, vararg alias: String?): Boolean {
+    override fun isMatch(
+        messageChain: MessageChain,
+        botPrefix: String,
+        command: String,
+        vararg alias: String?,
+    ): Boolean {
         return messageChain[1] is At
     }
 }

@@ -4,6 +4,7 @@ import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.pattern.PatternStrategy
 import com.erisu.cloud.megumi.pattern.PatternSupport
 import net.mamoe.mirai.message.data.MessageChain
+import net.mamoe.mirai.message.data.content
 import org.springframework.stereotype.Component
 
 /**
@@ -22,8 +23,13 @@ class RegexStrategy : PatternStrategy {
      * @param alias
      * @return
      */
-    override fun isMatch(messageChain: MessageChain, command: String, vararg alias: String?): Boolean {
-        val regex = Regex(command)
-        return regex.containsMatchIn(messageChain[1].toString())
+    override fun isMatch(
+        messageChain: MessageChain,
+        botPrefix: String,
+        command: String,
+        vararg alias: String?,
+    ): Boolean {
+        val regex = Regex(botPrefix + command)
+        return regex.matches(messageChain.contentToString())
     }
 }
