@@ -13,6 +13,7 @@ import net.mamoe.mirai.event.SimpleListenerHost
 import net.mamoe.mirai.event.events.MemberCardChangeEvent
 import net.mamoe.mirai.event.events.MemberJoinEvent
 import net.mamoe.mirai.event.events.NudgeEvent
+import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.messageChainOf
 import org.springframework.core.io.ClassPathResource
@@ -45,7 +46,7 @@ class BaseGroupEvent : SimpleListenerHost() {
     @EventHandler(priority = EventPriority.NORMAL)
     suspend fun onMemberJoinEvent(event: MemberJoinEvent): ListeningStatus {
 //        val name = event.member.nameCard
-        event.group.sendMessage("你好呀~准备下面试材料哦")
+        event.group.sendMessage("你好呀~")
         return ListeningStatus.LISTENING
     }
 
@@ -74,10 +75,18 @@ class BaseGroupEvent : SimpleListenerHost() {
         }
         //  迫害诗酱小助手
         if (event.target.id == 3099396879L) {
-            val randomFile =
-                FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
-            val image = StreamMessageUtil.generateImage(group, File(randomFile), false)
-            group.sendMessage(image)
+            if (group.id == 705366200L && Random.nextInt() < 0.2) {
+                val ml = group.members.map { it.nameCard }
+                val luckyDog = ml[Random.nextInt(0, ml.size)]
+                val message =
+                    messageChainOf(At(3099396879L), PlainText("今天\uD83D\uDD12${luckyDog}的牛子吧~"))
+                group.sendMessage(message)
+            } else {
+                val randomFile =
+                    FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
+                val image = StreamMessageUtil.generateImage(group, File(randomFile), false)
+                group.sendMessage(image)
+            }
             return ListeningStatus.LISTENING
         }
         if (event.target.id != bot.id) {

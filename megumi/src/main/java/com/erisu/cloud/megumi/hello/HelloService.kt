@@ -1,24 +1,22 @@
 package com.erisu.cloud.megumi.hello
 
-import cn.hutool.core.img.ImgUtil
-import cn.hutool.core.lang.UUID
+import cn.hutool.http.HttpUtil
 import com.erisu.cloud.megumi.battle.util.MarsUtil
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.tuling.logic.TulingLogic
+import com.erisu.cloud.megumi.util.BotPrefix
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
-import com.erisu.cloud.megumi.util.RedisUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.VoiceUtil
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import lombok.extern.slf4j.Slf4j
-import net.bramp.ffmpeg.FFmpeg
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -31,8 +29,6 @@ import net.mamoe.mirai.utils.MiraiInternalApi
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.awt.Color
-import java.awt.Font
 import java.io.File
 import java.io.FileNotFoundException
 import javax.annotation.Resource
@@ -54,15 +50,12 @@ class HelloService {
     private lateinit var marsUtil: MarsUtil
 
     @Resource
-    private lateinit var redisUtil: RedisUtil
-
-    @Resource
     private lateinit var tulingLogic: TulingLogic
 
-    @Command(commandType = CommandType.GROUP, value = "alice死了吗", pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP, value = "死了吗", pattern = Pattern.EQUALS, prefix = BotPrefix.alice)
     @Throws(Exception::class)
     fun hello(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        return PlainText("alice没死哦")
+        return PlainText("喵？")
     }
 
 
@@ -295,6 +288,17 @@ class HelloService {
         return StreamMessageUtil.generateImage(group, file, false)
     }
 
+    @Command(commandType = CommandType.GROUP, value = "谁敢向我挑衅", pattern = Pattern.PREFIX)
+    suspend fun pogDamage(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+        val group = subject as Group
+        if (group.id != 705366200L) {
+            return null
+        }
+        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}pogDamage.png")
+        val image = StreamMessageUtil.generateImage(group, file, false)
+        return messageChainOf(PlainText("谁敢向我挑衅！我将终结他的性命！无限火力诗酱Utaha百分百负胜率猴子符文已部署!"), image)
+    }
+
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_AT, uuid = "bbd87b41253a4339a18f8013fa7a6700")
     @Throws(Exception::class)
     suspend fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
@@ -377,6 +381,29 @@ class HelloService {
         }
         // TODO: 2021/9/27 这没啥意义啊感觉
         return null
+    }
+
+
+    @Command(commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX,
+        value = "(.*)\"desc\":\"(.*?)\"(.*)\"preview\":\"(.*?)\"(.*)\"qqdocurl\":\"(.*?)\"(.*)",
+        uuid = "1426fb0448994902b5e002649ceb619e")
+    suspend fun pulipuli(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val finder =
+            Regex("(.*)\"desc\":\"(.*?)\"(.*)\"preview\":\"(.*?)\"(.*)\"qqdocurl\":\"(.*?)\"(.*)").find(messageChain.contentToString())
+                ?: return null
+        val desc = finder.groupValues[2]
+        val preview = finder.groupValues[4]
+        val url = finder.groupValues[6]
+        val fileResponse = FileUtil.downloadHttpUrl(preview, "cache", null, null) ?: return null
+        return if (fileResponse.code == 200) {
+            val imageFile = fileResponse.path!!.toFile()
+            val img = StreamMessageUtil.generateImage(subject as Group, imageFile, false)
+            messageChainOf(PlainText("bilibili:$desc"), img, PlainText(url))
+        } else {
+            null
+        }
+
     }
 
 

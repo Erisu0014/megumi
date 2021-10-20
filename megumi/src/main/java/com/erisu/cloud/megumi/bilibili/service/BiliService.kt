@@ -28,14 +28,29 @@ class BiliService {
     private lateinit var redisUtil: RedisUtil
 
     @Command(commandType = CommandType.GROUP,
-        value = "查成分 ",
+        value = "查成分",
         pattern = Pattern.PREFIX,
         uuid = "ed386314c7124c619a0025934a0b7a1d")
     @Throws(Exception::class)
     fun searchVtb(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-        val user = messageChain.contentToString().removePrefix("查成分 ").trim()
-        if (user.length > 40) return null
-        val pair = biliSearchLogic.searchUser(user)
+        var pair: Triple<String, String, String>? = null
+        // 纯文本
+        if (messageChain.size == 2) {
+            var user = ""
+            if (messageChain.contentToString() == "查成分") {
+                val mid = redisUtil.get("${RedisKey.BILIBILI.key}:${sender.id}")
+                if (mid == "") return PlainText("您还没有绑定uid哦~发送绑定B站 114514(本人uid)即可绑定")
+                pair = biliSearchLogic.searchUser(mid.toInt())
+            } else {
+                user = messageChain.contentToString().removePrefix("查成分 ").trim()
+                pair = biliSearchLogic.searchUser(user)
+            }
+            if (user.length > 40) return null
+        } else if (messageChain.size>= 3 && messageChain[1].contentToString() == "查成分" && messageChain[2] is At) {
+            val at = messageChain[2] as At
+            val mid = redisUtil.get("${RedisKey.BILIBILI.key}:${at.target}") ?: return PlainText("他还没有绑定uid哦~发送绑定B站 114514(本人uid)即可绑定")
+            pair = biliSearchLogic.searchUser(mid.toInt())
+        }
         if (pair != null) {
             val follow = biliSearchLogic.searchFollow(pair.second)
             if (!follow.isNullOrEmpty()) {
@@ -54,18 +69,26 @@ class BiliService {
         return null
     }
 
+
     @Command(commandType = CommandType.GROUP,
-        value = "绑定(b|B)站 ([0-9]){3,8}",
+        value = "绑定(b|B)站 [0-9]{3,8}",
         pattern = Pattern.REGEX)
-    fun bindUid(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-        val mid = messageChain.contentToString().substring(6)
-        redisUtil.set(RedisKey.BILIBILI.key + ":" + sender.id,mid)
+    fun bindUid(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        val mid = messageChain.contentToString().substring(5)
+        redisUtil.set("${RedisKey.BILIBILI.key}:${sender.id}", mid)
         return PlainText("绑定成功喵")
     }
 
-    fun unbindUid(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+    @Command(commandType = CommandType.GROUP,
+        value = "解绑(b|B)站",
+        pattern = Pattern.REGEX)
+    fun unbindUid(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        val mid = messageChain.contentToString().substring(5)
+        redisUtil.delete("${RedisKey.BILIBILI.key}:${sender.id}")
         return PlainText("解绑成功喵")
     }
+
+
 
 
 }

@@ -52,6 +52,25 @@ class BiliSearchLogic : ApplicationRunner {
         return null
     }
 
+
+
+    fun searchUser(mid: Number): Triple<String, String, String>?{
+        val url =
+            "http://api.bilibili.com/x/web-interface/card?mid=${mid}"
+        val res = HttpUtil.get(url)
+        val jo = JSONObject.parseObject(res)
+        if (jo["code"] == 0) {
+            val result = jo.getJSONObject("data").getJSONObject("card")
+            if (result != null) {
+                val uname = result.getString("name")
+                val mid = result.getString("mid")
+                val pic = result.getString("face")
+                return Triple(uname, mid, pic)
+            }
+        }
+        return null
+    }
+
     fun checkDD(user: List<String>): MutableList<String>? {
         val path = "${FileUtil.localStaticPath}${File.separator}vtb${File.separator}dump.json"
         val finder = File(path)
