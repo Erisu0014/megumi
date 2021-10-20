@@ -30,7 +30,7 @@ class RssParser {
 
     fun parseText(text: String): String {
         text.removeSurrounding("<![CDATA[ ", " ]]>").trim()
-        val var0 = Regex("""<img src="(.+?)">""").replace(text, "")
+        val var0 = Regex("""<img(.*?)src="(.+?)">""").replace(text, "")
         val var1 = Regex("""<iframe src="(.+?)"></iframe>""").replace(var0, "")
         var var2 = Regex("""<br>""").replace(var1, "\n")
         while (var2.endsWith("\n")) {

@@ -32,7 +32,7 @@ class RemindMeLogic {
         val messageChain = MessageChainBuilder()
         devReminds.forEach(Consumer { (id, _, _, remindJson) ->
             val messages = MessageChain.deserializeFromJsonString(remindJson)
-            messageChain.append("☑️　messageId-")
+            messageChain.append("✅　messageId-")
                 .append(id.toString()).append(":\n").append(messages).append("\n")
         })
         return messageChain.build()

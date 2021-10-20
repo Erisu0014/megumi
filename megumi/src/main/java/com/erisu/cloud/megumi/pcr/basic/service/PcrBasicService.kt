@@ -46,11 +46,13 @@ class PcrBasicService {
     suspend fun searchName(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val (content) = messageChain[1] as PlainText
         val name = content.removePrefix("谁是").trim()
-        val princessId = pcrInitData.nameMap[name]
+        var princessId = pcrInitData.nameMap[name]
+        if (princessId == null) {
+            princessId = pcrInitData.nameMap["${sender.id}::$name"]
+        }
         return if (princessId == null) {
             PlainText("兰德索尔似乎没有叫${name}的人...")
         } else {
-//            runBlocking { nameLogic.getAvatar(sender, subject as Group, princessId) }
             nameLogic.getAvatar(sender, subject as Group, princessId)
         }
     }
@@ -66,24 +68,23 @@ class PcrBasicService {
      */
     @Command(
         commandType = CommandType.GROUP,
-        value = "添加昵称",
-        pattern = Pattern.PREFIX,
+        value = "添加昵称 (.+) (.+)",
+        pattern = Pattern.REGEX,
         uuid = "35eb96b99d944a6b9bcc3d066407f6f4"
     )
     @Throws(Exception::class)
     fun addNickName(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val (content) = messageChain[1] as PlainText
-        val text = content.removePrefix("添加昵称").trim()
-        val names = text.split(" ").toTypedArray()
-        if (names.size != 2) {
-            return null
-        }
+        // TODO: 2021/10/20 group分组
+        val content = messageChain.contentToString()
+        val finder = Regex("添加昵称 (.+) (.+)").find(content) ?: return null
+        val oldName = finder.groupValues[1]
+        val newName = finder.groupValues[2]
         val nameMap = pcrInitData.nameMap
-        val id = nameMap[names[0]]
+        val id = nameMap[oldName]
         return if (id != null) {
-            if (!nameMap.containsKey(names[1])) {
-                nameMap[names[1]] = id
-                redisUtil.hPut(RedisKey.PRINCESS_NAME.key, names[1], id)
+            if (!nameMap.containsKey("${sender.id}::$newName")) {
+                nameMap["${sender.id}::$newName"] = id
+                redisUtil.hPut(RedisKey.PRINCESS_NAME.key + "::" + sender.id, newName, id)
                 PlainText("添加成功~")
             } else PlainText("已经有人叫这个名字了哦")
         } else null
