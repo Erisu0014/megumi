@@ -1,11 +1,18 @@
 package com.erisu.cloud.megumi.rss.service
 
+import cn.hutool.core.date.DateField
+import cn.hutool.core.date.DateUtil
+import cn.hutool.http.HttpRequest
+import cn.hutool.http.HttpUtil
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.rss.logic.RssLogic
 import com.erisu.cloud.megumi.rss.logic.RssParser
+import com.erisu.cloud.megumi.rss.pojo.UmaNews
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.rometools.rome.feed.synd.SyndFeed
@@ -27,6 +34,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.net.URL
+import java.util.*
 import javax.annotation.Resource
 
 /**
@@ -48,15 +56,15 @@ class RssService {
     @Value("\${qq.username}")
     private var username: Long = 0
 
-//    @Command(commandType = CommandType.GROUP,
-//        value = "test123",
-//        pattern = Pattern.EQUALS,
-//        uuid = "ab3d79a0df344cce93a7ad0ff52cf46b")
-//    @Throws(Exception::class)
-//    fun test(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-//        bangumi()
-//        return null
-//    }
+    @Command(commandType = CommandType.GROUP,
+        value = "test123",
+        pattern = Pattern.EQUALS,
+        uuid = "ab3d79a0df344cce93a7ad0ff52cf46b")
+    @Throws(Exception::class)
+    fun test123(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        umamusume()
+        return null
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(fixedDelay = 360_000)
@@ -78,17 +86,11 @@ class RssService {
                     } else {
                         rssParser.parseText(des)
                     }
-                    val parseImage = rssParser.parseImage(des)
+                    val images = rssParser.parseImage(des)
                     val chainBuilder = MessageChainBuilder()
                     chainBuilder.append(PlainText("$title\n- - - - - -\n"))
                     chainBuilder.append(PlainText(parseText))
-                    parseImage.forEach { it2 ->
-                        val pathResponse = FileUtil.downloadHttpUrl(it2, "cache", null, null)
-                        if (pathResponse != null && pathResponse.code == 200) {
-                            val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile(), true)
-                            chainBuilder.append(image)
-                        }
-                    }
+                    FileUtil.buildImages(group, images, chainBuilder)
                     group.sendMessage(chainBuilder.build())
                 }
             }
@@ -124,5 +126,39 @@ class RssService {
 
         }
     }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    @Scheduled(fixedDelay = 360_000)
+    fun umamusume() {
+        GlobalScope.future {
+            val bot = Bot.getInstance(username)
+            val groupId = 705366200L
+            val group = bot.getGroup(groupId) as Group
+            val url = "https://umamusume.jp/api/ajax/pr_info_index?format=json"
+            val headerMap =
+                mapOf("User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36 Edg/89.0.774.50",
+                    "Accept" to "application/json")
+            val requestMap = mapOf("announce_label" to 0, "limit" to 10, "offset" to 0)
+            val res = HttpRequest.post(url).headerMap(headerMap, true).timeout(2000).body(JSON.toJSONString(requestMap))
+                .execute().body()
+            val resPo = JSONObject.parseObject(res)
+            if (resPo["response_code"] == 1) {
+                val umaNews =
+                    JSONObject.parseArray(JSON.toJSONString(resPo["information_list"]), UmaNews::class.java)
+                umaNews.forEach {
+                    if (DateUtil.parseDateTime(it.post_at) > DateUtil.offset(Date(), DateField.SECOND, -6)) {
+                        val text = rssParser.parseText(it.message)
+                        val pics = rssParser.parseImage(it.message)
+                        val chainBuilder = MessageChainBuilder()
+                        chainBuilder.append(PlainText("@uma\n【${it.title}】\n${text}"))
+                        FileUtil.buildImages(group, pics, chainBuilder)
+                        group.sendMessage(chainBuilder.build())
+                    }
+                }
+            }
+        }
+    }
+
+
 }
 

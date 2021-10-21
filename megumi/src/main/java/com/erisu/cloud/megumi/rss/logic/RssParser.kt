@@ -17,7 +17,7 @@ class RssParser {
      * @return  imageUrl
      */
     fun parseImage(text: String): MutableList<String> {
-        val imgTags = Regex("""<img src="(.+?)">""").findAll(text)
+        val imgTags = Regex("""<img src=\\?"(.+?)\\?">""").findAll(text)
         val imgPattern = """(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|].(jpg|png|gif)"""
         val imgRegex = Regex(imgPattern)
         val result: MutableList<String> = mutableListOf()
@@ -29,14 +29,24 @@ class RssParser {
     }
 
     fun parseText(text: String): String {
-        text.removeSurrounding("<![CDATA[ ", " ]]>").trim()
-        val var0 = Regex("""<img(.*?)src="(.+?)">""").replace(text, "")
-        val var1 = Regex("""<iframe src="(.+?)"></iframe>""").replace(var0, "")
-        var var2 = Regex("""<br>""").replace(var1, "\n")
-        while (var2.endsWith("\n")) {
-            var2 = var2.removeSuffix("\n")
+        var result = text.removeSurrounding("<![CDATA[ ", " ]]>").trim()
+        result = Regex("""&nbsp;""").replace(result, "\n")
+        result = Regex("""<img(.*?)src="(.+?)">""").replace(result, "")
+        result = Regex("""<iframe src="(.+?)"></iframe>""").replace(result, "")
+        result = Regex("""<h2 class="heading">""").replace(result, "\n")
+        result = Regex("""<h3 class="subheading">""").replace(result, "\n")
+        result = Regex("""</h[1-9]>""").replace(result, "\n")
+        result = Regex("""<span.+?">""").replace(result, "")
+        result = Regex("""</span>""").replace(result, "")
+        result = Regex("""</?strong>""").replace(result, "")
+        result = Regex("""</?figure>""").replace(result, "")
+        result = Regex("""</div>""").replace(result, "\n")
+        result = Regex("""<div.+?>""").replace(result, "")
+        result = Regex("""<br>""").replace(result, "\n")
+        while (result.endsWith("\n")) {
+            result = result.removeSuffix("\n")
         }
-        return var2
+        return result
     }
 
     fun parseVideo(title: String, description: String): String {

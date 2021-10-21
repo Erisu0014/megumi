@@ -1,6 +1,8 @@
 package com.erisu.cloud.megumi.util
 
 import cn.hutool.core.io.file.FileNameUtil
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.message.data.MessageChainBuilder
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -76,5 +78,16 @@ object FileUtil {
                 .forEach { fileNames.add(it.name) }//循环 处理符合条件的文件
         }
         return "$path${File.separator}${fileNames[Random.nextInt(0, fileNames.size)]}"
+    }
+
+
+     suspend fun buildImages(group: Group, pics:MutableList<String>, chainBuilder: MessageChainBuilder){
+        pics.forEach {
+            val pathResponse = FileUtil.downloadHttpUrl(it, "cache", null, null)
+            if (pathResponse != null && pathResponse.code == 200) {
+                val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile(), false)
+                chainBuilder.append(image)
+            }
+        }
     }
 }
