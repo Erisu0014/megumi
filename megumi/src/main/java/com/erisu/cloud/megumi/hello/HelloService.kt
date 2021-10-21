@@ -1,6 +1,7 @@
 package com.erisu.cloud.megumi.hello
 
 import cn.hutool.http.HttpUtil
+import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.battle.util.MarsUtil
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
@@ -403,7 +404,41 @@ class HelloService {
         } else {
             null
         }
+    }
 
+    @OptIn(DelicateCoroutinesApi::class)
+    @Scheduled(cron = "00 00 09 * * ?")
+    @Throws(FileNotFoundException::class)
+    fun dailyNews() {
+        GlobalScope.future {
+            val bot = Bot.getInstance(username)
+            val groupId = 705366200L
+            val group = bot.getGroup(groupId) as Group
+            getDailyNews(group)?.let { group.sendMessage(it) }
+        }
+    }
+
+    @Command(commandType = CommandType.GROUP,
+        pattern = Pattern.EQUALS,
+        value = "今日早报")
+    suspend fun dailyNews(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val group = subject as Group
+        return getDailyNews(group)
+    }
+
+    private suspend fun getDailyNews(group: Group): Message? {
+        val res = HttpUtil.get("http://dwz.2xb.cn/zaob", 2000)
+        if (res != null) {
+            val json = JSONObject.parseObject(res)
+            if (json["code"] == 200) {
+                val url = json["imageUrl"].toString()
+                val pathRes = FileUtil.downloadHttpUrl(url, "cache", null, null)
+                if (pathRes != null && pathRes.code == 200) {
+                    return StreamMessageUtil.generateImage(group, pathRes.path!!.toFile(), false)
+                }
+            }
+        }
+        return null
     }
 
 
