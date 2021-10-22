@@ -150,7 +150,7 @@ class RssService {
                         val text = rssParser.parseText(it.message)
                         val pics = rssParser.parseImage(it.message)
                         val chainBuilder = MessageChainBuilder()
-                        chainBuilder.append(PlainText("@uma\n【${it.title}】\n${text}"))
+                        chainBuilder.append(PlainText("@ウマ娘プリティーダービー\n【${it.title}】\n${text}"))
                         FileUtil.buildImages(group, pics, chainBuilder)
                         group.sendMessage(chainBuilder.build())
                     }

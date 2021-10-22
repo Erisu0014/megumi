@@ -83,7 +83,7 @@ object FileUtil {
 
      suspend fun buildImages(group: Group, pics:MutableList<String>, chainBuilder: MessageChainBuilder){
         pics.forEach {
-            val pathResponse = FileUtil.downloadHttpUrl(it, "cache", null, null)
+            val pathResponse = downloadHttpUrl(it, "cache", null, null)
             if (pathResponse != null && pathResponse.code == 200) {
                 val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile(), false)
                 chainBuilder.append(image)
