@@ -26,7 +26,7 @@ public class HomoLogic {
     @PostConstruct
     public void init() {
         try {
-            InputStream inputStream = new ClassPathResource("homo.data").getInputStream();
+            InputStream inputStream = new ClassPathResource("meme.data").getInputStream();
             List<String> homoData = new ArrayList<>();
             IoUtil.readLines(inputStream, StandardCharsets.UTF_8.name(), homoData);
             homoData.forEach(h -> {
@@ -69,7 +69,7 @@ public class HomoLogic {
                 break;
             }
         }
-        return "" + toBeHomo(div) + "*(" + toBeHomo(num.divide(div)) + ")" + "+(" + toBeHomo(num.mod(div)) + ")";
+        return String.format("(%s)*(%s)+(%s)", toBeHomo(div), toBeHomo(num.divide(div)), toBeHomo(num.mod(div)));
     }
 
 
