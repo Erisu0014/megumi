@@ -1,5 +1,7 @@
 package com.erisu.cloud.megumi.setu.logic
 
+import cn.hutool.core.img.ImgUtil
+import cn.hutool.core.lang.UUID
 import cn.hutool.http.HttpUtil
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
@@ -9,9 +11,16 @@ import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import java.awt.Color
+import java.awt.Font
+import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
+import kotlin.io.path.pathString
 
 /**
  *@Description setu logic
@@ -76,4 +85,28 @@ class SetuLogic {
             add(2854196306, "色图bot", messageChainOf(text, image))
         }
     }
+
+
+    suspend fun getImage(group: Group, path: Path, name: String?, isDelete: Boolean): Image {
+        val newName = name ?: path.pathString
+        ImgUtil.pressText(
+            path.toFile(),
+            File(newName),  //  覆盖式重写
+            "版权所有:alice${UUID.fastUUID()}",
+            Color.WHITE,
+            Font("黑体", Font.BOLD, 1),
+            0,
+            0,
+            0.0f
+        )
+        return StreamMessageUtil.generateImage(group, File(newName), isDelete)
+    }
+
+    suspend fun getLocalSetu(group: Group): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic"
+        val randomFile = FileUtil.getRandomFile(path, null)
+        val file = Paths.get(randomFile)
+        return getImage(group, file, "${FileUtil.localCachePath}${File.separator}${UUID.fastUUID()}.png", true)
+    }
+
 }

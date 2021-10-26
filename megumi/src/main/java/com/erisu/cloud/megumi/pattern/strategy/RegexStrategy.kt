@@ -29,7 +29,7 @@ class RegexStrategy : PatternStrategy {
         command: String,
         vararg alias: String?,
     ): Boolean {
-        val regex = Regex(botPrefix + command)
+        val regex = Regex(botPrefix + command, RegexOption.DOT_MATCHES_ALL)
         return regex.matches(messageChain.contentToString())
     }
 }

@@ -2,6 +2,7 @@ package com.erisu.cloud.megumi.pixiv.logic
 
 import cn.hutool.core.img.ImgUtil
 import cn.hutool.core.lang.UUID
+import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.Contact
@@ -14,6 +15,7 @@ import java.awt.Font
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
+import javax.annotation.Resource
 import kotlin.io.path.pathString
 
 /**
@@ -23,6 +25,8 @@ import kotlin.io.path.pathString
  **/
 @Component
 class PixivLogic {
+    @Resource
+    private lateinit var setuLogic: SetuLogic
 //    suspend fun getPixivCatImage(messageChain: MessageChain, subject: Contact): Message? {
 //        val group = subject as Group
 //        val artwork =
@@ -75,7 +79,10 @@ class PixivLogic {
         if (!File(trueFileName).exists()) {
             // 下载图片
             val pic =
-                FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}.png", "cache", null, null) ?: return null
+                FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}.png",
+                    "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic",
+                    null,
+                    null) ?: return null
             if (pic.code == 404) {
                 var pixivNum = 0
                 val regex = Regex("<p>這個作品ID中有 ([0-9]+) 張圖片", RegexOption.DOT_MATCHES_ALL)
@@ -100,7 +107,7 @@ class PixivLogic {
         // 构建消息主体
         val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
         paths.forEach {
-            val image = getImage(group, it)
+            val image = setuLogic.getImage(group, it, null, false)
 //                images.add(image)
             val node: ForwardMessage.Node =
                 ForwardMessage.Node(3099396879L, System.currentTimeMillis().toInt(), "诗姐姐", image)
@@ -113,18 +120,5 @@ class PixivLogic {
         return null
     }
 
-    suspend fun getImage(group: Group, path: Path): Image {
-        ImgUtil.pressText(
-            path.toFile(),
-            File(path.pathString),  //  覆盖式重写
-            "版权所有:alice${UUID.fastUUID()}",
-            Color.WHITE,
-            Font("黑体", Font.BOLD, 1),
-            0,
-            0,
-            0.0f
-        )
-        return StreamMessageUtil.generateImage(group, File(path.pathString), false)
-    }
 
 }

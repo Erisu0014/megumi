@@ -1,6 +1,7 @@
 package com.erisu.cloud.megumi.hello
 
 import cn.hutool.http.HttpUtil
+import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.battle.util.MarsUtil
 import com.erisu.cloud.megumi.command.Command
@@ -439,6 +440,26 @@ class HelloService {
             }
         }
         return null
+    }
+
+
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "")
+    suspend fun nbnhhsh(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val regex = Regex("([a-z]+)", RegexOption.IGNORE_CASE)
+        if (!regex.matches(messageChain.contentToString())) return null
+        val finder =
+            regex.find(messageChain.contentToString()) ?: return null
+        var text = ""
+        text = finder.groupValues[1]
+
+        val requestMap = mapOf("text" to text)
+        val res = HttpUtil.post("https://lab.magiconch.com/api/nbnhhsh/guess", requestMap, 3000)
+        val resPo = JSONObject.parseArray(res)
+        val ja = resPo.getJSONObject(0).getJSONArray("trans")
+        if (ja.isNullOrEmpty()) return null
+        val result = JSONObject.parseArray(JSON.toJSONString(ja), String::class.java)
+        return PlainText("您可能在说：${result.joinToString(separator = ",")}")
+
     }
 
 
