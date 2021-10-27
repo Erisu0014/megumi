@@ -53,7 +53,11 @@ class SetuService {
 //    }
 
 
-    @Command(value = "就这不够色", commandType = CommandType.GROUP, pattern = Pattern.EQUALS, recallTime = 10)
+    @Command(value = "就这不够色",
+        commandType = CommandType.GROUP,
+        pattern = Pattern.EQUALS,
+        recallTime = 10,
+        isRecalled = true)
     suspend fun roll(sender: User, messageChain: MessageChain, subject: Contact): Message {
         return setuLogic.getLocalSetu(subject as Group)
 
