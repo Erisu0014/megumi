@@ -8,5 +8,6 @@ package com.erisu.cloud.megumi.plugin.pojo
 @MustBeDocumented
 annotation class Model(
     val name: String = "", val uuid: String = "",  // TODO: 2021/6/5 有关model enabled和数据库一致性问题待考虑
-    val isEnabled: Boolean = true,
+    val isEnabled: Boolean = true,  //  默认启用
+    val help: String = "",
 )

@@ -73,14 +73,15 @@ class PixivLogic {
         val group = subject as Group
         val artwork =
             Regex("https?://www.pixiv.net/artworks/(.+)").find(messageChain.contentToString())!!.groupValues[1]
+        val folder="${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic"
         val trueFileName =
-            "${System.getProperty("user.dir")}${File.separator}cache${File.separator}${artwork}.png"
+            "${folder}${File.separator}${artwork}.png"
         val paths: MutableList<Path> = mutableListOf()
         if (!File(trueFileName).exists()) {
             // 下载图片
             val pic =
                 FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}.png",
-                    "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic",
+                    folder,
                     null,
                     null) ?: return null
             if (pic.code == 404) {

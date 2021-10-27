@@ -106,7 +106,11 @@ class SetuLogic {
         val path = "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic"
         val randomFile = FileUtil.getRandomFile(path, null)
         val file = Paths.get(randomFile)
-        return getImage(group, file, "${FileUtil.localCachePath}${File.separator}${UUID.fastUUID()}.png", true)
+        val image = getImage(group, file, "${FileUtil.localCachePath}${File.separator}${UUID.fastUUID()}.png", true)
+        return buildForwardMessage(group) {
+            add(3099396879L, "诗姐姐", image)
+        }
+
     }
 
 }
