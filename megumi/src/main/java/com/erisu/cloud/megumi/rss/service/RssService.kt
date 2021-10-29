@@ -146,7 +146,7 @@ class RssService {
                 val umaNews =
                     JSONObject.parseArray(JSON.toJSONString(resPo["information_list"]), UmaNews::class.java)
                 umaNews.forEach {
-                    if (DateUtil.parseDateTime(it.post_at) > DateUtil.offset(Date(), DateField.SECOND, -6)) {
+                    if (DateUtil.parseDateTime(it.post_at) > DateUtil.offset(Date(), DateField.MINUTE, -6)) {
                         val text = rssParser.parseText(it.message)
                         val pics = rssParser.parseImage(it.message)
                         val chainBuilder = MessageChainBuilder()

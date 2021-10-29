@@ -51,9 +51,8 @@ class BaseGroupEvent : SimpleListenerHost() {
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    fun onMemberCardChangeEvent(event: MemberCardChangeEvent): ListeningStatus {
-//        String name = event.getMember().getNameCard();
-//        event.getGroup().sendMessage(String.format("欢迎%s进群~", name));
+    suspend fun onMemberCardChangeEvent(event: MemberCardChangeEvent): ListeningStatus {
+        val name = event.member.nameCard
         return ListeningStatus.LISTENING // 表示继续监听事件
     }
 
