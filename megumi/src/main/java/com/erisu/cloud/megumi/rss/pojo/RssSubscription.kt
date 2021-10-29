@@ -8,5 +8,6 @@ data class RssSubscription(
     var id: Int?,
     var groupId: String,
     var rssUrl: String,
-    var nickname:String?
+    var nickname:String?,
+    val type:String
 )

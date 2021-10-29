@@ -42,6 +42,22 @@ class RssSubService {
         return rssLogic.subscribeBilibili(group.id.toString(), uid, nickname)
     }
 
+
+    @Command(commandType = CommandType.GROUP, value = "订阅微博", pattern = Pattern.PREFIX)
+    @Throws(Exception::class)
+    fun subscribeWeibo(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val content = messageChain.contentToString().removePrefix("订阅微博").trim()
+        val group = subject as Group
+        val uid: String
+        var nickname: String? = null
+        if (content.contains(" ")) {
+            val split = content.split(" ")
+            uid = split[0]
+            nickname = split[1]
+        } else uid = content
+        return rssLogic.subscribeWeibo(group.id.toString(), uid, nickname)
+    }
+
     @Command(commandType = CommandType.GROUP, value = "查看订阅列表", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     fun showSubscription(sender: User, messageChain: MessageChain, subject: Contact): Message {

@@ -1,5 +1,6 @@
 package com.erisu.cloud.megumi.hello
 
+import cn.hutool.core.lang.UUID
 import cn.hutool.http.HttpUtil
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
@@ -147,9 +148,20 @@ class HelloService {
     @Throws(Exception::class)
     suspend fun shigetora(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}shigetora.m4a"
-        VoiceUtil.convertToAmr(path)
         val file = File("${FileUtil.localCachePath}${File.separator}output.pcm")
         return StreamMessageUtil.generateAudio(group, file, false)
+    }
+
+
+    @Command(commandType = CommandType.GROUP, value = "alice起床", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    suspend fun okitte(sender: User, messageChain: MessageChain, group: Group): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}alice.mp3"
+        val fileId = UUID.fastUUID().toString(true)
+        VoiceUtil.convertToPcm(path,fileId)
+        VoiceUtil.convertToSilk("${FileUtil.localCachePath}${File.separator}${fileId}.pcm",fileId)
+        val silkFile = File("${FileUtil.localCachePath}${File.separator}${fileId}.silk")
+        return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
 
 //    @Command(commandType = CommandType.GROUP, value = "切换图片模式", pattern = Pattern.EQUALS)

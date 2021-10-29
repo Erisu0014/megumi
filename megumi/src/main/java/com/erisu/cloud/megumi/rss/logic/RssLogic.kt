@@ -26,21 +26,36 @@ class RssLogic {
     fun subscribeBilibili(groupId: String, uid: String, nickname: String?): Message {
         val rssSubscription =
             RssSubscription(null, groupId,
-                "$basicUrl:1200${RssPrefix.BILIBILI_DYNAMIC.url}$uid", nickname)
+                "$basicUrl:1200${RssPrefix.BILIBILI_DYNAMIC.url}$uid", nickname, RssPrefix.BILIBILI_DYNAMIC.tag)
+        if (rssMapper.insert(rssSubscription) > 0) return PlainText("订阅成功")
+        throw Exception("订阅失败")
+    }
+
+    fun subscribeWeibo(groupId: String, uid: String, nickname: String?): Message {
+        val rssSubscription =
+            RssSubscription(null, groupId,
+                "$basicUrl:1200${RssPrefix.WEIBO_USER.url}$uid", nickname, RssPrefix.WEIBO_USER.tag)
         if (rssMapper.insert(rssSubscription) > 0) return PlainText("订阅成功")
         throw Exception("订阅失败")
     }
 
 
-    fun getSubscription( groupId: String?): MutableList<RssSubscription> {
+    fun getSubscription(groupId: String?): MutableList<RssSubscription> {
         val wrapper = QueryWrapper<RssSubscription>()
-        if (groupId!=null)wrapper.eq("group_id",groupId)
+        if (groupId != null) wrapper.eq("group_id", groupId)
         return rssMapper.selectList(wrapper)
     }
 
     fun unSubscribeBilibili(groupId: String, uid: String): Message {
         val wrapper = QueryWrapper<RssSubscription>()
         wrapper.eq("group_id", groupId).eq("rss_url", "$basicUrl:1200${RssPrefix.BILIBILI_DYNAMIC.url}$uid")
+        if (rssMapper.delete(wrapper) > 0) return PlainText("取消订阅成功")
+        throw Exception("取消订阅失败")
+    }
+
+    fun unSubscribeWeibo(groupId: String, uid: String): Message {
+        val wrapper = QueryWrapper<RssSubscription>()
+        wrapper.eq("group_id", groupId).eq("rss_url", "$basicUrl:1200${RssPrefix.WEIBO_USER.url}$uid")
         if (rssMapper.delete(wrapper) > 0) return PlainText("取消订阅成功")
         throw Exception("取消订阅失败")
     }

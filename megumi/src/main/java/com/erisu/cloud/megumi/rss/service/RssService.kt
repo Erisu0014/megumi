@@ -12,6 +12,7 @@ import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.rss.logic.RssLogic
 import com.erisu.cloud.megumi.rss.logic.RssParser
+import com.erisu.cloud.megumi.rss.pojo.RssPrefix
 import com.erisu.cloud.megumi.rss.pojo.UmaNews
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
@@ -77,28 +78,63 @@ class RssService {
                 val bot = Bot.getInstance(username)
                 val groupId = it.groupId.toLong()
                 val group = bot.getGroup(groupId) as Group
-                val title = feed.title.removeSurrounding("<![CDATA[ ", " ]]>").trim()
-                feed.entries.forEach { it1 ->
-                    val des = it1.description.value
-                    val parseText: String = if (des.contains(Regex("<iframe src=(.*)></iframe>"))) {
-                        // 说明为视频信息，取标题信息+视频信息
-                        rssParser.parseVideo(it1.title, it1.description.value)
-                    } else {
-                        rssParser.parseText(des)
-                    }
-                    val images = rssParser.parseImage(des)
-                    val chainBuilder = MessageChainBuilder()
-                    chainBuilder.append(PlainText("$title\n- - - - - -\n"))
-                    chainBuilder.append(PlainText(parseText))
-                    FileUtil.buildImages(group, images, chainBuilder)
-                    group.sendMessage(chainBuilder.build())
+                if (it.type == RssPrefix.BILIBILI_DYNAMIC.tag) {
+                    bilibili(group, feed)
+                } else if (it.type == RssPrefix.WEIBO_USER.tag) {
+                    weibo(group, feed)
+                } else {
+                    // TODO: 2021/10/29
                 }
-            }
 
+            }
         }
     }
 
+    suspend fun bilibili(group: Group, feed: SyndFeed) {
+        val title = feed.title.removeSurrounding("<![CDATA[ ", " ]]>").trim()
+        feed.entries.forEach {
+            val des = it.description.value
+            val parseText: String =
+                if (des.contains(Regex("<iframe src=(.*)></iframe>"))) {
+                    // 说明为视频信息，取标题信息+视频信息
+                    rssParser.parseVideo(it.title, it.description.value)
+                } else {
+                    rssParser.parseText(des)
+                }
+            val images = rssParser.parseImage(des)
+            val chainBuilder = MessageChainBuilder()
+            chainBuilder.append(PlainText("$title\n- - - - - -\n"))
+            chainBuilder.append(PlainText(parseText))
+            FileUtil.buildImages(group, images, chainBuilder)
+            group.sendMessage(chainBuilder.build())
+        }
+    }
+
+
+    suspend fun weibo(group: Group, feed: SyndFeed) {
+        val title = feed.title.removeSurrounding("<![CDATA[ ", " ]]>").trim()
+        feed.entries.forEach {
+            val des = it.description.value
+            var parseText: String = rssParser.parseText(des)
+            parseText = Regex("""<a href="https://m.weibo.cn/(.+?)</a>""").replace(parseText, "")
+            parseText = Regex("""<a href="https://weibo.com/(.+?)</a>""").replace(parseText, "")
+            parseText = Regex("""<a data-url=(.+?)</a>""").replace(parseText, "")
+            val videoPicFinder = Regex("""<video(.*?)poster="(.*?)".*?></video>""").find(parseText)
+            val images = rssParser.parseImage(des)
+            if (videoPicFinder != null) {
+                images.add(videoPicFinder.groupValues[2])
+            }
+            val chainBuilder = MessageChainBuilder()
+            chainBuilder.append(PlainText("$title\n- - - - - -\n"))
+            chainBuilder.append(PlainText(parseText))
+            FileUtil.buildImages(group, images, chainBuilder)
+            group.sendMessage(chainBuilder.build())
+        }
+    }
+
+
     //    @Scheduled(cron = "0 0 9 * * ?")
+    @OptIn(DelicateCoroutinesApi::class)
     fun bangumi() {
         GlobalScope.future {
             val url = "http://1.117.219.198:1200/bangumi/calendar/today"
@@ -127,8 +163,8 @@ class RssService {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    @Scheduled(fixedDelay = 360_000)
+//    @OptIn(DelicateCoroutinesApi::class)
+//    @Scheduled(fixedDelay = 360_000)
     fun umamusume() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
