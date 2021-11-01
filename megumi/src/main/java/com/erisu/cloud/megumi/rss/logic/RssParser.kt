@@ -42,7 +42,8 @@ class RssParser {
         result = Regex("""</?figure>""").replace(result, "")
         result = Regex("""</div>""").replace(result, "\n")
         result = Regex("""<div.+?>""").replace(result, "")
-        result = Regex("""<br>""").replace(result, "\n")
+        result = Regex("""<br.+?>""").replace(result, "\n")
+        result = Regex("""</?blockquote>""").replace(result, "\n")
         while (result.endsWith("\n")) {
             result = result.removeSuffix("\n")
         }

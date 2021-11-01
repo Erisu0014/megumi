@@ -124,6 +124,7 @@ class RssService {
             parseText = Regex("""<a href="https://weibo.com/(.+?)</a>""").replace(parseText, "")
             parseText = Regex("""<a data-url=(.+?)</a>""").replace(parseText, "")
             parseText = Regex("""<a data-url=(.+?)</a>""").replace(parseText, "")
+            parseText.replace("</a>", "")
             parseText = parseText.replace(Regex("\n+"), "\n")
             val videoPicFinder = Regex("""<video(.*?)poster="(.*?)".*?></video>""").find(parseText)
             val images = rssParser.parseImage(des)

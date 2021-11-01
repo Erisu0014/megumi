@@ -28,6 +28,7 @@ import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.MiraiInternalApi
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ClassPathResource
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.File
@@ -95,7 +96,8 @@ class HelloService {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
             val group = bot.getGroup(groupId) as Group
-            group.sendMessage(messageChainOf(PlainText("提醒下班小助手")))
+            val image = StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/xiaban.gif").inputStream)
+            group.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
         }
     }
 
@@ -158,8 +160,8 @@ class HelloService {
     suspend fun okitte(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}alice.mp3"
         val fileId = UUID.fastUUID().toString(true)
-        VoiceUtil.convertToPcm(path,fileId)
-        VoiceUtil.convertToSilk("${FileUtil.localCachePath}${File.separator}${fileId}.pcm",fileId)
+        VoiceUtil.convertToPcm(path, fileId)
+        VoiceUtil.convertToSilk("${FileUtil.localCachePath}${File.separator}${fileId}.pcm", fileId)
         val silkFile = File("${FileUtil.localCachePath}${File.separator}${fileId}.silk")
         return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
@@ -489,6 +491,24 @@ class HelloService {
         }
 
         return PlainText("嘉然小矮子是不是你爹啊天天碰瓷pcr，赶紧爬\uD83D\uDE01")
+    }
+
+    @Command(commandType = CommandType.GROUP, value = "挂树", pattern = Pattern.EQUALS, probaility = 0.3)
+    @Throws(Exception::class)
+    suspend fun guashu(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val group = subject as Group
+        return StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/guashu.jpg").inputStream)
+    }
+
+
+
+
+
+    @Command(commandType = CommandType.GROUP, value = "test1", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    fun test1234(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        clockOut()
+        return null
     }
 
 
