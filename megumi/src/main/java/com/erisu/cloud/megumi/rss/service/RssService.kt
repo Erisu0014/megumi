@@ -78,12 +78,16 @@ class RssService {
                 val bot = Bot.getInstance(username)
                 val groupId = it.groupId.toLong()
                 val group = bot.getGroup(groupId) as Group
-                if (it.type == RssPrefix.BILIBILI_DYNAMIC.tag) {
-                    bilibili(group, feed)
-                } else if (it.type == RssPrefix.WEIBO_USER.tag) {
-                    weibo(group, feed)
-                } else {
-                    // TODO: 2021/10/29
+                when (it.type) {
+                    RssPrefix.BILIBILI_DYNAMIC.tag -> {
+                        bilibili(group, feed)
+                    }
+                    RssPrefix.WEIBO_USER.tag -> {
+                        weibo(group, feed)
+                    }
+                    else -> {
+                        // TODO: 2021/10/29
+                    }
                 }
 
             }
@@ -119,11 +123,15 @@ class RssService {
             parseText = Regex("""<a href="https://m.weibo.cn/(.+?)</a>""").replace(parseText, "")
             parseText = Regex("""<a href="https://weibo.com/(.+?)</a>""").replace(parseText, "")
             parseText = Regex("""<a data-url=(.+?)</a>""").replace(parseText, "")
+            parseText = Regex("""<a data-url=(.+?)</a>""").replace(parseText, "")
+            parseText = parseText.replace(Regex("\n+"), "\n")
             val videoPicFinder = Regex("""<video(.*?)poster="(.*?)".*?></video>""").find(parseText)
             val images = rssParser.parseImage(des)
             if (videoPicFinder != null) {
                 images.add(videoPicFinder.groupValues[2])
             }
+            // 删除video标签
+            parseText = Regex("""<video(.*?)poster="(.*?)".*?></video>""").replace(parseText, "")
             val chainBuilder = MessageChainBuilder()
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))
@@ -163,7 +171,7 @@ class RssService {
         }
     }
 
-//    @OptIn(DelicateCoroutinesApi::class)
+    //    @OptIn(DelicateCoroutinesApi::class)
 //    @Scheduled(fixedDelay = 360_000)
     fun umamusume() {
         GlobalScope.future {
