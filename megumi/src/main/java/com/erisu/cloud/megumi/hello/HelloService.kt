@@ -101,6 +101,9 @@ class HelloService {
         }
     }
 
+
+
+
 //    @MiraiExperimentalApi
 //    @Command(commandType = CommandType.GROUP, value = "test2", pattern = Pattern.EQUALS)
 //    @Throws(Exception::class)
@@ -499,8 +502,6 @@ class HelloService {
         val group = subject as Group
         return StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/guashu.jpg").inputStream)
     }
-
-
 
 
 

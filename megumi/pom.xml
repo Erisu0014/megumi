@@ -194,6 +194,32 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>1.5.10</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <args>
+                        <arg>-Xopt-in=org.mylibrary.OptInAnnotation</arg>
+                    </args>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
@@ -223,16 +249,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven-war-plugin}</version>
             </plugin>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>1.5.10</version>
-                <configuration>
-                    <args>
-                        <arg>-Xopt-in=org.mylibrary.OptInAnnotation</arg>
-                    </args>
-                </configuration>
-            </plugin>
+
         </plugins>
         <resources>
             <resource>
