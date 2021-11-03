@@ -1,6 +1,5 @@
 package com.erisu.cloud.megumi.hello
 
-import cn.hutool.core.lang.UUID
 import cn.hutool.http.HttpUtil
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
@@ -46,7 +45,7 @@ import kotlin.time.ExperimentalTime
 @Slf4j
 @Component
 @Model(name = "hello")
-class HelloService {
+ class HelloService {
     @Value("\${qq.username}")
     private var username: Long = 0
 
@@ -89,9 +88,10 @@ class HelloService {
     /**
      * 打卡下班
      */
+//    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "0 30 17 * * ?")
-    fun clockOut() {
+     fun clockOut() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -100,8 +100,6 @@ class HelloService {
             group.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
         }
     }
-
-
 
 
 //    @MiraiExperimentalApi
@@ -153,8 +151,9 @@ class HelloService {
     @Throws(Exception::class)
     suspend fun shigetora(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}shigetora.m4a"
-        val file = File("${FileUtil.localCachePath}${File.separator}output.pcm")
-        return StreamMessageUtil.generateAudio(group, file, false)
+        val silkPath = VoiceUtil.convertToSilk(path)
+        val silkFile = File(silkPath)
+        return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
 
 
@@ -162,10 +161,8 @@ class HelloService {
     @Throws(Exception::class)
     suspend fun okitte(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}alice.mp3"
-        val fileId = UUID.fastUUID().toString(true)
-        VoiceUtil.convertToPcm(path, fileId)
-        VoiceUtil.convertToSilk("${FileUtil.localCachePath}${File.separator}${fileId}.pcm", fileId)
-        val silkFile = File("${FileUtil.localCachePath}${File.separator}${fileId}.silk")
+        val silkPath = VoiceUtil.convertToSilk(path)
+        val silkFile = File(silkPath)
         return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
 
@@ -198,7 +195,7 @@ class HelloService {
         val pathResponse = FileUtil.downloadHttpUrl(audioUrl, "audio", null, null) ?: return null
         return if (pathResponse.code != 200) {
             val externalResource: ExternalResource = pathResponse.path!!.toFile().toExternalResource()
-            group.uploadVoice(externalResource)
+            group.uploadAudio(externalResource)
         } else {
             null
         }
@@ -280,11 +277,7 @@ class HelloService {
         return StreamMessageUtil.generateImage(subject as Group, file, false)
     }
 
-    @Scheduled(cron = "00 27 19 * * ?")
-    @Throws(FileNotFoundException::class)
-    fun memeNum() {
-        // TODO: 2021/7/8  
-    }
+
 
     @Command(commandType = CommandType.GROUP, value = "迫害", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
@@ -329,10 +322,11 @@ class HelloService {
         return null
     }
 
+//    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 00 23 * * ?")
     @Throws(FileNotFoundException::class)
-    fun alertNothing() {
+     fun alertNothing() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -343,10 +337,11 @@ class HelloService {
     }
 
 
+//    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 30 08 * * ?")
     @Throws(FileNotFoundException::class)
-    fun goSleep() {
+     fun goSleep() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -424,10 +419,11 @@ class HelloService {
         }
     }
 
+//    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 00 09 * * ?")
     @Throws(FileNotFoundException::class)
-    fun dailyNews() {
+     fun dailyNews() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -502,7 +498,6 @@ class HelloService {
         val group = subject as Group
         return StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/guashu.jpg").inputStream)
     }
-
 
 
     @Command(commandType = CommandType.GROUP, value = "test1", pattern = Pattern.EQUALS)

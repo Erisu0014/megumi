@@ -3,7 +3,6 @@ package com.erisu.cloud.megumi.rss.service
 import cn.hutool.core.date.DateField
 import cn.hutool.core.date.DateUtil
 import cn.hutool.http.HttpRequest
-import cn.hutool.http.HttpUtil
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.command.Command
@@ -46,7 +45,6 @@ import javax.annotation.Resource
 @Slf4j
 @Component
 @Model(name = "rssbusuo")
-
 class RssService {
     @Resource
     private lateinit var rssParser: RssParser
@@ -67,6 +65,7 @@ class RssService {
         return null
     }
 
+    //    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(fixedDelay = 360_000)
     fun rssConsumption() {

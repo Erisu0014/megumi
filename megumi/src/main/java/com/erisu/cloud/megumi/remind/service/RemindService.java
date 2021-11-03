@@ -53,4 +53,11 @@ public class RemindService {
         }
         return remindMeLogic.removeRemindMe(id, String.valueOf(group.getId()), String.valueOf(sender.getId()));
     }
+
+
+    public Message calendarAlert(User sender, MessageChain messageChain, Contact subject) {
+        // TODO: 2021/11/3
+        return null;
+    }
+
 }

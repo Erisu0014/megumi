@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Lazy
+import org.springframework.core.annotation.AnnotationUtils
 import java.io.File
 import javax.annotation.PostConstruct
 import javax.annotation.Resource
@@ -59,11 +60,12 @@ class EventProxy : SimpleListenerHost() {
         val beansV2: MutableMap<Command, MethodLite> = HashMap()
         //        List<Command> commands = new ArrayList<>();
         beansWithAnnotation.forEach { (_: String?, v: Any) ->
-            if (v.javaClass.getAnnotation(Model::class.java).isEnabled) {
+            if (AnnotationUtils.findAnnotation(v.javaClass, Model::class.java).isEnabled) {
                 val methods = v.javaClass.declaredMethods
                 methods.forEach { method ->
-                    if (method.getAnnotation(Command::class.java) != null) {
-                        beansV2[method.getAnnotation(Command::class.java)] = MethodLite(method, v)
+                    val command = AnnotationUtils.findAnnotation(method, Command::class.java)
+                    if (command != null) {
+                        beansV2[command] = MethodLite(method, v)
                     }
                 }
             }
@@ -77,8 +79,8 @@ class EventProxy : SimpleListenerHost() {
         val methodLites = analysisHandler.verify(messageEvent)
         for ((method, bean) in methodLites) {
             var answer: Any? = null
-            val command = method.getAnnotation(Command::class.java)
-            if (Math.random() > command.probaility) continue
+            val command = AnnotationUtils.findAnnotation(method, Command::class.java)
+            if (Math.random() > command!!.probaility) continue
             //  随机概率小于设定概率，执行
             try {
                 val a = method.kotlinFunction
