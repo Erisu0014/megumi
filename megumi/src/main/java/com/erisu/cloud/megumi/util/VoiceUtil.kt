@@ -6,16 +6,21 @@ import net.bramp.ffmpeg.FFmpeg
 import net.bramp.ffmpeg.FFmpegExecutor
 import net.bramp.ffmpeg.FFprobe
 import net.bramp.ffmpeg.builder.FFmpegBuilder
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.io.*
 
+@Component
+class VoiceUtil {
+    @Value("\${ffpmeg-path}")
+    private lateinit var ffmpegPath: String
 
-object VoiceUtil {
+    @Value("\${ffprobe-path}")
+    private lateinit var ffprobePath: String
 
     private fun convertToPcm(inputFileName: String): String {
-        val ffpmeg =
-            FFmpeg("D:\\ffmpeg-4.3.1-2021-01-01-full_build\\ffmpeg-4.3.1-2021-01-01-full_build\\bin\\ffmpeg.exe")
-        val ffprobe =
-            FFprobe("D:\\ffmpeg-4.3.1-2021-01-01-full_build\\ffmpeg-4.3.1-2021-01-01-full_build\\bin\\ffprobe.exe")
+        val ffpmeg = FFmpeg(ffmpegPath)
+        val ffprobe = FFprobe(ffprobePath)
         val fileId = UUID.fastUUID().toString(true)
         val builder = FFmpegBuilder()
             .setInput(inputFileName) // Filename, or a FFmpegProbeResult

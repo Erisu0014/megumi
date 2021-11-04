@@ -5,7 +5,9 @@ import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.message.MessageUtil
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
+import com.erisu.cloud.megumi.tuling.logic.BaiduNlpLogic
 import com.erisu.cloud.megumi.tuling.logic.TulingLogic
+import kotlinx.serialization.ExperimentalSerializationApi
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
@@ -32,6 +34,9 @@ class TulingService {
 
     @Resource
     private lateinit var tulingLogic: TulingLogic
+
+    @Resource
+    private lateinit var baiduNlpLogic: BaiduNlpLogic
 
     @Resource
     private lateinit var messageUtil: MessageUtil
@@ -68,6 +73,16 @@ class TulingService {
         val probability = messageChain.contentToString().removePrefix("调整AI概率").trim().toInt()
         probabilities[group.id] = if (probability > 100) 100 else probability
         return PlainText("当前AI概率为$probability")
+    }
+
+    @ExperimentalSerializationApi
+    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.PREFIX, probaility = 0.05)
+    @Throws(Exception::class)
+    suspend fun checkEmotion(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        if (subject.id == 604515343L) {
+            return baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
+        }
+        return null
     }
 
 

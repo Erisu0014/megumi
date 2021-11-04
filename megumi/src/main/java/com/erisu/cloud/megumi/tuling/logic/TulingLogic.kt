@@ -25,7 +25,6 @@ class TulingLogic : ApplicationRunner {
     companion object {
         private var words = mutableMapOf<String, MutableList<String>>()
     }
-
     @Value("\${tulingUrl}")
     public lateinit var tulingUrl: String
 

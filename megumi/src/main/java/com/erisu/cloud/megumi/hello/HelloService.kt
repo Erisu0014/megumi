@@ -25,6 +25,7 @@ import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiInternalApi
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ClassPathResource
@@ -54,6 +55,8 @@ import kotlin.time.ExperimentalTime
 
     @Resource
     private lateinit var tulingLogic: TulingLogic
+    @Resource
+    private lateinit var voiceUtil: VoiceUtil
 
     @Command(commandType = CommandType.GROUP, value = "死了吗", pattern = Pattern.EQUALS, prefix = BotPrefix.alice)
     @Throws(Exception::class)
@@ -102,40 +105,40 @@ import kotlin.time.ExperimentalTime
     }
 
 
-//    @MiraiExperimentalApi
-//    @Command(commandType = CommandType.GROUP, value = "test2", pattern = Pattern.EQUALS)
-//    @Throws(Exception::class)
-//    fun test2(sender: User, messageChain: MessageChain, subject: Contact): Message {
+    @MiraiExperimentalApi
+    @Command(commandType = CommandType.GROUP, value = "假xml", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    fun test2(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        return buildXmlMessage(1) {
+            flag = 0
+            brief = "点击查看xcw色图"
+            action = "web"
+            url = "https://redive.estertion.win/sound/unit_battle_voice/111101/vo_btl_111101_ub_200.m4a"
+            item {
+                layout = 2
+                title("xcw已加入该会话")
+                picture("http://gchat.qpic.cn/gchatpic_new/1269732086/826119271-2371198257-766C3EAF0B7DDE7AE876BBF5171BA325/0")
+                summary("xcw已开始监控聊天")
+            }
+            source("xcw色图仓库")
+        }
 //        return buildXmlMessage(1) {
 //            flag = 0
-//            brief = "色xcw"
+//            brief = "群聊的聊天记录"
 //            action = "web"
-//            url = "https://redive.estertion.win/sound/unit_battle_voice/111101/vo_btl_111101_ub_200.m4a"
+//            url =
+//                "https://vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4?authorization=bce-auth-v1/40f207e648424f47b2e3dfbb1014b1a5/2021-07-12T02:14:24Z/-1/host/530146520a1c89fb727fbbdb8a0e0c98ec69955459aed4b1c8e00839187536c9"
 //            item {
-//                layout = 2
+//                layout = 6
 //                title("xcw已加入该会话")
 //                picture("http://gchat.qpic.cn/gchatpic_new/1269732086/826119271-2371198257-766C3EAF0B7DDE7AE876BBF5171BA325/0")
-//                summary("xcw已开始监控聊天")
+//                summary("木村唯人：日服情报偷跑了\n木村唯人：美空和兰法要实装了\n木村唯人：就是下一个fes池子\n木村唯人：[图片]")
+//                summary("查看23条转发消息")
 //            }
-//            source("不许发xcw色图")
+//            source("")
 //        }
-////        return buildXmlMessage(1) {
-////            flag = 0
-////            brief = "群聊的聊天记录"
-////            action = "web"
-////            url =
-////                "https://vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4?authorization=bce-auth-v1/40f207e648424f47b2e3dfbb1014b1a5/2021-07-12T02:14:24Z/-1/host/530146520a1c89fb727fbbdb8a0e0c98ec69955459aed4b1c8e00839187536c9"
-////            item {
-////                layout = 6
-////                title("xcw已加入该会话")
-////                picture("http://gchat.qpic.cn/gchatpic_new/1269732086/826119271-2371198257-766C3EAF0B7DDE7AE876BBF5171BA325/0")
-////                summary("木村唯人：日服情报偷跑了\n木村唯人：美空和兰法要实装了\n木村唯人：就是下一个fes池子\n木村唯人：[图片]")
-////                summary("查看23条转发消息")
-////            }
-////            source("")
-////        }
-//
-//    }
+
+    }
 
 //    @MiraiInternalApi
 //    @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_IMAGE)
@@ -151,7 +154,7 @@ import kotlin.time.ExperimentalTime
     @Throws(Exception::class)
     suspend fun shigetora(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}shigetora.m4a"
-        val silkPath = VoiceUtil.convertToSilk(path)
+        val silkPath = voiceUtil.convertToSilk(path)
         val silkFile = File(silkPath)
         return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
@@ -161,7 +164,7 @@ import kotlin.time.ExperimentalTime
     @Throws(Exception::class)
     suspend fun okitte(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}alice.mp3"
-        val silkPath = VoiceUtil.convertToSilk(path)
+        val silkPath = voiceUtil.convertToSilk(path)
         val silkFile = File(silkPath)
         return StreamMessageUtil.generateAudio(group, silkFile, false)
     }

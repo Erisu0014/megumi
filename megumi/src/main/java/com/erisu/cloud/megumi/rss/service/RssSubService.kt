@@ -58,7 +58,7 @@ class RssSubService {
         return rssLogic.subscribeWeibo(group.id.toString(), uid, nickname)
     }
 
-    @Command(commandType = CommandType.GROUP, value = "查看订阅列表", pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP, value = "查看订阅(列表)?", pattern = Pattern.REGEX)
     @Throws(Exception::class)
     fun showSubscription(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val group = subject as Group

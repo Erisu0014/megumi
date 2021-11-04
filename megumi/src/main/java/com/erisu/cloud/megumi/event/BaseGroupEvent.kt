@@ -1,10 +1,13 @@
 package com.erisu.cloud.megumi.event
 
+import cn.hutool.core.lang.UUID
+import cn.hutool.http.HttpUtil
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
 import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.EventPriority
@@ -12,6 +15,7 @@ import net.mamoe.mirai.event.ListeningStatus
 import net.mamoe.mirai.event.SimpleListenerHost
 import net.mamoe.mirai.event.events.MemberCardChangeEvent
 import net.mamoe.mirai.event.events.MemberJoinEvent
+import net.mamoe.mirai.event.events.MemberLeaveEvent
 import net.mamoe.mirai.event.events.NudgeEvent
 import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.message.data.PlainText
@@ -56,6 +60,21 @@ class BaseGroupEvent : SimpleListenerHost() {
         return ListeningStatus.LISTENING // 表示继续监听事件
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    suspend fun onMemberLeaveEvent(event: MemberLeaveEvent): ListeningStatus {
+//        val name = event.member.nameCard
+        val avatarUrl = event.member.avatarUrl
+        val fileResponse = FileUtil.downloadHttpUrl(avatarUrl, "cache", null, UUID.fastUUID().toString(true)) ?: return ListeningStatus.LISTENING
+        val emoji =
+            StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/alice-yiwen.jpg").inputStream)
+        event.group.sendMessage(messageChainOf(PlainText("${event.member.id}退群了?"), emoji))
+        if (fileResponse.code == 200) {
+            val imageFile = fileResponse.path!!.toFile()
+            val avatar = StreamMessageUtil.generateImage(event.group, imageFile, false)
+            event.group.sendMessage(avatar)
+        }
+        return ListeningStatus.LISTENING
+    }
 
     /**
      * 戳出事了你负责吗
@@ -88,11 +107,17 @@ class BaseGroupEvent : SimpleListenerHost() {
             }
             return ListeningStatus.LISTENING
         }
+        if (event.target.id == 572617659L) {
+            if (group.id == 705366200L && Random.nextInt() < 0.5) {
+                val image =
+                    StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/an-haipa.jpg").inputStream)
+                group.sendMessage(messageChainOf(PlainText("小路别看福瑞了！"), image))
+            }
+            return ListeningStatus.LISTENING
+        }
         if (event.target.id != bot.id) {
             return ListeningStatus.LISTENING
         }
-
-
         val random = Math.random()
         when {
             random < 0.01 -> {
