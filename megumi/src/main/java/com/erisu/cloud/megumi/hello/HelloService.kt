@@ -46,7 +46,7 @@ import kotlin.time.ExperimentalTime
 @Slf4j
 @Component
 @Model(name = "hello")
- class HelloService {
+class HelloService {
     @Value("\${qq.username}")
     private var username: Long = 0
 
@@ -55,6 +55,7 @@ import kotlin.time.ExperimentalTime
 
     @Resource
     private lateinit var tulingLogic: TulingLogic
+
     @Resource
     private lateinit var voiceUtil: VoiceUtil
 
@@ -94,7 +95,7 @@ import kotlin.time.ExperimentalTime
 //    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "0 30 17 * * ?")
-     fun clockOut() {
+    fun clockOut() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -281,7 +282,6 @@ import kotlin.time.ExperimentalTime
     }
 
 
-
     @Command(commandType = CommandType.GROUP, value = "迫害", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun memento(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
@@ -325,11 +325,11 @@ import kotlin.time.ExperimentalTime
         return null
     }
 
-//    @Async
+    //    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 00 23 * * ?")
     @Throws(FileNotFoundException::class)
-     fun alertNothing() {
+    fun alertNothing() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -340,11 +340,11 @@ import kotlin.time.ExperimentalTime
     }
 
 
-//    @Async
+    //    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 30 08 * * ?")
     @Throws(FileNotFoundException::class)
-     fun goSleep() {
+    fun goSleep() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -422,11 +422,11 @@ import kotlin.time.ExperimentalTime
         }
     }
 
-//    @Async
+    //    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 00 09 * * ?")
     @Throws(FileNotFoundException::class)
-     fun dailyNews() {
+    fun dailyNews() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
@@ -500,6 +500,15 @@ import kotlin.time.ExperimentalTime
     suspend fun guashu(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val group = subject as Group
         return StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/guashu.jpg").inputStream)
+    }
+
+
+    @Command(commandType = CommandType.GROUP, value = "开导", pattern = Pattern.CONTAINS, probaility = 0.5)
+    @Throws(Exception::class)
+    suspend fun kaidao(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val group = subject as Group
+        val file = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}dao", null)
+        return StreamMessageUtil.generateImage(group, File(file).inputStream())
     }
 
 

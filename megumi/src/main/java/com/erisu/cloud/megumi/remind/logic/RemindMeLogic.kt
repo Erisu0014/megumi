@@ -49,4 +49,5 @@ class RemindMeLogic {
         remindQueryWrapper.eq("group_id", groupId).eq("qq_id", userId).eq("id", remindMeId)
         return if (remindMapper.delete(remindQueryWrapper) > 0) PlainText("删除成功") else PlainText("删除失败")
     }
+
 }

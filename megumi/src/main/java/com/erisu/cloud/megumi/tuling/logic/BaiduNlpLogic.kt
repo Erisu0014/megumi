@@ -51,7 +51,7 @@ class BaiduNlpLogic {
         accessToken = checkSignResponse.access_token
     }
 
-
+    @Throws(Exception::class)
     suspend fun emotionRecognition(group: Group, text: String): Message? {
         getAccessToken()
         val url =

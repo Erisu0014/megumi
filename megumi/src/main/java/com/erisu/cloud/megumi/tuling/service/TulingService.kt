@@ -27,6 +27,7 @@ import kotlin.random.Random
  **/
 @Component
 @Model(name = "tuling")
+@OptIn(ExperimentalSerializationApi::class)
 class TulingService {
     companion object {
         var probabilities: MutableMap<Long, Int> = mutableMapOf()
@@ -75,14 +76,10 @@ class TulingService {
         return PlainText("当前AI概率为$probability")
     }
 
-    @ExperimentalSerializationApi
-    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.PREFIX, probaility = 0.05)
+    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CHECK, probaility = 0.005)
     @Throws(Exception::class)
     suspend fun checkEmotion(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        if (subject.id == 604515343L) {
-            return baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
-        }
-        return null
+        return baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
     }
 
 
