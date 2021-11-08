@@ -1,13 +1,11 @@
 package com.erisu.cloud.megumi.event
 
 import cn.hutool.core.lang.UUID
-import cn.hutool.http.HttpUtil
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
 import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
-import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.EventPriority
@@ -66,7 +64,7 @@ class BaseGroupEvent : SimpleListenerHost() {
         val avatarUrl = event.member.avatarUrl
         val fileResponse = FileUtil.downloadHttpUrl(avatarUrl, "cache", null, UUID.fastUUID().toString(true)) ?: return ListeningStatus.LISTENING
         val emoji =
-            StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/alice-yiwen.jpg").inputStream)
+            StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/爱丽丝疑问.jpg").inputStream)
         event.group.sendMessage(messageChainOf(PlainText("${event.member.id}退群了?"), emoji))
         if (fileResponse.code == 200) {
             val imageFile = fileResponse.path!!.toFile()
@@ -110,7 +108,7 @@ class BaseGroupEvent : SimpleListenerHost() {
         if (event.target.id == 572617659L) {
             if (group.id == 705366200L && Random.nextInt() < 0.5) {
                 val image =
-                    StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/an-haipa.jpg").inputStream)
+                    StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/安害怕.jpg").inputStream)
                 group.sendMessage(messageChainOf(PlainText("小路别看福瑞了！"), image))
             }
             return ListeningStatus.LISTENING

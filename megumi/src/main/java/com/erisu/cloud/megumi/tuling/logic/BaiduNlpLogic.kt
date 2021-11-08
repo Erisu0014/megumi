@@ -71,15 +71,15 @@ class BaiduNlpLogic {
             return when (emotionCategory.label) {
                 Emoticon.optimistic.name -> {
                     StreamMessageUtil.generateImage(group,
-                        ClassPathResource("emoticon/maikun-happy.jpg").inputStream)
+                        ClassPathResource("emoticon/麦昆高兴.jpg").inputStream)
                 }
                 Emoticon.neutral.name -> {
                     StreamMessageUtil.generateImage(group,
-                        ClassPathResource("emoticon/maikun-yiban.jpg").inputStream)
+                        ClassPathResource("emoticon/麦昆得意.jpg").inputStream)
                 }
                 Emoticon.pessimistic.name -> {
                     StreamMessageUtil.generateImage(group,
-                        ClassPathResource("emoticon/feiying-kule.jpg").inputStream)
+                        ClassPathResource("emoticon/飞鹰哭了.jpg").inputStream)
                 }
                 else -> null
             }

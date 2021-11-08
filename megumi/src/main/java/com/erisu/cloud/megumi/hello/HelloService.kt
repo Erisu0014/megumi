@@ -100,7 +100,7 @@ class HelloService {
             val bot = Bot.getInstance(username)
             val groupId = 705366200L
             val group = bot.getGroup(groupId) as Group
-            val image = StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/xiaban.gif").inputStream)
+            val image = StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/下班.gif").inputStream)
             group.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
         }
     }
@@ -499,7 +499,7 @@ class HelloService {
     @Throws(Exception::class)
     suspend fun guashu(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val group = subject as Group
-        return StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/guashu.jpg").inputStream)
+        return StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/挂树.jpg").inputStream)
     }
 
 
