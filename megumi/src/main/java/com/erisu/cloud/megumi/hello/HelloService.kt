@@ -98,10 +98,10 @@ class HelloService {
     fun clockOut() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
-            val groupId = 705366200L
-            val group = bot.getGroup(groupId) as Group
-            val image = StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/下班.gif").inputStream)
-            group.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
+            bot.groups.forEach {
+                val image = StreamMessageUtil.generateImage(it, ClassPathResource("emoticon/下班.gif").inputStream)
+                it.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
+            }
         }
     }
 

@@ -66,13 +66,13 @@ class RemindService {
     }
 
     @Command(value = "~todo", commandType = CommandType.GROUP, pattern = Pattern.PREFIX)
-    fun removeRemindMe(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+    suspend fun removeRemindMe(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val group = subject as Group
         val (content) = messageChain[1] as PlainText
         val id = StrUtil.removePrefix(content, "~todo").trim { it <= ' ' }
         return if (StrUtil.isBlank(id)) {
             null
-        } else remindMeLogic.removeRemindMe(id, group.id.toString(), sender.id.toString())
+        } else remindMeLogic.removeRemindMe(id, group, sender.id.toString())
     }
 
     /**

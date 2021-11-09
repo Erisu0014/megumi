@@ -3,10 +3,10 @@ package com.erisu.cloud.megumi.remind.logic
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.erisu.cloud.megumi.remind.mapper.DevRemindMapper
 import com.erisu.cloud.megumi.remind.pojo.DevRemind
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.MessageChain
-import net.mamoe.mirai.message.data.MessageChainBuilder
-import net.mamoe.mirai.message.data.PlainText
+import com.erisu.cloud.megumi.util.StreamMessageUtil
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.message.data.*
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Component
 import java.util.function.Consumer
 import javax.annotation.Resource
@@ -44,10 +44,14 @@ class RemindMeLogic {
      * @param userId
      * @return
      */
-    fun removeRemindMe(remindMeId: String?, groupId: String?, userId: String?): Message {
+    suspend fun removeRemindMe(remindMeId: String?, group: Group, userId: String?): Message {
         val remindQueryWrapper = QueryWrapper<DevRemind>()
-        remindQueryWrapper.eq("group_id", groupId).eq("qq_id", userId).eq("id", remindMeId)
-        return if (remindMapper.delete(remindQueryWrapper) > 0) PlainText("删除成功") else PlainText("删除失败")
+        remindQueryWrapper.eq("group_id", group.id).eq("qq_id", userId).eq("id", remindMeId)
+        val resultList = remindMapper.selectList(remindQueryWrapper)
+        val image = StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/露娜笑.jpg").inputStream)
+        return if (remindMapper.delete(remindQueryWrapper) > 0)
+            messageChainOf(PlainText("完成了${resultList[0].remindJson}真了不起~"), image)
+        else PlainText("删除失败")
     }
 
 }

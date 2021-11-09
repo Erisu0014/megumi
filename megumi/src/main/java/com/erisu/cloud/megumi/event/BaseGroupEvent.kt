@@ -49,6 +49,16 @@ class BaseGroupEvent : SimpleListenerHost() {
     suspend fun onMemberJoinEvent(event: MemberJoinEvent): ListeningStatus {
 //        val name = event.member.nameCard
         event.group.sendMessage("你好呀~")
+        if (event.group.id == 705366200L) {
+            val image =
+                StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/露娜发呆.jpg").inputStream)
+            event.group.sendMessage(messageChainOf(PlainText("这里是光晨养老群，你是哪位"), image))
+        }
+        if (event.group.id == 823621066L) {
+            val image =
+                StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/重炮收到.gif").inputStream)
+            event.group.sendMessage(messageChainOf(PlainText("日服公会名：lsp同好会\n会长：PaperPig"), image))
+        }
         return ListeningStatus.LISTENING
     }
 
@@ -62,7 +72,8 @@ class BaseGroupEvent : SimpleListenerHost() {
     suspend fun onMemberLeaveEvent(event: MemberLeaveEvent): ListeningStatus {
 //        val name = event.member.nameCard
         val avatarUrl = event.member.avatarUrl
-        val fileResponse = FileUtil.downloadHttpUrl(avatarUrl, "cache", null, UUID.fastUUID().toString(true)) ?: return ListeningStatus.LISTENING
+        val fileResponse = FileUtil.downloadHttpUrl(avatarUrl, "cache", null, UUID.fastUUID().toString(true))
+            ?: return ListeningStatus.LISTENING
         val emoji =
             StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/爱丽丝疑问.jpg").inputStream)
         event.group.sendMessage(messageChainOf(PlainText("${event.member.id}退群了?"), emoji))
