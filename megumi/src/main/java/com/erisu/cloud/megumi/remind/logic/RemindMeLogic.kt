@@ -48,9 +48,10 @@ class RemindMeLogic {
         val remindQueryWrapper = QueryWrapper<DevRemind>()
         remindQueryWrapper.eq("group_id", group.id).eq("qq_id", userId).eq("id", remindMeId)
         val resultList = remindMapper.selectList(remindQueryWrapper)
+        val messageChain = MessageChain.deserializeFromJsonString(resultList[0].remindJson)
         val image = StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/露娜笑.jpg").inputStream)
         return if (remindMapper.delete(remindQueryWrapper) > 0)
-            messageChainOf(PlainText("完成了${resultList[0].remindJson}真了不起~"), image)
+            messageChainOf(PlainText("完成了\""), messageChain, PlainText("\"真了不起"), image)
         else PlainText("删除失败")
     }
 
