@@ -6,6 +6,7 @@ import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
+import com.erisu.cloud.megumi.util.VoiceUtil
 import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.event.EventHandler
 import net.mamoe.mirai.event.EventPriority
@@ -38,6 +39,9 @@ class BaseGroupEvent : SimpleListenerHost() {
 
     @Resource
     private lateinit var setuLogic: SetuLogic
+
+    @Resource
+    private lateinit var voiceUtil: VoiceUtil
 
     /**
      * 入群事件
@@ -142,8 +146,9 @@ class BaseGroupEvent : SimpleListenerHost() {
             random < 0.5 -> {
                 val path = "${FileUtil.localStaticPath}${File.separator}hutao"
                 val randomFile = FileUtil.getRandomFile(path, "mp3")
+                val silkFile = voiceUtil.convertToSilk(randomFile)
                 group.sendMessage(StreamMessageUtil.generateAudio(group,
-                    File(randomFile).inputStream()))
+                    File(silkFile).inputStream()))
             }
             // 来点setu
             random < 0.6 -> {
