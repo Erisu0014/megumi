@@ -6,13 +6,16 @@ import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.random.logic.RandomLogic.roll
 import com.erisu.cloud.megumi.setu.logic.SetuLogic
+import com.erisu.cloud.megumi.util.FileUtil
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.springframework.stereotype.Component
+import java.io.File
 import javax.annotation.Resource
 
 /**
@@ -20,6 +23,7 @@ import javax.annotation.Resource
  *@Author alice
  *@Date 2021/7/7 8:43
  **/
+@MiraiExperimentalApi
 @Component
 @Model(name = "setu")
 class SetuService {
@@ -53,14 +57,38 @@ class SetuService {
 //    }
 
 
-    @Command(value = "就这不够色",
+    @Command(
+        value = "就这不够色",
         commandType = CommandType.GROUP,
         pattern = Pattern.EQUALS,
-        recallTime = 10,
-        isRecalled = true)
-    suspend fun roll(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        return setuLogic.getLocalSetu(subject as Group)
+        recallTime = 60,
+        isRecalled = true
+    )
+    suspend fun roll18(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic${File.separator}18+"
+        return setuLogic.getLocalSetu(subject as Group, path, 1)
 
+    }
+
+    @Command(
+        value = "来张([色涩])图",
+        commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX
+    )
+    suspend fun roll(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic${File.separator}18-"
+        return setuLogic.getLocalSetu(subject as Group, path, 1)
+    }
+
+    @Command(
+        value = "来组([色涩])图",
+        commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX
+    )
+    suspend fun rollMax(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        Regex("来组([色涩])图")
+        val path = "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic${File.separator}18-"
+        return setuLogic.getLocalSetu(subject as Group, path, 5)
     }
 
 

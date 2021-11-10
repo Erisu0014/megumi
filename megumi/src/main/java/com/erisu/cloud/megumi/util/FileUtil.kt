@@ -62,6 +62,7 @@ object FileUtil {
 
     /**
      * 获取任路径下（单层次）的fileName
+     * todo 优化为数组返回
      */
     fun getRandomFile(path: String, suffix: String?): String {
         val fileNames: MutableList<String> = mutableListOf()

@@ -13,6 +13,7 @@ import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.awt.Color
@@ -27,6 +28,7 @@ import kotlin.io.path.pathString
  *@Author alice
  *@Date 2021/7/7 8:46
  **/
+@MiraiExperimentalApi
 @Component
 class SetuLogic {
     @Value("\${qq.username}")
@@ -35,20 +37,24 @@ class SetuLogic {
     suspend fun getRollSetu(tag: String, num: Int, isR18: Int, group: Group): Message? {
         val orTag = tag.split("|")
         val setuRequest: SetuRequest = if (tag.trim() == "") {
-            SetuRequest(dateAfter = null,
+            SetuRequest(
+                dateAfter = null,
                 dateBefore = null,
                 uid = null,
                 tag = null,
                 keyword = null,
                 num = num,
-                r18 = isR18)
+                r18 = isR18
+            )
         } else {
-            SetuRequest(dateAfter = null,
+            SetuRequest(
+                dateAfter = null,
                 dateBefore = null,
                 uid = null,
                 tag = arrayOf(orTag),
                 keyword = null,
-                num = num, r18 = isR18)
+                num = num, r18 = isR18
+            )
         }
         group.sendMessage(PlainText("setu正在下载中，请稍等~"))
         val responseJson =
@@ -63,8 +69,12 @@ class SetuLogic {
                     //单条发送
                     val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
                     if (response.code != 200) {
-                        group.sendMessage(forwardSetuMessage(PlainText(text),
-                            StreamMessageUtil.generateImage(group, response.path!!.toFile(), true), group))
+                        group.sendMessage(
+                            forwardSetuMessage(
+                                PlainText(text),
+                                StreamMessageUtil.generateImage(group, response.path!!.toFile(), true), group
+                            )
+                        )
                     }
                 }
 //                messageChainOf(*imageList.toTypedArray())
@@ -102,13 +112,18 @@ class SetuLogic {
         return StreamMessageUtil.generateImage(group, File(newName), isDelete)
     }
 
-    suspend fun getLocalSetu(group: Group): Message {
-        val path = "${FileUtil.localStaticPath}${File.separator}eroi${File.separator}pic"
-        val randomFile = FileUtil.getRandomFile(path, null)
-        val file = Paths.get(randomFile)
-        val image = getImage(group, file, "${FileUtil.localCachePath}${File.separator}${UUID.fastUUID()}.png", true)
+    suspend fun getLocalSetu(group: Group, path: String, num: Int): Message {
+        val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
+        for (i in 0 until num) {
+            val randomFile = FileUtil.getRandomFile(path, null)
+            val file = Paths.get(randomFile)
+            val image = getImage(group, file, "${FileUtil.localCachePath}${File.separator}${UUID.fastUUID()}.png", true)
+            val node: ForwardMessage.Node =
+                ForwardMessage.Node(3099396879L, System.currentTimeMillis().toInt(), "诗姐姐", image)
+            nodes.add(node)
+        }
         return buildForwardMessage(group) {
-            add(3099396879L, "诗姐姐", image)
+            addAll(nodes)
         }
 
     }
