@@ -492,7 +492,7 @@ class HelloService {
             group.sendMessage("权限高了不起啊！我直接给alice告状\uD83D\uDE05")
         }
 
-        return PlainText("嘉然小矮子是不是你爹啊天天碰瓷pcr，赶紧爬\uD83D\uDE01")
+        return PlainText("红色孕妇小矮子赶紧爬，碰瓷你吗pcr呢\uD83D\uDE01")
     }
 
     @Command(commandType = CommandType.GROUP, value = "挂树", pattern = Pattern.EQUALS, probaility = 0.3)
