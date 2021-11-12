@@ -54,7 +54,7 @@ class RemindService {
     fun addRemindMe(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val group = subject as Group
         val message = remindMe(messageChain)
-        val messageStr: String = messageChain.serializeToJsonString()
+        val messageStr: String = message.serializeToJsonString()
         remindMeLogic.addRemindMe(DevRemind(null, group.id.toString(), sender.id.toString(), messageStr))
         return PlainText("已添加提醒事项")
     }
