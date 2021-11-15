@@ -459,25 +459,25 @@ class HelloService {
     }
 
 
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "", probaility = 0.5)
-    fun nbnhhsh(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val regex = Regex("([a-z]+)", RegexOption.IGNORE_CASE)
-        if (!regex.matches(messageChain.contentToString())) return null
-        val finder =
-            regex.find(messageChain.contentToString()) ?: return null
-        var text = ""
-        text = finder.groupValues[1]
-        // 查询不触发关键词
-        val keywords = File("${FileUtil.localStaticPath}${File.separator}basic${File.separator}nbnhhsh.txt").readLines()
-        if (keywords.contains(text)) return null
-        val requestMap = mapOf("text" to text)
-        val res = HttpUtil.post("https://lab.magiconch.com/api/nbnhhsh/guess", requestMap, 3000)
-        val resPo = JSONObject.parseArray(res)
-        val ja = resPo.getJSONObject(0).getJSONArray("trans")
-        if (ja.isNullOrEmpty()) return PlainText("能不能好好说话\uD83D\uDE05")
-        val result = JSONObject.parseArray(JSON.toJSONString(ja), String::class.java)
-        return PlainText("您可能在说：${result.joinToString(separator = ",")}")
-    }
+//    @Command(commandType = CommandType.GROUP, pattern = Pattern.PREFIX, value = "", probaility = 0.5)
+//    fun nbnhhsh(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        val regex = Regex("([a-z]+)", RegexOption.IGNORE_CASE)
+//        if (!regex.matches(messageChain.contentToString())) return null
+//        val finder =
+//            regex.find(messageChain.contentToString()) ?: return null
+//        var text = ""
+//        text = finder.groupValues[1]
+//        // 查询不触发关键词
+//        val keywords = File("${FileUtil.localStaticPath}${File.separator}basic${File.separator}nbnhhsh.txt").readLines()
+//        if (keywords.contains(text)) return null
+//        val requestMap = mapOf("text" to text)
+//        val res = HttpUtil.post("https://lab.magiconch.com/api/nbnhhsh/guess", requestMap, 3000)
+//        val resPo = JSONObject.parseArray(res)
+//        val ja = resPo.getJSONObject(0).getJSONArray("trans")
+//        if (ja.isNullOrEmpty()) return PlainText("能不能好好说话\uD83D\uDE05")
+//        val result = JSONObject.parseArray(JSON.toJSONString(ja), String::class.java)
+//        return PlainText("您可能在说：${result.joinToString(separator = ",")}")
+//    }
 
     @OptIn(ExperimentalTime::class)
     @Command(commandType = CommandType.GROUP, pattern = Pattern.EQUALS, value = "水嘉然")
@@ -492,7 +492,7 @@ class HelloService {
             group.sendMessage("权限高了不起啊！我直接给alice告状\uD83D\uDE05")
         }
 
-        return PlainText("嘉然小矮子是不是你爹啊天天碰瓷pcr，赶紧爬\uD83D\uDE01")
+        return PlainText("红色孕妇小矮子赶紧爬，碰瓷你吗pcr呢\uD83D\uDE01")
     }
 
     @Command(commandType = CommandType.GROUP, value = "挂树", pattern = Pattern.EQUALS, probaility = 0.3)
