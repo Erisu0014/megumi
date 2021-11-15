@@ -90,7 +90,7 @@ class RemindService {
             val types = RemindType.values().filter { it.remindBegin == 1 }
             if (types.isEmpty()) return@future
             val bot = Bot.getInstance(username)
-            val group = bot.getGroup(705366200L) ?: return@future
+            val group = bot.getGroup(823621066L) ?: return@future
             val message = remindPcrLogic.getTomorrowActivities(group, today, types) ?: return@future
             group.sendMessage(message)
         }
@@ -111,7 +111,7 @@ class RemindService {
             val types = RemindType.values().filter { it.remindLast == 1 }
             if (types.isEmpty()) return@future
             val bot = Bot.getInstance(username)
-            val group = bot.getGroup(705366200L) ?: return@future
+            val group = bot.getGroup(823621066L) ?: return@future
             val message = remindPcrLogic.getTodayActivities(group, today, types) ?: return@future
             group.sendMessage(message)
         }
