@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component
 import java.io.File
 import java.io.FileNotFoundException
 import javax.annotation.Resource
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -500,6 +501,23 @@ class HelloService {
     suspend fun guashu(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val group = subject as Group
         return StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/挂树.jpg").inputStream)
+    }
+
+    @Command(commandType = CommandType.GROUP, value = "哟西", pattern = Pattern.EQUALS, probaility = 0.5)
+    @Throws(Exception::class)
+    fun yoxi(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        return PlainText("你滴...太君ですか")
+    }
+
+    @Command(commandType = CommandType.GROUP, value = "积回去", pattern = Pattern.CONTAINS)
+    @Throws(Exception::class)
+    fun jihuiqu(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        return if (Random.nextInt() < 0.2) {
+            PlainText("导太多惹，积不回去啦")
+        } else {
+            val lines = ClassPathResource("积.txt").file.readLines()
+            PlainText(lines[Random.nextInt(0, lines.size)])
+        }
     }
 
 
