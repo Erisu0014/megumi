@@ -20,3 +20,4 @@
 /megumi/src/main/resources/mysql.properties
 ### other.properties ##
 /megumi/src/main/resources/other.properties
+/megumi/static/nullable/**
