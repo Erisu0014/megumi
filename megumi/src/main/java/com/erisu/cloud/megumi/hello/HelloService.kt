@@ -106,6 +106,22 @@ class HelloService {
         }
     }
 
+    /**
+     * 疯狂星期四
+     *
+     */
+    @OptIn(DelicateCoroutinesApi::class)
+    @Scheduled(cron = "0 50 17 * * 4")
+    fun crazyHot() {
+        GlobalScope.future {
+            val bot = Bot.getInstance(username)
+            bot.groups.forEach {
+                val image = StreamMessageUtil.generateImage(it, ClassPathResource("emoticon/诞弓.jpg").inputStream)
+                it.sendMessage(messageChainOf(PlainText("欧尼酱~能v我50吗，今天疯狂星期四"), image))
+            }
+        }
+    }
+
 
     @MiraiExperimentalApi
     @Command(commandType = CommandType.GROUP, value = "假xml", pattern = Pattern.EQUALS)
@@ -530,12 +546,12 @@ class HelloService {
     }
 
 
-    @Command(commandType = CommandType.GROUP, value = "test1", pattern = Pattern.EQUALS)
-    @Throws(Exception::class)
-    fun test1234(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//    @Command(commandType = CommandType.GROUP, value = "test1", pattern = Pattern.EQUALS)
+//    @Throws(Exception::class)
+//    fun test1234(sender: User, messageChain: MessageChain, subject: Contact): Message? {
 //        clockOut()
-        return null
-    }
+//        return null
+//    }
 
 
 }
