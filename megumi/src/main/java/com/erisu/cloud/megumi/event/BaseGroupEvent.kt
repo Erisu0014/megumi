@@ -56,9 +56,8 @@ class BaseGroupEvent : SimpleListenerHost() {
         if (event.group.id == 705366200L) {
             val image =
                 StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/露娜发呆.jpg").inputStream)
-            event.group.sendMessage(messageChainOf(PlainText("这里是光晨养老群，你是哪位"), image))
-        }
-        if (event.group.id == 823621066L) {
+            event.group.sendMessage(messageChainOf(PlainText("你是？"), image))
+        } else if (event.group.id == 823621066L) {
             val image =
                 StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/重炮收到.gif").inputStream)
             event.group.sendMessage(messageChainOf(PlainText("日服公会名：lsp同好会\n会长：PaperPig"), image))
