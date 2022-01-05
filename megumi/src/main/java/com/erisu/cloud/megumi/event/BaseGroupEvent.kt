@@ -73,18 +73,19 @@ class BaseGroupEvent : SimpleListenerHost() {
 
     @EventHandler(priority = EventPriority.NORMAL)
     suspend fun onMemberLeaveEvent(event: MemberLeaveEvent): ListeningStatus {
+        event.group.sendMessage(messageChainOf(PlainText("${event.member.id}退群了\uD83D\uDE36")))
 //        val name = event.member.nameCard
-        val avatarUrl = event.member.avatarUrl
-        val fileResponse = FileUtil.downloadHttpUrl(avatarUrl, "cache", null, UUID.fastUUID().toString(true))
-            ?: return ListeningStatus.LISTENING
-        val emoji =
-            StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/爱丽丝疑问.jpg").inputStream)
-        event.group.sendMessage(messageChainOf(PlainText("${event.member.id}退群了?"), emoji))
-        if (fileResponse.code == 200) {
-            val imageFile = fileResponse.path!!.toFile()
-            val avatar = StreamMessageUtil.generateImage(event.group, imageFile, false)
-            event.group.sendMessage(avatar)
-        }
+//        val avatarUrl = event.member.avatarUrl
+//        val fileResponse = FileUtil.downloadHttpUrl(avatarUrl, "cache", null, UUID.fastUUID().toString(true))
+//            ?: return ListeningStatus.LISTENING
+//        val emoji =
+//            StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/爱丽丝疑问.jpg").inputStream)
+//        event.group.sendMessage(messageChainOf(PlainText("${event.member.id}退群了"), emoji))
+//        if (fileResponse.code == 200) {
+//            val imageFile = fileResponse.path!!.toFile()
+//            val avatar = StreamMessageUtil.generateImage(event.group, imageFile, false)
+//            event.group.sendMessage(avatar)
+//        }
         return ListeningStatus.LISTENING
     }
 
