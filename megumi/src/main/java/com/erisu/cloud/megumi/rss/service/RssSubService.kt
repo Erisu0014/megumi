@@ -74,4 +74,13 @@ class RssSubService {
         val group = subject as Group
         return rssLogic.unSubscribeBilibili(group.id.toString(), uid)
     }
+
+
+    @Command(commandType = CommandType.GROUP, value = "取消订阅微博", pattern = Pattern.PREFIX)
+    @Throws(Exception::class)
+    fun unSubscribeWeibo(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val uid = messageChain.contentToString().removePrefix("取消订阅微博").trim()
+        val group = subject as Group
+        return rssLogic.unSubscribeWeibo(group.id.toString(), uid)
+    }
 }
