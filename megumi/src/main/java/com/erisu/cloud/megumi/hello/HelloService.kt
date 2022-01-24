@@ -230,73 +230,73 @@ class HelloService {
         return PlainText(marsUtil.getMars(marsText))
     }
 
-    @Command(commandType = CommandType.GROUP, value = "半月刊", pattern = Pattern.EQUALS)
-    @Throws(Exception::class)
-    suspend fun halfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val file =
-            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}半月刊.png")
-        return StreamMessageUtil.generateImage(subject as Group, file, false)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "半月刊", pattern = Pattern.EQUALS)
+//    @Throws(Exception::class)
+//    suspend fun halfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        val file =
+//            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}半月刊.png")
+//        return StreamMessageUtil.generateImage(subject as Group, file, false)
+//    }
 
-    @OptIn(MiraiInternalApi::class)
-    @Command(commandType = CommandType.GROUP,
-        value = "更新半月刊",
-        pattern = Pattern.PREFIX,
-        uuid = "2f37e8fd963c410e88ecaeaf5fe8086a")
-    @Throws(Exception::class)
-    suspend fun updateHalfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        if (sender.id == 1269732086L) {
-            if (messageChain[2] is GroupImage) {
-                val image = messageChain[2] as GroupImage
-                val url = image.queryUrl()
-                val path =
-                    FileUtil.downloadHttpUrl(url, "${FileUtil.localStaticPath}${File.separator}basic", "png", "半月刊")
-                if (path != null) {
-                    return PlainText("更新半月刊成功喵")
-                }
-            }
-        }
-        return PlainText("更新半月刊失败喵")
-    }
+//    @OptIn(MiraiInternalApi::class)
+//    @Command(commandType = CommandType.GROUP,
+//        value = "更新半月刊",
+//        pattern = Pattern.PREFIX,
+//        uuid = "2f37e8fd963c410e88ecaeaf5fe8086a")
+//    @Throws(Exception::class)
+//    suspend fun updateHalfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        if (sender.id == 1269732086L) {
+//            if (messageChain[2] is GroupImage) {
+//                val image = messageChain[2] as GroupImage
+//                val url = image.queryUrl()
+//                val path =
+//                    FileUtil.downloadHttpUrl(url, "${FileUtil.localStaticPath}${File.separator}basic", "png", "半月刊")
+//                if (path != null) {
+//                    return PlainText("更新半月刊成功喵")
+//                }
+//            }
+//        }
+//        return PlainText("更新半月刊失败喵")
+//    }
 
-    @Command(commandType = CommandType.GROUP, value = "规划", pattern = Pattern.EQUALS)
-    @Throws(Exception::class)
-    suspend fun bcrPlan(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val file =
-            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}规划.jpg")
-        return StreamMessageUtil.generateImage(subject as Group, file, false)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "规划", pattern = Pattern.EQUALS)
+//    @Throws(Exception::class)
+//    suspend fun bcrPlan(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        val file =
+//            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}规划.jpg")
+//        return StreamMessageUtil.generateImage(subject as Group, file, false)
+//    }
+//
+//    @Command(commandType = CommandType.GROUP, value = "半周年", pattern = Pattern.EQUALS)
+//    @Throws(Exception::class)
+//    suspend fun bcrHalfAnniversary(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        val file =
+//            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}半周年.jpg")
+//        return StreamMessageUtil.generateImage(subject as Group, file, false)
+//    }
+//
+//    @Command(commandType = CommandType.GROUP,
+//        value = "孤儿装",
+//        pattern = Pattern.EQUALS,
+//        uuid = "530108b76cf440ab8551d17ea2cb9e12")
+//    @Throws(Exception::class)
+//    suspend fun krEquipment(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        val file =
+//            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}孤儿装.jpg")
+//        return StreamMessageUtil.generateImage(subject as Group, file, false)
+//    }
 
-    @Command(commandType = CommandType.GROUP, value = "半周年", pattern = Pattern.EQUALS)
-    @Throws(Exception::class)
-    suspend fun bcrHalfAnniversary(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val file =
-            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}半周年.jpg")
-        return StreamMessageUtil.generateImage(subject as Group, file, false)
-    }
 
-    @Command(commandType = CommandType.GROUP,
-        value = "孤儿装",
-        pattern = Pattern.EQUALS,
-        uuid = "530108b76cf440ab8551d17ea2cb9e12")
-    @Throws(Exception::class)
-    suspend fun krEquipment(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val file =
-            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}basic${File.separator}孤儿装.jpg")
-        return StreamMessageUtil.generateImage(subject as Group, file, false)
-    }
-
-
-    @Command(commandType = CommandType.GROUP,
-        value = "赛程",
-        pattern = Pattern.EQUALS,
-        uuid = "95825f0b39c240ce8e6f11dcb0bc86d6")
-    @Throws(Exception::class)
-    suspend fun s11lol(sender: User, messageChain: MessageChain, subject: Contact?): Message {
-        val file =
-            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}lol${File.separator}s11赛程.jpg")
-        return StreamMessageUtil.generateImage(subject as Group, file, false)
-    }
+//    @Command(commandType = CommandType.GROUP,
+//        value = "赛程",
+//        pattern = Pattern.EQUALS,
+//        uuid = "95825f0b39c240ce8e6f11dcb0bc86d6")
+//    @Throws(Exception::class)
+//    suspend fun s11lol(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//        val file =
+//            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}lol${File.separator}s11赛程.jpg")
+//        return StreamMessageUtil.generateImage(subject as Group, file, false)
+//    }
 
 
     @Command(commandType = CommandType.GROUP, value = "迫害", pattern = Pattern.EQUALS)
@@ -506,10 +506,9 @@ class HelloService {
                 sender.mute(Duration.Companion.minutes(10))
             }
         } catch (e: Exception) {
-            group.sendMessage("权限高了不起啊！我直接给alice告状\uD83D\uDE05")
+            group.sendMessage("ts来全禁了\uD83D\uDE05")
         }
-
-        return PlainText("红色孕妇小矮子赶紧爬，碰瓷你吗pcr呢\uD83D\uDE01")
+        return PlainText("爬\uD83D\uDE01")
     }
 
     @Command(commandType = CommandType.GROUP, value = "挂树", pattern = Pattern.EQUALS, probaility = 0.3)
@@ -544,6 +543,8 @@ class HelloService {
         val file = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}dao", null)
         return StreamMessageUtil.generateImage(group, File(file).inputStream())
     }
+
+
 
 
 //    @Command(commandType = CommandType.GROUP, value = "test1", pattern = Pattern.EQUALS)

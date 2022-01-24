@@ -26,10 +26,7 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.MessageChain
-import net.mamoe.mirai.message.data.MessageChainBuilder
-import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -109,7 +106,10 @@ class RssService {
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))
             FileUtil.buildImages(group, images, chainBuilder)
-            group.sendMessage(chainBuilder.build())
+            val message = buildForwardMessage(group) {
+                add(2854196306, "色图bot", chainBuilder.build())
+            }
+            group.sendMessage(message)
         }
     }
 
@@ -132,11 +132,15 @@ class RssService {
             }
             // 删除video标签
             parseText = Regex("""<video(.*?)poster="(.*?)".*?></video>""").replace(parseText, "")
-            val chainBuilder = MessageChainBuilder()
+            val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
+            var chainBuilder = MessageChainBuilder()
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))
             FileUtil.buildImages(group, images, chainBuilder)
-            group.sendMessage(chainBuilder.build())
+            val message = buildForwardMessage(group) {
+                add(2854196306, "色图bot", chainBuilder.build())
+            }
+            group.sendMessage(message)
         }
     }
 
