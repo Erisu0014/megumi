@@ -92,6 +92,7 @@ class RssService {
 
     suspend fun bilibili(group: Group, feed: SyndFeed) {
         val title = feed.title.removeSurrounding("<![CDATA[ ", " ]]>").trim()
+        val forwardMessageBuilder = ForwardMessageBuilder(group)
         feed.entries.forEach {
             val des = it.description.value
             val parseText: String =
@@ -106,16 +107,16 @@ class RssService {
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))
             FileUtil.buildImages(group, images, chainBuilder)
-            val message = buildForwardMessage(group) {
-                add(2854196306, "色图bot", chainBuilder.build())
-            }
-            group.sendMessage(message)
+            forwardMessageBuilder.add(2854196306, "色图bot", chainBuilder.build())
         }
+        group.sendMessage(forwardMessageBuilder.build())
+
     }
 
 
     suspend fun weibo(group: Group, feed: SyndFeed) {
         val title = feed.title.removeSurrounding("<![CDATA[ ", " ]]>").trim()
+        val forwardMessageBuilder = ForwardMessageBuilder(group)
         feed.entries.forEach {
             val des = it.description.value
             var parseText: String = rssParser.parseText(des)
@@ -137,11 +138,9 @@ class RssService {
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))
             FileUtil.buildImages(group, images, chainBuilder)
-            val message = buildForwardMessage(group) {
-                add(2854196306, "色图bot", chainBuilder.build())
-            }
-            group.sendMessage(message)
+            forwardMessageBuilder.add(2854196306, "色图bot", chainBuilder.build())
         }
+        group.sendMessage(forwardMessageBuilder.build())
     }
 
 
