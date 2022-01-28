@@ -26,16 +26,16 @@ class MusicService {
     @MiraiExperimentalApi
     @Command(commandType = CommandType.GROUP, value = "点歌", pattern = Pattern.PREFIX)
     @Throws(Exception::class)
-    fun getMusic(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+    fun getMusic(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val keywords = messageChain.contentToString().removePrefix("点歌").trim()
-        return musicLogic.getMusic(1, keywords)?.first
+        return musicLogic.getMusic(1, keywords)?.first?:PlainText("没查到结果的说~\uD83D\uDE34")
     }
 
 
     @MiraiExperimentalApi
     @Command(commandType = CommandType.GROUP, value = "查歌词", pattern = Pattern.PREFIX)
     @Throws(Exception::class)
-    suspend fun getMusicByLyric(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+    suspend fun getMusicByLyric(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val keywords = messageChain.contentToString().removePrefix("查歌词").trim()
         val pair = musicLogic.getMusic(1006, keywords)
         subject.sendMessage(PlainText(pair!!.second!!))

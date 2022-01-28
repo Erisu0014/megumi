@@ -187,6 +187,16 @@ class HelloService {
         return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
 
+
+    @Command(commandType = CommandType.GROUP, value = "哈西累", pattern = Pattern.CONTAINS)
+    @Throws(Exception::class)
+    suspend fun hashire(sender: User, messageChain: MessageChain, group: Group): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}hashire.m4a"
+        val silkPath = voiceUtil.convertToSilk(path)
+        val silkFile = File(silkPath)
+        return StreamMessageUtil.generateAudio(group, silkFile, false)
+    }
+
 //    @Command(commandType = CommandType.GROUP, value = "切换图片模式", pattern = Pattern.EQUALS)
 //    @Throws(Exception::class)
 //    fun changeModel(sender: User, messageChain: MessageChain, group: Group): Message {
@@ -319,6 +329,7 @@ class HelloService {
         val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}憨批诗酱.png")
         return StreamMessageUtil.generateImage(group, file, false)
     }
+
 
     @Command(commandType = CommandType.GROUP, value = "谁敢向我挑衅", pattern = Pattern.PREFIX)
     suspend fun pogDamage(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
@@ -543,8 +554,6 @@ class HelloService {
         val file = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}dao", null)
         return StreamMessageUtil.generateImage(group, File(file).inputStream())
     }
-
-
 
 
 //    @Command(commandType = CommandType.GROUP, value = "test1", pattern = Pattern.EQUALS)
