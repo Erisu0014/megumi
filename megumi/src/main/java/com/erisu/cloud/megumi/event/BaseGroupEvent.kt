@@ -140,20 +140,20 @@ class BaseGroupEvent : SimpleListenerHost() {
                 group.sendMessage(messageChainOf(image, PlainText(msg)))
             }
             // 随机表情
-            random < 0.3 -> {
+            random < 0.2 -> {
                 group.sendMessage(emojiLogic.getRandomImage(group)!!)
             }
-            random < 0.5 -> {
-                val path = "${FileUtil.localStaticPath}${File.separator}hutao"
-                val randomFile = FileUtil.getRandomFile(path, "mp3")
+            random < 0.7 -> {
+                val path = "${FileUtil.localStaticPath}${File.separator}osu"
+                val randomFile = FileUtil.getRandomFile(path, "m4a")
                 val silkFile = voiceUtil.convertToSilk(randomFile)
                 group.sendMessage(StreamMessageUtil.generateAudio(group,
                     File(silkFile).inputStream()))
             }
-            // 来点setu
-            random < 0.6 -> {
-                setuLogic.getRollSetu("", 1, 0, group)
-            }
+//            // 来点setu
+//            random < 0.6 -> {
+//                setuLogic.getRollSetu("", 1, 0, group)
+//            }
             // 来点歌
             random < 0.8 -> {
                 musicLogic.getRandomSongs()?.let { group.sendMessage(it) }

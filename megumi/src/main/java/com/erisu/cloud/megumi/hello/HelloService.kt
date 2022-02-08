@@ -188,14 +188,14 @@ class HelloService {
     }
 
 
-    @Command(commandType = CommandType.GROUP, value = "哈西累", pattern = Pattern.CONTAINS)
-    @Throws(Exception::class)
-    suspend fun hashire(sender: User, messageChain: MessageChain, group: Group): Message {
-        val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}hashire.m4a"
-        val silkPath = voiceUtil.convertToSilk(path)
-        val silkFile = File(silkPath)
-        return StreamMessageUtil.generateAudio(group, silkFile, false)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "哈西累", pattern = Pattern.CONTAINS)
+//    @Throws(Exception::class)
+//    suspend fun hashire(sender: User, messageChain: MessageChain, group: Group): Message {
+//        val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}hashire.m4a"
+//        val silkPath = voiceUtil.convertToSilk(path)
+//        val silkFile = File(silkPath)
+//        return StreamMessageUtil.generateAudio(group, silkFile, false)
+//    }
 
 //    @Command(commandType = CommandType.GROUP, value = "切换图片模式", pattern = Pattern.EQUALS)
 //    @Throws(Exception::class)
