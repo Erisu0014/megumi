@@ -42,6 +42,7 @@ import javax.annotation.Resource
 @Slf4j
 @Component
 @Model(name = "rssbusuo")
+@OptIn(DelicateCoroutinesApi::class)
 class RssService {
     @Resource
     private lateinit var rssParser: RssParser
@@ -63,7 +64,6 @@ class RssService {
     }
 
     //    @Async
-    @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(fixedDelay = 360_000)
     fun rssConsumption() {
         GlobalScope.future {
@@ -109,7 +109,9 @@ class RssService {
             FileUtil.buildImages(group, images, chainBuilder)
             forwardMessageBuilder.add(2854196306, "色图bot", chainBuilder.build())
         }
-        group.sendMessage(forwardMessageBuilder.build())
+        if (forwardMessageBuilder.size!=0){
+            group.sendMessage(forwardMessageBuilder.build())
+        }
 
     }
 
@@ -140,12 +142,13 @@ class RssService {
             FileUtil.buildImages(group, images, chainBuilder)
             forwardMessageBuilder.add(2854196306, "色图bot", chainBuilder.build())
         }
-        group.sendMessage(forwardMessageBuilder.build())
+        if(forwardMessageBuilder.size!=0){
+            group.sendMessage(forwardMessageBuilder.build())
+        }
     }
 
 
     //    @Scheduled(cron = "0 0 9 * * ?")
-    @OptIn(DelicateCoroutinesApi::class)
     fun bangumi() {
         GlobalScope.future {
             val url = "http://1.117.219.198:1200/bangumi/calendar/today"
