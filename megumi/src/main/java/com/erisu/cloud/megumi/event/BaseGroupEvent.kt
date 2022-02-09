@@ -37,8 +37,8 @@ class BaseGroupEvent : SimpleListenerHost() {
     @Resource
     private lateinit var musicLogic: MusicLogic
 
-    @Resource
-    private lateinit var setuLogic: SetuLogic
+//    @Resource
+//    private lateinit var setuLogic: SetuLogic
 
     @Resource
     private lateinit var voiceUtil: VoiceUtil
@@ -53,13 +53,11 @@ class BaseGroupEvent : SimpleListenerHost() {
     suspend fun onMemberJoinEvent(event: MemberJoinEvent): ListeningStatus {
 //        val name = event.member.nameCard
         event.group.sendMessage("你好呀~")
+        val image =
+            StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/小天使请安.jpg").inputStream)
         if (event.group.id == 705366200L) {
-            val image =
-                StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/露娜发呆.jpg").inputStream)
             event.group.sendMessage(messageChainOf(PlainText("你是？"), image))
         } else if (event.group.id == 823621066L) {
-            val image =
-                StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/重炮收到.gif").inputStream)
             event.group.sendMessage(messageChainOf(PlainText("日服公会名：lsp同好会\n会长：PaperPig"), image))
         }
         return ListeningStatus.LISTENING
