@@ -182,7 +182,7 @@ class RssService {
     fun umamusume() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
-            val groupId = 705366200L
+            val groupId = 604515343L
             val group = bot.getGroup(groupId) as Group
             val url = "https://umamusume.jp/api/ajax/pr_info_index?format=json"
             val headerMap =

@@ -309,38 +309,38 @@ class HelloService {
 //    }
 
 
-    @Command(commandType = CommandType.GROUP, value = "迫害", pattern = Pattern.EQUALS)
-    @Throws(Exception::class)
-    suspend fun memento(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-        val group = subject as Group
-        if (group.id != 705366200L) {
-            return null
-        }
-        val randomFile = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
-        return StreamMessageUtil.generateImage(group, File(randomFile), false)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "迫害", pattern = Pattern.EQUALS)
+//    @Throws(Exception::class)
+//    suspend fun memento(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+//        val group = subject as Group
+//        if (group.id == 705366200L) {
+//            return null
+//        }
+//        val randomFile = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
+//        return StreamMessageUtil.generateImage(group, File(randomFile), false)
+//    }
 
-    @Command(commandType = CommandType.GROUP, value = "憨批诗酱", pattern = Pattern.PREFIX)
-    suspend fun hanpi(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-        val group = subject as Group
-        if (group.id != 705366200L) {
-            return null
-        }
-        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}憨批诗酱.png")
-        return StreamMessageUtil.generateImage(group, file, false)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "憨批诗酱", pattern = Pattern.PREFIX)
+//    suspend fun hanpi(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+//        val group = subject as Group
+//        if (group.id != 705366200L) {
+//            return null
+//        }
+//        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}憨批诗酱.png")
+//        return StreamMessageUtil.generateImage(group, file, false)
+//    }
 
 
-    @Command(commandType = CommandType.GROUP, value = "谁敢向我挑衅", pattern = Pattern.PREFIX)
-    suspend fun pogDamage(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-        val group = subject as Group
-        if (group.id != 705366200L) {
-            return null
-        }
-        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}pogDamage.png")
-        val image = StreamMessageUtil.generateImage(group, file, false)
-        return messageChainOf(PlainText("谁敢向我挑衅！我将终结他的性命！无限火力诗酱Utaha百分百负胜率猴子符文已部署!"), image)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "谁敢向我挑衅", pattern = Pattern.PREFIX)
+//    suspend fun pogDamage(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+//        val group = subject as Group
+//        if (group.id != 705366200L) {
+//            return null
+//        }
+//        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}pogDamage.png")
+//        val image = StreamMessageUtil.generateImage(group, file, false)
+//        return messageChainOf(PlainText("谁敢向我挑衅！我将终结他的性命！无限火力诗酱Utaha百分百负胜率猴子符文已部署!"), image)
+//    }
 
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_AT, uuid = "bbd87b41253a4339a18f8013fa7a6700")
     @Throws(Exception::class)
@@ -353,19 +353,19 @@ class HelloService {
         return null
     }
 
-    //    @Async
-    @OptIn(DelicateCoroutinesApi::class)
-    @Scheduled(cron = "00 00 23 * * ?")
-    @Throws(FileNotFoundException::class)
-    fun alertNothing() {
-        GlobalScope.future {
-            val bot = Bot.getInstance(username)
-            val groupId = 705366200L
-            val group = bot.getGroup(groupId) as Group
-            group.sendMessage(messageChainOf(PlainText("诗酱别冲了~")))
-
-        }
-    }
+//    //    @Async
+//    @OptIn(DelicateCoroutinesApi::class)
+//    @Scheduled(cron = "00 00 23 * * ?")
+//    @Throws(FileNotFoundException::class)
+//    fun alertNothing() {
+//        GlobalScope.future {
+//            val bot = Bot.getInstance(username)
+//            val groupId = 705366200L
+//            val group = bot.getGroup(groupId) as Group
+//            group.sendMessage(messageChainOf(PlainText("诗酱别冲了~")))
+//
+//        }
+//    }
 
 
     //    @Async
@@ -375,7 +375,7 @@ class HelloService {
     fun goSleep() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
-            val groupId = 705366200L
+            val groupId = 604515343L
             val group = bot.getGroup(groupId) as Group
             group.sendMessage(messageChainOf(PlainText("alice快睡吧~")))
 
@@ -457,7 +457,7 @@ class HelloService {
     fun dailyNews() {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
-            val groupId = 705366200L
+            val groupId = 604515343L
             val group = bot.getGroup(groupId) as Group
             getDailyNews(group)?.let { group.sendMessage(it) }
         }

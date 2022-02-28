@@ -55,9 +55,7 @@ class BaseGroupEvent : SimpleListenerHost() {
         event.group.sendMessage("你好呀~")
         val image =
             StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/小天使请安.jpg").inputStream)
-        if (event.group.id == 705366200L) {
-            event.group.sendMessage(messageChainOf(PlainText("你是？"), image))
-        } else if (event.group.id == 823621066L) {
+         if (event.group.id == 823621066L) {
             event.group.sendMessage(messageChainOf(PlainText("日服公会名：lsp同好会\n会长：PaperPig"), image))
         }
         return ListeningStatus.LISTENING
@@ -102,24 +100,24 @@ class BaseGroupEvent : SimpleListenerHost() {
         if (event.from !is NormalMember) {
             return ListeningStatus.LISTENING
         }
-        //  迫害诗酱小助手
-        if (event.target.id == 3099396879L) {
-            if (group.id == 705366200L && Random.nextInt() < 0.2) {
-                val ml = group.members.map { it.nameCard }
-                val luckyDog = ml[Random.nextInt(0, ml.size)]
-                val message =
-                    messageChainOf(At(3099396879L), PlainText("今天\uD83D\uDD12${luckyDog}的牛子吧~"))
-                group.sendMessage(message)
-            } else {
-                val randomFile =
-                    FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
-                val image = StreamMessageUtil.generateImage(group, File(randomFile), false)
-                group.sendMessage(image)
-            }
-            return ListeningStatus.LISTENING
-        }
+//        //  迫害诗酱小助手
+//        if (event.target.id == 3099396879L) {
+//            if (group.id == 705366200L && Random.nextInt() < 0.2) {
+//                val ml = group.members.map { it.nameCard }
+//                val luckyDog = ml[Random.nextInt(0, ml.size)]
+//                val message =
+//                    messageChainOf(At(3099396879L), PlainText("今天\uD83D\uDD12${luckyDog}的牛子吧~"))
+//                group.sendMessage(message)
+//            } else {
+//                val randomFile =
+//                    FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
+//                val image = StreamMessageUtil.generateImage(group, File(randomFile), false)
+//                group.sendMessage(image)
+//            }
+//            return ListeningStatus.LISTENING
+//        }
         if (event.target.id == 572617659L) {
-            if (group.id == 705366200L && Random.nextInt() < 0.5) {
+            if (group.id == 604515343L && Random.nextInt() < 0.5) {
                 val image =
                     StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/安害怕.jpg").inputStream)
                 group.sendMessage(messageChainOf(PlainText("小路别看福瑞了！"), image))
