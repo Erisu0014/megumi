@@ -28,4 +28,16 @@ class AsoulService {
         val content = messageChain.contentToString()
         return asoulLogic.doubleCheck(content.trim())
     }
+
+    @Command(value = "",
+        commandType = CommandType.GROUP,
+        pattern = Pattern.PREFIX,
+        uuid = "0bc353b425a1409bb4c9a473d8bab737")
+    fun doubleCheckDefault(sender: User?, messageChain: MessageChain, subject: Contact?): Message? {
+        val content = messageChain.contentToString()
+        if (content.length > 100) {
+            return asoulLogic.doubleCheck(content.trim())
+        }
+        return null
+    }
 }

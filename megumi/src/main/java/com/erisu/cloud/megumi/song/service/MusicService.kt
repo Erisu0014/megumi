@@ -28,7 +28,7 @@ class MusicService {
     @Throws(Exception::class)
     fun getMusic(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val keywords = messageChain.contentToString().removePrefix("点歌").trim()
-        return musicLogic.getMusic(1, keywords)?.first?:PlainText("没查到结果的说~\uD83D\uDE34")
+        return musicLogic.getMusic(1, keywords)?.first ?: PlainText("没查到音乐的说~\uD83D\uDE34")
     }
 
 
@@ -38,10 +38,15 @@ class MusicService {
     suspend fun getMusicByLyric(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val keywords = messageChain.contentToString().removePrefix("查歌词").trim()
         val pair = musicLogic.getMusic(1006, keywords)
-        subject.sendMessage(PlainText(pair!!.second!!))
-        return pair.first
+        if (pair != null) {
+            if (pair.second != null) {
+                subject.sendMessage(PlainText(pair.second!!))
+            }
+            return pair.first
+        } else {
+            return PlainText("没查到歌词的说~\uD83D\uDE34")
+        }
     }
-
 
 
 }
