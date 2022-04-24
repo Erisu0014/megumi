@@ -8,6 +8,7 @@ import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.util.RedisKey
 import com.erisu.cloud.megumi.util.RedisUtil
 import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.*
 import org.springframework.stereotype.Component
@@ -46,9 +47,10 @@ class BiliService {
                 pair = biliSearchLogic.searchUser(user)
             }
             if (user.length > 40) return null
-        } else if (messageChain.size>= 3 && messageChain[1].contentToString() == "查成分" && messageChain[2] is At) {
+        } else if (messageChain.size >= 3 && messageChain[1].contentToString() == "查成分" && messageChain[2] is At) {
             val at = messageChain[2] as At
-            val mid = redisUtil.get("${RedisKey.BILIBILI.key}:${at.target}") ?: return PlainText("他还没有绑定uid哦~发送绑定B站 114514(本人uid)即可绑定")
+            val mid = redisUtil.get("${RedisKey.BILIBILI.key}:${at.target}")
+                ?: return PlainText("他还没有绑定uid哦~发送绑定B站 114514(本人uid)即可绑定")
             pair = biliSearchLogic.searchUser(mid.toInt())
         }
         if (pair != null) {
@@ -88,7 +90,22 @@ class BiliService {
         return PlainText("解绑成功喵")
     }
 
+    @Command(commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX,
+        value = ".*?(av(\\d{1,12})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|https://(b23.tv)/(.+?)\".+)")
+    suspend fun pulipuli(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val finder =
+            Regex(".*?(av(\\d{1,12})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|https://(b23.tv)/(.+?)\".+)").find(
+                messageChain.contentToString())
+                ?: return null
+        if (finder.groupValues[4] == "b23.tv") {
+            val bvCode = biliSearchLogic.getOriginalLink(finder.groupValues[5]) ?: return null
+            return biliSearchLogic.getAvData(subject as Group, "BV$bvCode")
+        } else {
+            val code = if (finder.groupValues[2] != "") finder.groupValues[2] else finder.groupValues[3]
+            return biliSearchLogic.getAvData(subject as Group, code)
 
-
+        }
+    }
 
 }

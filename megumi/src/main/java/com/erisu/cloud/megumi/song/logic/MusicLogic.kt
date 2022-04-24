@@ -41,7 +41,6 @@ class MusicLogic {
             return null
         }
         val song = musicResponse.result.songs[0]
-        // TODO: 2021/10/18 改成所有as人开关
         if (song.ar.joinToString(separator = "/") { it.name } == "嘉然Diana") {
             return Pair(PlainText("你可少看点as吧\uD83D\uDC7F"), null)
         }

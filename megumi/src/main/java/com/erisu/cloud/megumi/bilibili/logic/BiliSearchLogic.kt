@@ -1,9 +1,19 @@
 package com.erisu.cloud.megumi.bilibili.logic
 
+import cn.hutool.http.HttpRequest
 import cn.hutool.http.HttpUtil
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
+import com.erisu.cloud.megumi.bilibili.pojo.VideoResponse
 import com.erisu.cloud.megumi.util.FileUtil
+import com.erisu.cloud.megumi.util.StreamMessageUtil
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.message.data.Image
+import net.mamoe.mirai.message.data.Message
+import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.messageChainOf
+import net.mamoe.mirai.utils.ExternalResource
+import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
@@ -12,6 +22,7 @@ import java.nio.file.Files
 import java.nio.file.LinkOption
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
+import kotlin.math.pow
 
 /**
  *@Description bilibili查询相关
@@ -20,6 +31,65 @@ import java.nio.file.StandardOpenOption
  **/
 @Component
 class BiliSearchLogic : ApplicationRunner {
+    val keys = mutableMapOf("1" to "13",
+        "2" to "12",
+        "3" to "46",
+        "4" to "31",
+        "5" to "43",
+        "6" to "18",
+        "7" to "40",
+        "8" to "28",
+        "9" to "5",
+        "A" to "54",
+        "B" to "20",
+        "C" to "15",
+        "D" to "8",
+        "E" to "39",
+        "F" to "57",
+        "G" to "45",
+        "H" to "36",
+        "J" to "38",
+        "K" to "51",
+        "L" to "42",
+        "M" to "49",
+        "N" to "52",
+        "P" to "53",
+        "Q" to "7",
+        "R" to "4",
+        "S" to "9",
+        "T" to "50",
+        "U" to "10",
+        "V" to "44",
+        "W" to "34",
+        "X" to "6",
+        "Y" to "25",
+        "Z" to "1",
+        "a" to "26",
+        "b" to "29",
+        "c" to "56",
+        "d" to "3",
+        "e" to "24",
+        "f" to "0",
+        "g" to "47",
+        "h" to "27",
+        "i" to "22",
+        "j" to "41",
+        "k" to "16",
+        "m" to "11",
+        "n" to "37",
+        "o" to "2",
+        "p" to "35",
+        "q" to "21",
+        "r" to "17",
+        "s" to "33",
+        "t" to "30",
+        "u" to "48",
+        "v" to "23",
+        "w" to "55",
+        "x" to "32",
+        "y" to "14",
+        "z" to "19")
+
     fun searchUser(keyword: String): Triple<String, String, String>? {
         val url =
             "http://api.bilibili.com/x/web-interface/search/type?search_type=bili_user&keyword=${keyword}"
@@ -53,8 +123,7 @@ class BiliSearchLogic : ApplicationRunner {
     }
 
 
-
-    fun searchUser(mid: Number): Triple<String, String, String>?{
+    fun searchUser(mid: Number): Triple<String, String, String>? {
         val url =
             "http://api.bilibili.com/x/web-interface/card?mid=${mid}"
         val res = HttpUtil.get(url)
@@ -116,4 +185,60 @@ class BiliSearchLogic : ApplicationRunner {
             StandardOpenOption.CREATE_NEW,
             StandardOpenOption.WRITE)
     }
+
+    fun bv2av(bv: String): String {
+        // 1.去除Bv号前的"Bv"字符
+        val bvCode = bv.substring(2)
+        // 2. 将key对应的value存入一个列表
+        val bvNo2 = mutableListOf<Long>()
+        bvCode.forEach { keys[it.toString()]?.let { it1 -> bvNo2.add(it1.toLong()) } }
+        // 3.对列表中不同位置的数进行 * 58 的x次方的操作
+        bvNo2[0] = bvNo2[0] * 58.0.pow(6).toLong()
+        bvNo2[1] = bvNo2[1] * 58.0.pow(2).toLong()
+        bvNo2[2] = bvNo2[2] * 58.0.pow(4).toLong()
+        bvNo2[3] = bvNo2[3] * 58.0.pow(8).toLong()
+        bvNo2[4] = bvNo2[4] * 58.0.pow(5).toLong()
+        bvNo2[5] = bvNo2[5] * 58.0.pow(9).toLong()
+        bvNo2[6] = bvNo2[6] * 58.0.pow(3).toLong()
+        bvNo2[7] = bvNo2[7] * 58.0.pow(7).toLong()
+        bvNo2[8] = bvNo2[8] * 58.0.pow(1).toLong()
+        bvNo2[9] = bvNo2[9] * 58.0.pow(0).toLong()
+        // 4.求出这10个数的合减去100618342136696320与177451812进行异或
+        return (bvNo2.sum() - 100618342136696320).xor(177451812).toString()
+    }
+
+    suspend fun getAvData(group: Group, av: String): Message? {
+        val avCode = if (av.substring(0, 2) == "BV") bv2av(av) else av.substring(2)
+        val url = "https://api.bilibili.com/x/web-interface/view?aid=$avCode"
+        val headerMap =
+            mapOf("Content-Type" to "application/x-www-form-urlencoded")
+        val response = HttpRequest.get(url).headerMap(headerMap, true).timeout(2000).execute().body()
+        val videoResponse = JSONObject.parseObject(response, VideoResponse::class.java)
+        if (videoResponse.code != 0 || (videoResponse.code == 0 && videoResponse.data == null)) {
+            return null
+        } else {
+            val data = videoResponse.data!!
+            val stat = data.stat!!
+            val pathResponse = FileUtil.downloadHttpUrl(data.pic!!, "cache", null, null) ?: return null
+            if (pathResponse.code != 200) {
+                val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile(), true)
+                return messageChainOf(PlainText("标题：${data.title}\n"), image,
+                    PlainText("播放:${stat.view} " +
+                            "弹幕:${stat.danmaku} 评论:${stat.reply} 收藏:${stat.favorite} " +
+                            "硬币:${stat.coin} 分享:${stat.share} 点赞:${stat.like} \n点击链接进入:https://www.bilibili.com/video/av${avCode}\n简介:${data.desc}"))
+            }
+        }
+        return null
+    }
+
+    fun getOriginalLink(keyword: String): String? {
+        val response = HttpRequest.head("https://b23.tv/$keyword").timeout(2000).execute()
+        if (response.status in 200..399) {
+            val links = response.header("location")
+            val finder = Regex("bilibili.com/video/BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})").find(links) ?: return null
+            return finder.groupValues[1]
+        }
+        return null
+    }
+
 }

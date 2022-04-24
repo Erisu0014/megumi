@@ -429,26 +429,26 @@ class HelloService {
     }
 
 
-    @Command(commandType = CommandType.GROUP,
-        pattern = Pattern.REGEX,
-        value = "(.*)\"desc\":\"(.*?)\"(.*)\"preview\":\"(.*?)\"(.*)\"qqdocurl\":\"(.*?)\"(.*)",
-        uuid = "1426fb0448994902b5e002649ceb619e")
-    suspend fun pulipuli(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val finder =
-            Regex("(.*)\"desc\":\"(.*?)\"(.*)\"preview\":\"(.*?)\"(.*)\"qqdocurl\":\"(.*?)\"(.*)").find(messageChain.contentToString())
-                ?: return null
-        val desc = finder.groupValues[2]
-        val preview = finder.groupValues[4]
-        val url = finder.groupValues[6]
-        val fileResponse = FileUtil.downloadHttpUrl(preview, "cache", null, null) ?: return null
-        return if (fileResponse.code == 200) {
-            val imageFile = fileResponse.path!!.toFile()
-            val img = StreamMessageUtil.generateImage(subject as Group, imageFile, false)
-            messageChainOf(PlainText("bilibili:$desc"), img, PlainText(url))
-        } else {
-            null
-        }
-    }
+//    @Command(commandType = CommandType.GROUP,
+//        pattern = Pattern.REGEX,
+//        value = "(.*)\"desc\":\"(.*?)\"(.*)\"preview\":\"(.*?)\"(.*)\"qqdocurl\":\"(.*?)\"(.*)",
+//        uuid = "1426fb0448994902b5e002649ceb619e")
+//    suspend fun pulipuli(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        val finder =
+//            Regex("(.*)\"desc\":\"(.*?)\"(.*)\"preview\":\"(.*?)\"(.*)\"qqdocurl\":\"(.*?)\"(.*)").find(messageChain.contentToString())
+//                ?: return null
+//        val desc = finder.groupValues[2]
+//        val preview = finder.groupValues[4]
+//        val url = finder.groupValues[6]
+//        val fileResponse = FileUtil.downloadHttpUrl(preview, "cache", null, null) ?: return null
+//        return if (fileResponse.code == 200) {
+//            val imageFile = fileResponse.path!!.toFile()
+//            val img = StreamMessageUtil.generateImage(subject as Group, imageFile, false)
+//            messageChainOf(PlainText("bilibili:$desc"), img, PlainText(url))
+//        } else {
+//            null
+//        }
+//    }
 
     //    @Async
     @OptIn(DelicateCoroutinesApi::class)
@@ -517,7 +517,7 @@ class HelloService {
                 sender.mute(Duration.Companion.minutes(10))
             }
         } catch (e: Exception) {
-            group.sendMessage("ts来全禁了\uD83D\uDE05")
+            group.sendMessage("啥b夹心糖\uD83D\uDE05")
         }
         return PlainText("爬\uD83D\uDE01")
     }
