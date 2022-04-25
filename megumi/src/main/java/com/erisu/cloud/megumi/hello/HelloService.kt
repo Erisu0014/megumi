@@ -346,7 +346,7 @@ class HelloService {
     @Throws(Exception::class)
     suspend fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
         val splitWords = messageChain.contentToString().split(" ", limit = 2)
-        if (splitWords[0] == "@3347359415") {
+        if (splitWords[0] == "@${username}") {
             val words = splitWords[1]
             return tulingLogic.eroOnlineAnswering(words)
         }
@@ -392,7 +392,7 @@ class HelloService {
         val timeLine = values[3]
         val sub = 90 - values[1].toInt()
         if (sub < 0 || sub > 90) {
-            return null
+            return PlainText("输入不合法喵")
         }
         val newTimeLine = timeLine.replace(Regex("[0-9]{1,2}:[0-9]{2}")) {
             val split = it.groupValues[0].split(":")
@@ -424,7 +424,6 @@ class HelloService {
         if (damage < hp) {
             return PlainText("这能打死boss吗？你再想想")
         }
-        // TODO: 2021/9/27 这没啥意义啊感觉
         return null
     }
 

@@ -1,10 +1,12 @@
 package com.erisu.cloud.megumi.event
 
 import cn.hutool.core.lang.UUID
+import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
 import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
 import com.erisu.cloud.megumi.util.FileUtil
+import com.erisu.cloud.megumi.util.Memory
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.VoiceUtil
 import net.mamoe.mirai.contact.NormalMember
@@ -55,7 +57,7 @@ class BaseGroupEvent : SimpleListenerHost() {
         event.group.sendMessage("你好呀~")
         val image =
             StreamMessageUtil.generateImage(event.group, ClassPathResource("emoticon/小天使请安.jpg").inputStream)
-         if (event.group.id == 823621066L) {
+        if (event.group.id == 823621066L) {
             event.group.sendMessage(messageChainOf(PlainText("日服公会名：lsp同好会\n会长：PaperPig"), image))
         }
         return ListeningStatus.LISTENING
@@ -64,6 +66,7 @@ class BaseGroupEvent : SimpleListenerHost() {
     @EventHandler(priority = EventPriority.NORMAL)
     suspend fun onMemberCardChangeEvent(event: MemberCardChangeEvent): ListeningStatus {
         val name = event.member.nameCard
+        event.group.sendMessage(PlainText(name))
         return ListeningStatus.LISTENING // 表示继续监听事件
     }
 
@@ -138,6 +141,13 @@ class BaseGroupEvent : SimpleListenerHost() {
             // 随机表情
             random < 0.2 -> {
                 group.sendMessage(emojiLogic.getRandomImage(group)!!)
+            }
+            // 随机表情
+            random < 0.5 -> {
+                val memoryList = JSONObject.parseArray(ClassPathResource("memory.json").file.readLines()
+                    .joinToString(separator = ""), Memory::class.java)
+                val saying = memoryList[Random.nextInt(0, memoryList.size)].saying
+                group.sendMessage(PlainText(saying[Random.nextInt(0, saying.size)]))
             }
             random < 0.7 -> {
                 val path = "${FileUtil.localStaticPath}${File.separator}osu"

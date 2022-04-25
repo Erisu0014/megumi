@@ -8,12 +8,9 @@ import com.erisu.cloud.megumi.bilibili.pojo.VideoResponse
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.message.data.Image
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.data.messageChainOf
-import net.mamoe.mirai.utils.ExternalResource
-import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
@@ -208,24 +205,29 @@ class BiliSearchLogic : ApplicationRunner {
     }
 
     suspend fun getAvData(group: Group, av: String): Message? {
-        val avCode = if (av.substring(0, 2) == "BV") bv2av(av) else av.substring(2)
+        val avCode = if (av.length >= 2 && av.substring(0, 2) == "BV") bv2av(av) else av
         val url = "https://api.bilibili.com/x/web-interface/view?aid=$avCode"
         val headerMap =
             mapOf("Content-Type" to "application/x-www-form-urlencoded")
         val response = HttpRequest.get(url).headerMap(headerMap, true).timeout(2000).execute().body()
         val videoResponse = JSONObject.parseObject(response, VideoResponse::class.java)
         if (videoResponse.code != 0 || (videoResponse.code == 0 && videoResponse.data == null)) {
-            return null
+            return PlainText("${videoResponse.message}喵")
         } else {
             val data = videoResponse.data!!
             val stat = data.stat!!
             val pathResponse = FileUtil.downloadHttpUrl(data.pic!!, "cache", null, null) ?: return null
             return if (pathResponse.code == 200) {
                 val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile().inputStream())
+                val baseInfo: String = if (stat.view!!.toInt() > 100000) {
+                    String.format("%-20s%-20s%-20s\n%-20s%-20s%-20s", "播放:${stat.view}", "弹幕:${stat.danmaku}",
+                        "评论:${stat.reply}", "收藏:${stat.favorite}", "硬币:${stat.coin}", "点赞:${stat.like}")
+                } else {
+                    String.format("%-16s%-16s%-16s\n%-16s%-16s%-16s", "播放:${stat.view}", "弹幕:${stat.danmaku}",
+                        "评论:${stat.reply}", "收藏:${stat.favorite}", "硬币:${stat.coin}", "点赞:${stat.like}")
+                }
                 messageChainOf(PlainText("${data.title}\n"), image,
-                    PlainText("播放:${stat.view}  " +
-                            "弹幕:${stat.danmaku}  评论:${stat.reply}  \n收藏:${stat.favorite}  " +
-                            "硬币:${stat.coin}  点赞:${stat.like}  \n点击链接进入:https://www.bilibili.com/video/av${avCode}\n简介:${data.desc}"))
+                    PlainText("${baseInfo}\n点击链接进入:https://www.bilibili.com/video/av${avCode}\n简介:${data.desc}"))
             } else null
         }
     }
