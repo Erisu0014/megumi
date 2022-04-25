@@ -92,10 +92,10 @@ class BiliService {
 
     @Command(commandType = CommandType.GROUP,
         pattern = Pattern.REGEX,
-        value = ".*?(av(\\d{1,12})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|https://(b23.tv)/(.+?)\".+)")
+        value = "(av(\\d{1,12})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|https://(b23.tv)/(.+?))")
     suspend fun pulipuli(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val finder =
-            Regex(".*?(av(\\d{1,12})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|https://(b23.tv)/(.+?)\".+)").find(
+            Regex("(av(\\d{1,12})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|https://(b23.tv)/(.+))").find(
                 messageChain.contentToString())
                 ?: return null
         if (finder.groupValues[4] == "b23.tv") {
@@ -106,6 +106,19 @@ class BiliService {
             return biliSearchLogic.getAvData(subject as Group, code)
 
         }
+    }
+
+
+    @Command(commandType = CommandType.GROUP,
+        pattern = Pattern.REGEX,
+        value = ".+?哔哩哔哩.+?https://b23.tv/(.+?)\\?.+")
+    suspend fun pulipuli2(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val finder =
+            Regex(".+?哔哩哔哩.+?https://b23.tv/(.+?)\\?.+").find(
+                messageChain.contentToString())
+                ?: return null
+        val bvCode = biliSearchLogic.getOriginalLink(finder.groupValues[1]) ?: return null
+        return biliSearchLogic.getAvData(subject as Group, "BV$bvCode")
     }
 
 }

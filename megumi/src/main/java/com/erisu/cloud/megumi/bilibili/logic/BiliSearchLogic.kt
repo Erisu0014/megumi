@@ -220,15 +220,14 @@ class BiliSearchLogic : ApplicationRunner {
             val data = videoResponse.data!!
             val stat = data.stat!!
             val pathResponse = FileUtil.downloadHttpUrl(data.pic!!, "cache", null, null) ?: return null
-            if (pathResponse.code != 200) {
-                val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile(), true)
-                return messageChainOf(PlainText("标题：${data.title}\n"), image,
-                    PlainText("播放:${stat.view} " +
-                            "弹幕:${stat.danmaku} 评论:${stat.reply} 收藏:${stat.favorite} " +
-                            "硬币:${stat.coin} 分享:${stat.share} 点赞:${stat.like} \n点击链接进入:https://www.bilibili.com/video/av${avCode}\n简介:${data.desc}"))
-            }
+            return if (pathResponse.code == 200) {
+                val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile().inputStream())
+                messageChainOf(PlainText("${data.title}\n"), image,
+                    PlainText("播放:${stat.view}  " +
+                            "弹幕:${stat.danmaku}  评论:${stat.reply}  \n收藏:${stat.favorite}  " +
+                            "硬币:${stat.coin}  点赞:${stat.like}  \n点击链接进入:https://www.bilibili.com/video/av${avCode}\n简介:${data.desc}"))
+            } else null
         }
-        return null
     }
 
     fun getOriginalLink(keyword: String): String? {
