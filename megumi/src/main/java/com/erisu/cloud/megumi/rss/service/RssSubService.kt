@@ -5,6 +5,7 @@ import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.rss.logic.RssLogic
+import com.erisu.cloud.megumi.rss.pojo.RssPrefix
 import lombok.extern.slf4j.Slf4j
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -12,6 +13,7 @@ import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.PlainText
+import org.apache.ibatis.jdbc.Null
 import org.springframework.stereotype.Component
 import javax.annotation.Resource
 
@@ -27,36 +29,23 @@ class RssSubService {
     @Resource
     private lateinit var rssLogic: RssLogic
 
-    @Command(commandType = CommandType.GROUP, value = "订阅up主", pattern = Pattern.PREFIX)
+    @Command(commandType = CommandType.GROUP, value = "订阅(up主|微博) ?(.+)", pattern = Pattern.REGEX)
     @Throws(Exception::class)
-    fun subscribeBilibili(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        val content = messageChain.contentToString().removePrefix("订阅up主").trim()
-        val group = subject as Group
-        val uid: String
-        var nickname: String? = null
-        if (content.contains(" ")) {
-            val split = content.split(" ")
-            uid = split[0]
-            nickname = split[1]
-        } else uid = content
-        return rssLogic.subscribeBilibili(group.id.toString(), uid, nickname)
+    fun subscribe(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val finder = Regex("订阅(up主|微博) ?(.+)").find(messageChain.contentToString()) ?: return null
+        val content = finder.groupValues[2]
+        val pair = rssLogic.preProcess(content) ?: return PlainText("输入不合法喵~必须是数字喵")
+        return rssLogic.subscribe((subject as Group).id.toString(), finder.groupValues[1],pair.first, pair.second)
     }
 
 
-    @Command(commandType = CommandType.GROUP, value = "订阅微博", pattern = Pattern.PREFIX)
-    @Throws(Exception::class)
-    fun subscribeWeibo(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        val content = messageChain.contentToString().removePrefix("订阅微博").trim()
-        val group = subject as Group
-        val uid: String
-        var nickname: String? = null
-        if (content.contains(" ")) {
-            val split = content.split(" ")
-            uid = split[0]
-            nickname = split[1]
-        } else uid = content
-        return rssLogic.subscribeWeibo(group.id.toString(), uid, nickname)
-    }
+//    @Command(commandType = CommandType.GROUP, value = "订阅微博", pattern = Pattern.PREFIX)
+//    @Throws(Exception::class)
+//    fun subscribeWeibo(sender: User, messageChain: MessageChain, subject: Contact): Message {
+//        val content = messageChain.contentToString().removePrefix("订阅微博").trim()
+//        val pair = rssLogic.preProcess(content) ?: return PlainText("输入不合法喵~必须是数字喵")
+//        return rssLogic.subscribeBilibili((subject as Group).id.toString(), pair.first, pair.second)
+//    }
 
     @Command(commandType = CommandType.GROUP, value = "查看订阅(列表)?", pattern = Pattern.REGEX)
     @Throws(Exception::class)

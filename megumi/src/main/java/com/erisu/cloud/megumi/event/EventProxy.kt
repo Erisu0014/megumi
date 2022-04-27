@@ -42,8 +42,6 @@ import kotlin.reflect.jvm.kotlinFunction
 @Lazy
 @Event
 class EventProxy : SimpleListenerHost() {
-    @Value("\${qq.username}")
-    private val username: Long = 0
 
     @Resource
     private lateinit var redisUtil: RedisUtil

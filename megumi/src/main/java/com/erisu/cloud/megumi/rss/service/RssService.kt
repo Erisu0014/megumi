@@ -107,7 +107,7 @@ class RssService {
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))
             FileUtil.buildImages(group, images, chainBuilder)
-            forwardMessageBuilder.add(2854196306, "色图bot", chainBuilder.build())
+            forwardMessageBuilder.add(1269732086, "色图bot", chainBuilder.build())
         }
         if (forwardMessageBuilder.size!=0){
             group.sendMessage(forwardMessageBuilder.build())
@@ -140,7 +140,7 @@ class RssService {
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))
             FileUtil.buildImages(group, images, chainBuilder)
-            forwardMessageBuilder.add(2854196306, "色图bot", chainBuilder.build())
+            forwardMessageBuilder.add(1269732086, "色图bot", chainBuilder.build())
         }
         if(forwardMessageBuilder.size!=0){
             group.sendMessage(forwardMessageBuilder.build())

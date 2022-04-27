@@ -92,12 +92,11 @@ class BiliService {
 
     @Command(commandType = CommandType.GROUP,
         pattern = Pattern.REGEX,
-        value = "(av(\\d{1,12})|BV(1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|.*?https://(b23.tv)/(.+?))")
+        value = ".*?([Aa][Vv](\\d{1,12}).*?|[Bb][Vv](1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2}).*?|https://(b23.tv)/(.+?))")
     suspend fun pulipuli(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val finder =
-            Regex("(av(\\d{1,12})|(BV1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2})|.*?https://(b23.tv)/(.+))").find(
-                messageChain.contentToString())
-                ?: return null
+            Regex(".*?([Aa][Vv](\\d{1,12}).*?|[Bb][Vv](1[A-Za-z0-9]{2}4.1.7[A-Za-z0-9]{2}).*?|https://(b23.tv)/(.+?))")
+                .find(messageChain.contentToString()) ?: return null
         if (finder.groupValues[4] == "b23.tv") {
             val bvCode = biliSearchLogic.getOriginalLink(finder.groupValues[5]) ?: return null
             return biliSearchLogic.getAvData(subject as Group, "BV$bvCode")
