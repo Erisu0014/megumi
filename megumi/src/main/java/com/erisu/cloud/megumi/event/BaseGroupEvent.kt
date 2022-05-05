@@ -39,11 +39,10 @@ class BaseGroupEvent : SimpleListenerHost() {
     @Resource
     private lateinit var musicLogic: MusicLogic
 
-//    @Resource
-//    private lateinit var setuLogic: SetuLogic
-
     @Resource
     private lateinit var voiceUtil: VoiceUtil
+
+    private var lastUsers: MutableMap<String, String> = mutableMapOf()
 
     /**
      * 入群事件
@@ -97,28 +96,32 @@ class BaseGroupEvent : SimpleListenerHost() {
     @EventHandler(priority = EventPriority.NORMAL)
     suspend fun onNudgedEvent(event: NudgeEvent): ListeningStatus {
         val bot = event.bot
-        val contact = event.from as NormalMember
-        val group = contact.group
-        val nudge = contact.nudge()
         if (event.from !is NormalMember) {
             return ListeningStatus.LISTENING
         }
-//        //  迫害诗酱小助手
-//        if (event.target.id == 3099396879L) {
-//            if (group.id == 705366200L && Random.nextInt() < 0.2) {
-//                val ml = group.members.map { it.nameCard }
-//                val luckyDog = ml[Random.nextInt(0, ml.size)]
-//                val message =
-//                    messageChainOf(At(3099396879L), PlainText("今天\uD83D\uDD12${luckyDog}的牛子吧~"))
-//                group.sendMessage(message)
-//            } else {
-//                val randomFile =
-//                    FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
-//                val image = StreamMessageUtil.generateImage(group, File(randomFile), false)
-//                group.sendMessage(image)
-//            }
-//            return ListeningStatus.LISTENING
-//        }
+        val contact = event.from as NormalMember
+        val nudgeId = contact.id
+        val group = contact.group
+        val nudge = contact.nudge()
+
+        // 判断用户是否发癫
+        val dianKey = "${group.id}"
+        if (lastUsers[dianKey] == null) lastUsers[dianKey] = "${nudgeId}_1"
+        else {
+            val split = lastUsers[dianKey]!!.split("_")
+            if (nudgeId.toString() == split[0] && split[1].toInt() >= 3) {
+                val image =
+                    StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/fadian/ui.png").inputStream)
+                lastUsers.remove(dianKey)
+                group.sendMessage(messageChainOf(At(nudgeId), image))
+                return ListeningStatus.LISTENING
+            } else if (nudgeId.toString() != split[0]) {
+                lastUsers[dianKey] = "${nudgeId}_1"
+            } else {
+                lastUsers[dianKey] = "${nudgeId}_${split[1].toInt() + 1}"
+            }
+        }
+
         if (event.target.id == 572617659L) {
             if (group.id == 604515343L && Random.nextInt() < 0.5) {
                 val image =
