@@ -39,7 +39,12 @@ import javax.annotation.Resource
 @ExperimentalSerializationApi
 @OptIn(DelicateCoroutinesApi::class)
 @Component
-@Model(name = "remind")
+@Model(name = "remind",help =
+"""
+[todo ...]：add something todo
+[/todo]：show some todo
+[~todo id]:remove todo by id
+""")
 class RemindService {
     @Value("\${qq.username}")
     private var username: Long = 0

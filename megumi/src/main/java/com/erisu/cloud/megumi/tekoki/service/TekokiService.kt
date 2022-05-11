@@ -22,7 +22,8 @@ import javax.annotation.Resource
  **/
 @Slf4j
 @Component
-@Model(name = "tekoki")
+@Model(name = "tekoki",help =
+"""不想写""")
 class TekokiService {
     @Resource
     private lateinit var tekokiLogic: TekokiLogic

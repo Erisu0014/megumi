@@ -22,7 +22,7 @@ import javax.annotation.Resource;
  **/
 @Slf4j
 @Component
-@Model(name = "homo")
+@Model(name = "homo",help ="女人和小孩都可以犯错，但homo不能")
 public class HomoService {
     @Resource
     private HomoLogic homoLogic;

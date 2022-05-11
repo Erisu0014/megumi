@@ -21,7 +21,10 @@ import javax.annotation.Resource
  *@Author alice
  *@Date 2021/10/8 14:43
  **/
-@Model(name = "pixiv")
+@Model(name = "pixiv",help=
+"""
+暂时停用，待修复
+""")
 @Component
 class PixivService {
     @Resource

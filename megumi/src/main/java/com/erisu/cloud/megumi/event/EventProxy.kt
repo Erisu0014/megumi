@@ -123,9 +123,4 @@ class EventProxy : SimpleListenerHost() {
             message
         }
     }
-
-    override fun handleException(context: CoroutineContext, exception: Throwable) {
-        println("进入异常处理")
-        super.handleException(context, exception)
-    }
 }

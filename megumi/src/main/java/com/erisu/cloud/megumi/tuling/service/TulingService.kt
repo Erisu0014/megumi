@@ -26,12 +26,18 @@ import kotlin.random.Random
  *@Date 2021/7/23 15:42
  **/
 @Component
-@Model(name = "tuling")
+@Model(name = "智能问答",help =
+"""
+[调整AI概率 数字]：用以调整问答触发率，数字范围为0~100
+如果想不通过概率直接触发智能问答，试试@bot吧~
+""")
 @OptIn(ExperimentalSerializationApi::class)
 class TulingService {
     companion object {
         var probabilities: MutableMap<Long, Int> = mutableMapOf()
     }
+
+
 
     @Resource
     private lateinit var tulingLogic: TulingLogic

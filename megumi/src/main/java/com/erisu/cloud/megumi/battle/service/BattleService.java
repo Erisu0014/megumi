@@ -12,7 +12,7 @@ import javax.annotation.Resource;
  * @Date 2021/6/3 15:08
  **/
 @Component
-@Model(name = "gvg", uuid = "0c6916f12eb64875b227c7daa9e5d3cb")
+@Model(name = "公会战",help="暂时停用")
 public class BattleService {
     @Resource
     private BattleLogic battleLogic;

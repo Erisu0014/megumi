@@ -1,9 +1,7 @@
 package com.erisu.cloud.megumi.event
 
-import cn.hutool.core.lang.UUID
 import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.emoji.logic.PcrEmojiLogic
-import com.erisu.cloud.megumi.setu.logic.SetuLogic
 import com.erisu.cloud.megumi.song.logic.MusicLogic
 import com.erisu.cloud.megumi.util.FileUtil
 import com.erisu.cloud.megumi.util.Memory

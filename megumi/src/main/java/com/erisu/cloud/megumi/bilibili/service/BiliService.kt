@@ -20,7 +20,13 @@ import javax.annotation.Resource
  * @Date 2021/10/11 10:41
  */
 @Component
-@Model(name = "bilibili", uuid = "49bd68a24eff469187d777131012404f")
+@Model(name = "bilibili", uuid = "49bd68a24eff469187d777131012404f", help =
+"""
+[查成分 用户名]：此处用户名为b站用户名，例如：单推爱丽丝
+[查成分 @群友]：需要该群友绑定b站uid才可以查询
+[查成分]：需要本人绑定b站uid才可以查询
+除此以外，还有b站视频解析功能，支持：av号、bv号、小程序、b23.tv解析
+""")
 class BiliService {
     @Resource
     private lateinit var biliSearchLogic: BiliSearchLogic

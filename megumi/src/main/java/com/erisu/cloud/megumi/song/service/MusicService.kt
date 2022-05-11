@@ -18,7 +18,11 @@ import javax.annotation.Resource
  *@Date 2021/7/20 18:09
  **/
 @Component
-@Model(name = "song")
+@Model(name = "song",help =
+"""
+[点歌 ...]：搜索关键词相关的歌曲
+[查歌词 ...]：搜索关键词相关的歌词及歌曲
+""")
 class MusicService {
     @Resource
     private lateinit var musicLogic: MusicLogic

@@ -25,7 +25,10 @@ import javax.annotation.Resource
  **/
 @MiraiExperimentalApi
 @Component
-@Model(name = "setu")
+@Model(name = "setu",help =
+"""
+时代的眼泪
+""")
 class SetuService {
     @Resource
     lateinit var setuLogic: SetuLogic

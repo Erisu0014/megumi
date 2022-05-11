@@ -21,7 +21,10 @@ import javax.annotation.Resource
  *@Author alice
  *@Date 2021/6/24 10:27
  **/
-@Model(name = "name")
+@Model(name = "name",help =
+"""
+[谁是 小仓唯]：公主连结人物检查   
+""")
 @Component
 class PcrBasicService {
     @Resource

@@ -1,5 +1,6 @@
 package com.erisu.cloud.megumi.hello
 
+import cn.hutool.http.HttpRequest
 import cn.hutool.http.HttpUtil
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
@@ -46,7 +47,9 @@ import kotlin.time.ExperimentalTime
  */
 @Slf4j
 @Component
-@Model(name = "hello")
+@Model(name = "hello",help = """
+太多功能了，不想写了喵
+""")
 class HelloService {
     @Value("\${qq.username}")
     private var username: Long = 0
@@ -100,6 +103,11 @@ class HelloService {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             bot.groups.forEach {
+                val path = "${FileUtil.localStaticPath}${File.separator}xiaban${File.separator}shiriusu.m4a"
+                val silkPath = voiceUtil.convertToSilk(path)
+                val silkFile = File(silkPath)
+                val music = StreamMessageUtil.generateAudio(it, silkFile, false)
+                it.sendMessage(music)
                 val image = StreamMessageUtil.generateImage(it, ClassPathResource("emoticon/下班.gif").inputStream)
                 it.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
             }
@@ -177,6 +185,15 @@ class HelloService {
         return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
 
+    @Command(commandType = CommandType.GROUP, value = "shiriusu", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    suspend fun shiriusu(sender: User, messageChain: MessageChain, group: Group): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}xiaban${File.separator}shiriusu.m4a"
+        val silkPath = voiceUtil.convertToSilk(path)
+        val silkFile = File(silkPath)
+        return StreamMessageUtil.generateAudio(group, silkFile, false)
+    }
+
 
     @Command(commandType = CommandType.GROUP, value = "alice起床", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
@@ -231,6 +248,44 @@ class HelloService {
             null
         }
     }
+
+//    @Command(commandType = CommandType.GROUP, pattern = Pattern.EQUALS, value = "丁真")
+//    suspend fun getRandomDingzhen(sender: User, messageChain: MessageChain, group: Group): Message? {
+//        val url = "https://www.yiyandingzhen.top/getpic.php"
+//        val headerMap =
+//            mapOf("authority" to "www.yiyandingzhen.top",
+//                "method" to "GET",
+//                "path" to "/getpic.php",
+//                "scheme" to "https",
+//                "accept" to "application/json, text/javascript, */*; q=0.01",
+//                "accept-encoding" to "gzip, deflate, br",
+//                "accept-language" to "zh-CN,zh;q=0.9,und;q=0.8,en;q=0.7",
+//                "referer" to "https://www.yiyandingzhen.top/",
+//                "sec-ch-ua" to "\"Not A;Brand\";v=\"99\", \"Chromium\";v=\"100\", \"Google Chrome\";v=\"100\"",
+//                "sec-ch-ua-mobile" to "?0",
+//                "sec-ch-ua-platform" to "\"Windows\"",
+//                "sec-fetch-dest" to "empty",
+//                "sec-fetch-mode" to "cors",
+//                "sec-fetch-site" to "same-origin",
+//                "x-requested-with" to "XMLHttpRequest")
+//        val response = HttpRequest.get(url).headerMap(headerMap, true).timeout(20000).execute().body()
+//        val finder = Regex(".*/(.+?)_yuyandingzhen.jpg.*")
+//        val matchResult = finder.find(response) ?: return null
+//        val picUrl = "https://www.yiyandingzhen.top/pic/${matchResult.groupValues[1]}_yuyandingzhen.jpg"
+//        val pathResponse = FileUtil.downloadHttpUrl(picUrl, "cache", null, null) ?: return null
+//        return if (pathResponse.code == 200) {
+//            StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile().inputStream())
+//        } else null
+//    }
+
+
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.EQUALS, value = "丁真", alias = ["顶针", "一眼丁真"])
+    suspend fun getRandomDingzhen(sender: User, messageChain: MessageChain, group: Group): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}dingzhen${File.separator}YYDZ${File.separator}imgs"
+        val filePath = FileUtil.getRandomFile(path, null)
+        return StreamMessageUtil.generateImage(group, File(filePath), false)
+    }
+
 
     @Command(commandType = CommandType.GROUP, value = "火星文", pattern = Pattern.PREFIX)
     @Throws(Exception::class)
@@ -299,52 +354,18 @@ class HelloService {
 
 //    @Command(commandType = CommandType.GROUP,
 //        value = "赛程",
-//        pattern = Pattern.EQUALS,
-//        uuid = "95825f0b39c240ce8e6f11dcb0bc86d6")
+//        pattern = Pattern.EQUALS)
 //    @Throws(Exception::class)
-//    suspend fun s11lol(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+//    suspend fun s12lol(sender: User, messageChain: MessageChain, subject: Contact?): Message {
 //        val file =
-//            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}lol${File.separator}s11赛程.jpg")
+//            File("${System.getProperty("user.dir")}${File.separator}static${File.separator}lol${File.separator}MSI小组赛-RNG.jpg")
 //        return StreamMessageUtil.generateImage(subject as Group, file, false)
 //    }
 
 
-//    @Command(commandType = CommandType.GROUP, value = "迫害", pattern = Pattern.EQUALS)
-//    @Throws(Exception::class)
-//    suspend fun memento(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-//        val group = subject as Group
-//        if (group.id == 705366200L) {
-//            return null
-//        }
-//        val randomFile = FileUtil.getRandomFile("${FileUtil.localStaticPath}${File.separator}memento", "png")
-//        return StreamMessageUtil.generateImage(group, File(randomFile), false)
-//    }
-
-//    @Command(commandType = CommandType.GROUP, value = "憨批诗酱", pattern = Pattern.PREFIX)
-//    suspend fun hanpi(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-//        val group = subject as Group
-//        if (group.id != 705366200L) {
-//            return null
-//        }
-//        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}憨批诗酱.png")
-//        return StreamMessageUtil.generateImage(group, file, false)
-//    }
-
-
-//    @Command(commandType = CommandType.GROUP, value = "谁敢向我挑衅", pattern = Pattern.PREFIX)
-//    suspend fun pogDamage(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
-//        val group = subject as Group
-//        if (group.id != 705366200L) {
-//            return null
-//        }
-//        val file = File("${FileUtil.localStaticPath}${File.separator}memento${File.separator}pogDamage.png")
-//        val image = StreamMessageUtil.generateImage(group, file, false)
-//        return messageChainOf(PlainText("谁敢向我挑衅！我将终结他的性命！无限火力诗酱Utaha百分百负胜率猴子符文已部署!"), image)
-//    }
-
     @Command(commandType = CommandType.GROUP, pattern = Pattern.CHECK_AT, uuid = "bbd87b41253a4339a18f8013fa7a6700")
     @Throws(Exception::class)
-    suspend fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+    fun eroiOnlineAnswering(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
         val splitWords = messageChain.contentToString().split(" ", limit = 2)
         if (splitWords[0] == "@${username}") {
             val words = splitWords[1]
@@ -353,22 +374,6 @@ class HelloService {
         return null
     }
 
-//    //    @Async
-//    @OptIn(DelicateCoroutinesApi::class)
-//    @Scheduled(cron = "00 00 23 * * ?")
-//    @Throws(FileNotFoundException::class)
-//    fun alertNothing() {
-//        GlobalScope.future {
-//            val bot = Bot.getInstance(username)
-//            val groupId = 705366200L
-//            val group = bot.getGroup(groupId) as Group
-//            group.sendMessage(messageChainOf(PlainText("诗酱别冲了~")))
-//
-//        }
-//    }
-
-
-    //    @Async
     @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 30 08 * * ?")
     @Throws(FileNotFoundException::class)
