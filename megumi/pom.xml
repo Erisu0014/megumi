@@ -213,17 +213,27 @@
                     </execution>
                 </executions>
                 <configuration>
-                        <args>
-                            <arg>-Xopt-in=org.mylibrary.OptInAnnotation</arg>
-                        </args>
+                    <args>
+                        <arg>-Xopt-in=org.mylibrary.OptInAnnotation</arg>
+                    </args>
                     <compilerPlugins>
                         <plugin>kotlinx-serialization</plugin>
+                        <plugin>all-open</plugin>
+<!--                        <plugin>spring</plugin>-->
                     </compilerPlugins>
+                    <pluginOptions>
+                        <option>all-open:annotation=com.erisu.cloud.megumi.util.Open</option>
+                    </pluginOptions>
                 </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
                         <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
                         <version>${kotlin.version}</version>
                     </dependency>
                 </dependencies>

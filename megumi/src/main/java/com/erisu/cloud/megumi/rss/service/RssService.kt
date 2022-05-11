@@ -41,7 +41,7 @@ import javax.annotation.Resource
  **/
 @Slf4j
 @Component
-@Model(name = "rssbusuo")
+//@Model(name = "rss推送")
 @OptIn(DelicateCoroutinesApi::class)
 class RssService {
     @Resource
@@ -53,15 +53,15 @@ class RssService {
     @Value("\${qq.username}")
     private var username: Long = 0
 
-    @Command(commandType = CommandType.GROUP,
-        value = "test123",
-        pattern = Pattern.EQUALS,
-        uuid = "ab3d79a0df344cce93a7ad0ff52cf46b")
-    @Throws(Exception::class)
-    fun test123(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        umamusume()
-        return null
-    }
+//    @Command(commandType = CommandType.GROUP,
+//        value = "test123",
+//        pattern = Pattern.EQUALS,
+//        uuid = "ab3d79a0df344cce93a7ad0ff52cf46b")
+//    @Throws(Exception::class)
+//    fun test123(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        umamusume()
+//        return null
+//    }
 
     //    @Async
     @Scheduled(fixedDelay = 360_000)

@@ -1,11 +1,10 @@
 package com.erisu.cloud.megumi.rss.logic
 
-import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSONObject
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
 import com.erisu.cloud.megumi.rss.mapper.RssMapper
 import com.erisu.cloud.megumi.rss.pojo.RssPrefix
 import com.erisu.cloud.megumi.rss.pojo.RssSubscription
+import com.erisu.cloud.megumi.util.Open
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.PlainText
 import org.springframework.beans.factory.annotation.Value
@@ -18,8 +17,9 @@ import javax.annotation.Resource
  *@Author alice
  *@Date 2021/7/23 13:32
  **/
+@Open
 @Component
-open class RssLogic {
+class RssLogic {
     @Value("\${basicUrl}")
     private lateinit var basicUrl: String
 
@@ -27,7 +27,7 @@ open class RssLogic {
     private lateinit var rssMapper: RssMapper
 
     @Transactional(rollbackFor = [Exception::class])
-    open fun subscribe(groupId: String, type: String, uid: String, nickname: String?): Message {
+    fun subscribe(groupId: String, type: String, uid: String, nickname: String?): Message {
         val rssPrefix = RssPrefix.values().find { it.tag == type } ?: throw Exception("程序异常，prefix不存在")
         val rssSubscription =
             RssSubscription(null, groupId,

@@ -2,6 +2,7 @@ package com.erisu.cloud.megumi.rss.mapper
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper
 import com.erisu.cloud.megumi.rss.pojo.RssSubscription
+import org.apache.ibatis.annotations.Mapper
 
 /**
  *@Description rssMapper

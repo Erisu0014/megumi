@@ -24,7 +24,14 @@ import javax.annotation.Resource
  **/
 @Slf4j
 @Component
-@Model(name = "rss-subscribe")
+@Model(name = "rss-subscribe",help =
+"""
+[订阅up主 uid]：订阅指定uid的up主
+[订阅微博 mid]：订阅指定mid的微博
+[查看订阅]/[查看订阅列表]：查看本群订阅信息
+[取消订阅up主]：取消本群订阅的up主
+[取消订阅微博]：取消本群订阅的微博
+""")
 class RssSubService {
     @Resource
     private lateinit var rssLogic: RssLogic
