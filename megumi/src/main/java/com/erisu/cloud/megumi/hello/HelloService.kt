@@ -47,7 +47,7 @@ import kotlin.time.ExperimentalTime
  */
 @Slf4j
 @Component
-@Model(name = "hello",help = """
+@Model(name = "hello", help = """
 太多功能了，不想写了喵
 """)
 class HelloService {
@@ -399,9 +399,10 @@ class HelloService {
         if (sub < 0 || sub > 90) {
             return PlainText("输入不合法喵")
         }
-        val newTimeLine = timeLine.replace(Regex("[0-9]{1,2}:[0-9]{2}")) {
-            val split = it.groupValues[0].split(":")
-            val now = split[0].toInt() * 60 + split[1].toInt() - sub
+        val newTimeLine = timeLine.replace(Regex("([0-9]{1,2}?)([:：]?)([0-9]{2})")) {
+            val minute = it.groupValues[1]
+            val second = it.groupValues[3]
+            val now = minute.toInt() * 60 + second.toInt() - sub
             if (now < 0) "??:??"
             else {
                 var t1 = ""
