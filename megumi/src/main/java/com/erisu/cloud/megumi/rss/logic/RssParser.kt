@@ -17,7 +17,7 @@ class RssParser {
      * @return  imageUrl
      */
     fun parseImage(text: String): MutableList<String> {
-        val imgTags = Regex("""<img (style )?src="(.+?)".*?>""").findAll(text)
+        val imgTags = Regex("""<img (style(="")? )?src="(.+?)".*?>""").findAll(text)
         val imgPattern = """(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|].(jpg|png|gif)"""
         val imgRegex = Regex(imgPattern)
         val result: MutableList<String> = mutableListOf()

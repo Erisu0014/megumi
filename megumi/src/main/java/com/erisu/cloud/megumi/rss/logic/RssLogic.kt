@@ -20,9 +20,8 @@ import javax.annotation.Resource
 @Open
 @Component
 class RssLogic {
-    @Value("\${basicUrl}")
-    private lateinit var basicUrl: String
-
+//    @Value("\${basicUrl}")
+    private  val basicUrl: String="https://rsshub.rssforever.com"
     @Resource
     private lateinit var rssMapper: RssMapper
 
@@ -31,7 +30,7 @@ class RssLogic {
         val rssPrefix = RssPrefix.values().find { it.tag == type } ?: throw Exception("程序异常，prefix不存在")
         val rssSubscription =
             RssSubscription(null, groupId,
-                "$basicUrl:1200${rssPrefix.url}$uid", nickname, type)
+                "$basicUrl${rssPrefix.url}$uid", nickname, type)
         val wrapper = QueryWrapper<RssSubscription>()
         wrapper.eq("group_id", rssSubscription.groupId)
             .eq("rss_url", rssSubscription.rssUrl)
@@ -52,14 +51,14 @@ class RssLogic {
 
     fun unSubscribeBilibili(groupId: String, uid: String): Message {
         val wrapper = QueryWrapper<RssSubscription>()
-        wrapper.eq("group_id", groupId).eq("rss_url", "$basicUrl:1200${RssPrefix.BILIBILI_DYNAMIC.url}$uid")
+        wrapper.eq("group_id", groupId).eq("rss_url", "$basicUrl${RssPrefix.BILIBILI_DYNAMIC.url}$uid")
         if (rssMapper.delete(wrapper) > 0) return PlainText("取消订阅成功")
         throw Exception("取消订阅失败")
     }
 
     fun unSubscribeWeibo(groupId: String, uid: String): Message {
         val wrapper = QueryWrapper<RssSubscription>()
-        wrapper.eq("group_id", groupId).eq("rss_url", "$basicUrl:1200${RssPrefix.WEIBO_USER.url}$uid")
+        wrapper.eq("group_id", groupId).eq("rss_url", "$basicUrl${RssPrefix.WEIBO_USER.url}$uid")
         if (rssMapper.delete(wrapper) > 0) return PlainText("取消订阅成功")
         throw Exception("取消订阅失败")
     }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.Image
 import org.springframework.stereotype.Component
+import java.io.File
 import javax.annotation.Resource
 
 /**
@@ -20,10 +21,11 @@ class PcrEmojiLogic {
     @Resource
     private lateinit var emojiMapper: PcrEmojiMapper
 
-    suspend fun getRandomImage(group: Group): Image? {
-        val (_, _, path) = emojiMapper.selectRandom()
-        val imageResponse = FileUtil.downloadHttpUrl(path, "image", null, null) ?: return null
-        if (imageResponse.code != 200) return null
-        return imageResponse.path?.let { StreamMessageUtil.generateImage(group, it.toFile(), true) }
+    suspend fun getRandomImage(group: Group): Image {
+//        val (_, _, path) = emojiMapper.selectRandom()
+        val filePath = FileUtil.getRandomFile("emoji", null)
+//        val imageResponse = FileUtil.downloadHttpUrl(path, "image", null, null) ?: return null
+//        if (imageResponse.code != 200) return null
+        return StreamMessageUtil.generateImage(group, File(filePath), false)
     }
 }
