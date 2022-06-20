@@ -15,7 +15,7 @@ class LplSpringInitData {
     @Synchronized
     fun initData() {
         if (!isInited) {
-            val dataFile = File("${FileUtil.localStaticPath}${File.separator}lol${File.separator}春季赛.json")
+            val dataFile = File("${FileUtil.localStaticPath}${File.separator}lol${File.separator}夏季赛.json")
             val springData = dataFile.readLines().joinToString(separator = "") { it }
             val lplBasicInfoList: List<LplBasicInfo> = JSONObject.parseArray(springData, LplBasicInfo::class.java)
             lplBasicInfoList.forEach {

@@ -17,7 +17,7 @@ class RssParser {
      * @return  imageUrl
      */
     fun parseImage(text: String): MutableList<String> {
-        val imgTags = Regex("""<img (style )?src="(.+?)".*?>""").findAll(text)
+        val imgTags = Regex("""<img (style(="")? )?src="(.+?)".*?>""").findAll(text)
         val imgPattern = """(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|].(jpg|png|gif)"""
         val imgRegex = Regex(imgPattern)
         val result: MutableList<String> = mutableListOf()
@@ -57,4 +57,7 @@ class RssParser {
         result += "\n视频地址：$videoUrl"
         return result
     }
+}
+fun main(){
+    RssParser().parseImage("花嫁<br>twi：youyoukai9 <img style=\"\" src=\"https://wx1.sinaimg.cn/large/007Y7SRMgy1h38o0dct7bj324g2u0e81.jpg\" referrerpolicy=\"no-referrer\"><br><br>")
 }
