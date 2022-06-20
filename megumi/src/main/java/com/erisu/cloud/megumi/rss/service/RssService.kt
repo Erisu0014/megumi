@@ -135,7 +135,7 @@ class RssService {
             }
             // 删除video标签
             parseText = Regex("""<video(.*?)poster="(.*?)".*?></video>""").replace(parseText, "")
-            val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
+//            val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
             var chainBuilder = MessageChainBuilder()
             chainBuilder.append(PlainText("$title\n- - - - - -\n"))
             chainBuilder.append(PlainText(parseText))

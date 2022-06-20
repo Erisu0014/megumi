@@ -22,7 +22,6 @@ import javax.annotation.Resource
 class RssLogic {
 //    @Value("\${basicUrl}")
     private  val basicUrl: String="https://rsshub.rssforever.com"
-
     @Resource
     private lateinit var rssMapper: RssMapper
 

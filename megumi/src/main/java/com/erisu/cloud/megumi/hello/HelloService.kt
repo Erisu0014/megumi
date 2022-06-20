@@ -103,11 +103,11 @@ class HelloService {
         GlobalScope.future {
             val bot = Bot.getInstance(username)
             bot.groups.forEach {
-                val path = "${FileUtil.localStaticPath}${File.separator}xiaban${File.separator}shiriusu.m4a"
-                val silkPath = voiceUtil.convertToSilk(path)
-                val silkFile = File(silkPath)
-                val music = StreamMessageUtil.generateAudio(it, silkFile, false)
-                it.sendMessage(music)
+//                val path = "${FileUtil.localStaticPath}${File.separator}xiaban${File.separator}shiriusu.m4a"
+//                val silkPath = voiceUtil.convertToSilk(path)
+//                val silkFile = File(silkPath)
+//                val music = StreamMessageUtil.generateAudio(it, silkFile, false)
+//                it.sendMessage(music)
                 val image = StreamMessageUtil.generateImage(it, ClassPathResource("emoticon/下班.gif").inputStream)
                 it.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
             }
@@ -125,7 +125,7 @@ class HelloService {
             val bot = Bot.getInstance(username)
             bot.groups.forEach {
                 val image = StreamMessageUtil.generateImage(it, ClassPathResource("emoticon/诞弓.jpg").inputStream)
-                it.sendMessage(messageChainOf(PlainText("欧尼酱~能v我50吗，今天疯狂星期四"), image))
+                it.sendMessage(messageChainOf(PlainText("欧尼酱~你知道我要说什么吧~"), image))
             }
         }
     }
