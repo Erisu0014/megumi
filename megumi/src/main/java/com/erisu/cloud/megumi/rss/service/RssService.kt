@@ -64,12 +64,12 @@ class RssService {
 //    }
 
     //    @Async
-    @Scheduled(fixedDelay = 360_000)
+    @Scheduled(fixedDelay = 720_000)
     fun rssConsumption() {
         GlobalScope.future {
             val subscription = rssLogic.getSubscription(null)
             subscription.forEach {
-                val url = "${it.rssUrl}?filter_time=360"
+                val url = "${it.rssUrl}?filter_time=720"
                 val feed: SyndFeed = SyndFeedInput().build(XmlReader(URL(url)))
                 val bot = Bot.getInstance(username)
                 val groupId = it.groupId.toLong()
@@ -110,6 +110,7 @@ class RssService {
             forwardMessageBuilder.add(1269732086, "色图bot", chainBuilder.build())
         }
         if (forwardMessageBuilder.size!=0){
+//            print(forwardMessageBuilder.build().contentToString())
             group.sendMessage(forwardMessageBuilder.build())
         }
 
@@ -122,8 +123,9 @@ class RssService {
         feed.entries.forEach {
             val des = it.description.value
             var parseText: String = rssParser.parseText(des)
-            parseText = Regex("""<a href="https://m.weibo.cn/(.+?)</a>""").replace(parseText, "")
-            parseText = Regex("""<a href="https://weibo.com/(.+?)</a>""").replace(parseText, "")
+            parseText = Regex("""<a href="https://(.*?)weibo.(.+?)/(.+?)">""").replace(parseText, "")
+//            parseText = Regex("""<a href="https://weibo.cn/(.+?)</a>""").replace(parseText, "")
+//            parseText = Regex("""<a href="https://weibo.com/(.+?)</a>""").replace(parseText, "")
             parseText = Regex("""<a data-url=(.+?)</a>""").replace(parseText, "")
             parseText = Regex("""<a data-url=(.+?)</a>""").replace(parseText, "")
             parseText = parseText.replace("</a>", "")
@@ -143,6 +145,7 @@ class RssService {
             forwardMessageBuilder.add(1269732086, "色图bot", chainBuilder.build())
         }
         if(forwardMessageBuilder.size!=0){
+//            print(forwardMessageBuilder.build().contentToString())
             group.sendMessage(forwardMessageBuilder.build())
         }
     }
