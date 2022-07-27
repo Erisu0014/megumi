@@ -64,12 +64,12 @@ class RssService {
 //    }
 
     //    @Async
-    @Scheduled(fixedDelay = 720_000)
+    @Scheduled(fixedDelay = 3600_000)
     fun rssConsumption() {
         GlobalScope.future {
             val subscription = rssLogic.getSubscription(null)
             subscription.forEach {
-                val url = "${it.rssUrl}?filter_time=720"
+                val url = "${it.rssUrl}?filter_time=3600"
                 val feed: SyndFeed = SyndFeedInput().build(XmlReader(URL(url)))
                 val bot = Bot.getInstance(username)
                 val groupId = it.groupId.toLong()
@@ -80,9 +80,6 @@ class RssService {
                     }
                     RssPrefix.WEIBO_USER.tag -> {
                         weibo(group, feed)
-                    }
-                    else -> {
-                        // TODO: 2021/10/29
                     }
                 }
 
