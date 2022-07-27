@@ -13,13 +13,13 @@ import net.mamoe.mirai.message.data.MessageChain
 import org.springframework.stereotype.Component
 import javax.annotation.Resource
 
-@Model(name = "lol赛事",help =
+@Model(name = "lol赛事", help =
 """
 正在加紧研发中~
 """)
 @Component
 class TournamentService {
-//    @Resource
+    //    @Resource
 //    private lateinit var tournamentLogic: TournamentLogic
     @Resource
     private lateinit var lplSpringLogic: LplSpringLogic
@@ -37,7 +37,7 @@ class TournamentService {
 
     @Command(commandType = CommandType.GROUP, value = "查赛程", pattern = Pattern.PREFIX)
     fun searchTeamLpl(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        val team = messageChain.contentToString().removePrefix("查赛程").trim()
+        val team = messageChain.contentToString().removePrefix("查赛程").trim().uppercase()
         return lplSpringLogic.getTeamSpringData(team)
     }
 
