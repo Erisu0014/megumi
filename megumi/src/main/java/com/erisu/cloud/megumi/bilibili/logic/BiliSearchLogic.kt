@@ -248,10 +248,9 @@ class BiliSearchLogic : ApplicationRunner {
 
     fun checkOp(name: String, follow: List<String>): Message {
         if (opMap.isEmpty()) {
-            val lines = File("${FileUtil.localStaticPath}${File.separator}op.json").readLines()
-            lines.forEach {
-                val value = it.split(":")
-                opMap[value[0]] = value[1]
+            val json = File("${FileUtil.localStaticPath}${File.separator}op.json").readLines().joinToString(separator = "")
+            JSONObject.parseObject(json).forEach{
+                opMap[it.key]=it.value.toString()
             }
         }
         val opResult = mutableListOf<String>()
@@ -264,9 +263,9 @@ class BiliSearchLogic : ApplicationRunner {
                 }
             }
             if (opResult.isNotEmpty()) {
-                PlainText("${name}关注列表有：" + opResult.joinToString { "，" })
+                PlainText("${name}关注列表有：" + opResult.joinToString(separator = "，"))
             } else {
-                PlainText("${name}未关注原神相关用户，若误判，请补充")
+                PlainText("${name}未关注原神相关用户，如有误判，请联系管理员补充")
             }
         }
     }

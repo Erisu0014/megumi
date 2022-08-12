@@ -111,7 +111,7 @@ class PixivLogic {
             val image = setuLogic.getImage(group, it, null, false)
 //                images.add(image)
             val node: ForwardMessage.Node =
-                ForwardMessage.Node(3099396879L, System.currentTimeMillis().toInt(), "诗姐姐", image)
+                ForwardMessage.Node(3347359415L, System.currentTimeMillis().toInt(), "色图bot", image)
             nodes.add(node)
         }
 //            return messageChainOf(*images.toTypedArray())
