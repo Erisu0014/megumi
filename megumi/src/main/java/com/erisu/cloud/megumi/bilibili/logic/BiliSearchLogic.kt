@@ -10,6 +10,7 @@ import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.buildMessageChain
 import net.mamoe.mirai.message.data.messageChainOf
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -86,6 +87,8 @@ class BiliSearchLogic : ApplicationRunner {
         "x" to "32",
         "y" to "14",
         "z" to "19")
+    val opMap: MutableMap<String, String> = mutableMapOf()
+
 
     fun searchUser(keyword: String): Triple<String, String, String>? {
         val url =
@@ -172,6 +175,7 @@ class BiliSearchLogic : ApplicationRunner {
                 }
             }
 
+
         }
         val result = JSON.toJSONString(map)
         val resultPath = Paths.get("${path}${File.separator}dump.json")
@@ -240,6 +244,31 @@ class BiliSearchLogic : ApplicationRunner {
             return finder.groupValues[1]
         }
         return null
+    }
+
+    fun checkOp(name: String, follow: List<String>): Message {
+        if (opMap.isEmpty()) {
+            val lines = File("${FileUtil.localStaticPath}${File.separator}op.json").readLines()
+            lines.forEach {
+                val value = it.split(":")
+                opMap[value[0]] = value[1]
+            }
+        }
+        val opResult = mutableListOf<String>()
+        return if (follow.isEmpty()) {
+            PlainText("未查询到此人关注列表>.<")
+        } else {
+            follow.forEach {
+                if (opMap.containsKey(it)) {
+                    opMap[it]?.let { it1 -> opResult.add(it1) }
+                }
+            }
+            if (opResult.isNotEmpty()) {
+                PlainText("${name}关注列表有：" + opResult.joinToString { "，" })
+            } else {
+                PlainText("${name}未关注原神相关用户，若误判，请补充")
+            }
+        }
     }
 
 }

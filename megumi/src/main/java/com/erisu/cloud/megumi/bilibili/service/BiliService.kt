@@ -36,8 +36,7 @@ class BiliService {
 
     @Command(commandType = CommandType.GROUP,
         value = "查成分",
-        pattern = Pattern.PREFIX,
-        uuid = "ed386314c7124c619a0025934a0b7a1d")
+        pattern = Pattern.PREFIX)
     @Throws(Exception::class)
     fun searchVtb(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
         var pair: Triple<String, String, String>? = null
@@ -75,6 +74,22 @@ class BiliService {
             return PlainText("这位更是歌\uD83C\uDFA4")
         }
         return null
+    }
+
+    @Command(commandType = CommandType.GROUP,
+        value = "/op ", pattern = Pattern.PREFIX)
+    fun opFirst(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        val name = messageChain.contentToString().removePrefix("/op").trim()
+        if (name.isNotEmpty()) {
+            val pair = biliSearchLogic.searchUser(name)
+            if (pair != null) {
+                val follow = biliSearchLogic.searchFollow(pair.second)
+                if (!follow.isNullOrEmpty()) {
+                    return biliSearchLogic.checkOp(pair.first, follow)
+                }
+            }
+        }
+        return PlainText("查无此人喵")
     }
 
 
