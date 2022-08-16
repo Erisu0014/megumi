@@ -30,7 +30,7 @@ class AnimeService {
 
     @Command(value = "/二",
         commandType = CommandType.GROUP,
-        pattern = Pattern.EQUALS)
+        pattern = Pattern.EQUALS,alias = ["/2"])
     fun doubleCheckDefault(sender: User?, messageChain: MessageChain, subject: Contact?): Message {
         return animeLogic.getRandomMemories()
     }
