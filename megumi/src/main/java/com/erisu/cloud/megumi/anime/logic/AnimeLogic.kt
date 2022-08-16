@@ -19,7 +19,7 @@ class AnimeLogic {
         val path = "${FileUtil.localStaticPath}${File.separator}anime${File.separator}memories.json"
         val memories = File(path).readLines().joinToString(separator = "")
         val animeList = JSON.parseArray(memories, Anime::class.java)
-        return if (from == null) {
+        return if (from.isNullOrBlank()) {
             PlainText(animeList.random().info)
         } else {
             val fromUppercase = from.uppercase()
@@ -27,7 +27,7 @@ class AnimeLogic {
             if (map.containsKey(fromUppercase)) {
                 PlainText(map[fromUppercase]?.random()!!.info)
             } else {
-                PlainText("还没有学会这个动画的句子呢>.< 随机返回如下\n${animeList.random().info}")
+                PlainText("还没有学会这个动画的句子呢>.<\n随机返回如下\n${animeList.random().info}")
             }
         }
 
