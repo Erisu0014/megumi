@@ -7,7 +7,6 @@ import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.PlainText
 import org.springframework.stereotype.Component
 import java.io.File
-import kotlin.random.Random
 
 /**
  *@Description TODO
@@ -16,11 +15,21 @@ import kotlin.random.Random
  **/
 @Component
 class AnimeLogic {
-    fun getRandomMemories(): Message {
+    fun getRandomMemories(from: String?): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}anime${File.separator}memories.json"
         val memories = File(path).readLines().joinToString(separator = "")
         val animeList = JSON.parseArray(memories, Anime::class.java)
-        val result = animeList[Random.nextInt(0, animeList.size)].info
-        return PlainText(result)
+        return if (from == null) {
+            PlainText(animeList.random().info)
+        } else {
+            val fromUppercase = from.uppercase()
+            val map = animeList.groupBy { it.from }
+            if (map.containsKey(fromUppercase)) {
+                PlainText(map[fromUppercase]?.random()!!.info)
+            } else {
+                PlainText("还没有学会这个动画的句子呢>.< 随机返回如下\n${animeList.random().info}")
+            }
+        }
+
     }
 }

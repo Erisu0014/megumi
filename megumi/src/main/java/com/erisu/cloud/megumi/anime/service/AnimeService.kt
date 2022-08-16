@@ -30,10 +30,12 @@ class AnimeService {
 
     @Command(value = "/二",
         commandType = CommandType.GROUP,
-        pattern = Pattern.EQUALS,alias = ["/2"])
-    fun doubleCheckDefault(sender: User?, messageChain: MessageChain, subject: Contact?): Message {
-        return animeLogic.getRandomMemories()
+        pattern = Pattern.PREFIX, alias = ["/2"])
+    fun randomMemories(sender: User?, messageChain: MessageChain, subject: Contact?): Message {
+        val from = messageChain.contentToString().substring(2).trim()
+        return animeLogic.getRandomMemories(from)
     }
+
 
 }
 
