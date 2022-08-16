@@ -84,8 +84,10 @@ class BiliService {
             val pair = biliSearchLogic.searchUser(name)
             if (pair != null) {
                 val follow = biliSearchLogic.searchFollow(pair.second)
-                if (!follow.isNullOrEmpty()) {
-                    return biliSearchLogic.checkOp(pair.first, follow)
+                return if (!follow.isNullOrEmpty()) {
+                    biliSearchLogic.checkOp(pair.first, follow)
+                } else {
+                    PlainText("因隐私设置，无法查询${pair.second}的关注信息")
                 }
             }
         }
