@@ -4,13 +4,11 @@ import com.erisu.cloud.megumi.anime.logic.AnimeLogic
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
-import com.erisu.cloud.megumi.plugin.logic.PluginLogic
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import javax.annotation.Resource
 
