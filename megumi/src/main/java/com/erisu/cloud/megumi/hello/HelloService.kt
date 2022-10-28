@@ -204,6 +204,15 @@ class HelloService {
         return StreamMessageUtil.generateAudio(group, silkFile, false)
     }
 
+    @Command(commandType = CommandType.GROUP, value = "smoke", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    suspend fun dingzhen(sender: User, messageChain: MessageChain, group: Group): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}litang.m4a"
+        val silkPath = voiceUtil.convertToSilk(path)
+        val silkFile = File(silkPath)
+        return StreamMessageUtil.generateAudio(group, silkFile, false)
+    }
+
 
 //    @Command(commandType = CommandType.GROUP, value = "哈西累", pattern = Pattern.CONTAINS)
 //    @Throws(Exception::class)
