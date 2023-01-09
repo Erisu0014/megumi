@@ -82,11 +82,11 @@ class TulingService {
         return PlainText("当前AI概率为$probability")
     }
 
-    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CHECK, probaility = 0.005)
-    @Throws(Exception::class)
-    suspend fun checkEmotion(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        return baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
-    }
+//    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CHECK, probaility = 0.005)
+//    @Throws(Exception::class)
+//    suspend fun checkEmotion(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+//        return baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
+//    }
 
 
 }

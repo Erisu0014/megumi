@@ -37,8 +37,7 @@ class TulingLogic : ApplicationRunner {
         val response = HttpUtil.post(tulingUrl, JSON.toJSONString(request), 2000)
         val tulingResponse = JSONObject.parseObject(response, TulingResponse::class.java)
         return if (tulingResponse.results.isNotEmpty() && tulingResponse.results[0].resultType == "text") {
-            val result = JSONObject.parseObject(tulingResponse.results[0].values.toString(), Text::class.java)
-            PlainText(result.text)
+            PlainText(tulingResponse.results[0].values.text)
         } else {
             null
         }
