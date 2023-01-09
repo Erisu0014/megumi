@@ -2,9 +2,9 @@ package com.erisu.cloud.megumi.util
 
 import cn.hutool.core.io.file.FileNameUtil
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.internal.deps.okhttp3.OkHttpClient
+import net.mamoe.mirai.internal.deps.okhttp3.Request
 import net.mamoe.mirai.message.data.MessageChainBuilder
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.io.File
 import java.nio.file.*
 import java.util.*
@@ -39,9 +39,9 @@ object FileUtil {
             val response = client.newCall(request).execute()
             //转化成byte数组
             if (!response.isSuccessful) {
-                return FileResponse(response.code(), response.body()!!.string(), null)
+                return FileResponse(response.code, response.body!!.string(), null)
             }
-            val bytes = Objects.requireNonNull(response.body())!!.bytes()
+            val bytes = Objects.requireNonNull(response.body)!!.bytes()
             var filename = name ?: url.substringAfterLast("/")
             val folderPath = Paths.get(folder)
             val desk = Files.exists(folderPath)
@@ -53,7 +53,7 @@ object FileUtil {
             val exists = Files.exists(filePath, LinkOption.NOFOLLOW_LINKS)
             if (exists) Files.delete(filePath)
             val path = Files.write(filePath, bytes, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)
-            return FileResponse(response.code(), null, path)
+            return FileResponse(response.code, null, path)
         } catch (e: Exception) {
             e.printStackTrace()
         }

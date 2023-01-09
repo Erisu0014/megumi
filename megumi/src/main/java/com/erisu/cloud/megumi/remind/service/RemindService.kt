@@ -11,7 +11,6 @@ import com.erisu.cloud.megumi.remind.logic.RemindPcrLogic
 import com.erisu.cloud.megumi.remind.logic.RemindTestLogic.remindMe
 import com.erisu.cloud.megumi.remind.pojo.DevRemind
 import com.erisu.cloud.megumi.remind.pojo.RemindType
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -37,7 +36,6 @@ import javax.annotation.Resource
  * @Date 2021/6/11 16:30
  */
 @ExperimentalSerializationApi
-@OptIn(DelicateCoroutinesApi::class)
 @Component
 @Model(name = "remind",help =
 """

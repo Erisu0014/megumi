@@ -22,7 +22,7 @@ class AnimeLogic {
         return if (from.isNullOrBlank()) {
             PlainText(animeList.random().info)
         } else {
-            val fromUppercase = from.uppercase()
+            val fromUppercase = from.toUpperCase()
             val map = animeList.groupBy { it.from }
             if (map.containsKey(fromUppercase)) {
                 PlainText(map[fromUppercase]?.random()!!.info)

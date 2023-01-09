@@ -37,7 +37,7 @@ class TournamentService {
 
     @Command(commandType = CommandType.GROUP, value = "查赛程", pattern = Pattern.PREFIX)
     fun searchTeamLpl(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        val team = messageChain.contentToString().removePrefix("查赛程").trim().uppercase()
+        val team = messageChain.contentToString().removePrefix("查赛程").trim().toUpperCase()
         return lplSpringLogic.getTeamSpringData(team)
     }
 

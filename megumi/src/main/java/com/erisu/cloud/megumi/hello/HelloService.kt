@@ -16,7 +16,6 @@ import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteAudio
 import com.erisu.cloud.megumi.util.PatternUtil.checkRemoteImage
 import com.erisu.cloud.megumi.util.StreamMessageUtil
 import com.erisu.cloud.megumi.util.VoiceUtil
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.future.future
 import lombok.extern.slf4j.Slf4j
@@ -97,7 +96,6 @@ class HelloService {
      * 打卡下班
      */
 //    @Async
-    @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "0 30 17 * * ?")
     fun clockOut() {
         GlobalScope.future {
@@ -118,7 +116,6 @@ class HelloService {
      * 疯狂星期四
      *
      */
-    @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "0 50 17 * * 4")
     fun crazyHot() {
         GlobalScope.future {
@@ -383,7 +380,6 @@ class HelloService {
         return null
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 30 08 * * ?")
     @Throws(FileNotFoundException::class)
     fun goSleep() {
@@ -465,7 +461,6 @@ class HelloService {
 //    }
 
     //    @Async
-    @OptIn(DelicateCoroutinesApi::class)
     @Scheduled(cron = "00 00 09 * * ?")
     @Throws(FileNotFoundException::class)
     fun dailyNews() {
@@ -521,20 +516,6 @@ class HelloService {
 //        return PlainText("您可能在说：${result.joinToString(separator = ",")}")
 //    }
 
-    @OptIn(ExperimentalTime::class)
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.EQUALS, value = "水嘉然")
-    suspend fun sbjiaxintang(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        val bot = Bot.getInstance(username)
-        val group = bot.getGroup(subject.id) as Group
-        try {
-            if (sender is NormalMember) {
-                sender.mute(Duration.Companion.minutes(10))
-            }
-        } catch (e: Exception) {
-            group.sendMessage("啥b夹心糖\uD83D\uDE05")
-        }
-        return PlainText("爬\uD83D\uDE01")
-    }
 
     @Command(commandType = CommandType.GROUP, value = "挂树", pattern = Pattern.EQUALS, probaility = 0.3)
     @Throws(Exception::class)

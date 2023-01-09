@@ -21,7 +21,6 @@ import java.awt.Font
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.pathString
 
 /**
  *@Description setu logic
@@ -98,7 +97,7 @@ class SetuLogic {
 
 
     suspend fun getImage(group: Group, path: Path, name: String?, isDelete: Boolean): Image {
-        val newName = name ?: path.pathString
+        val newName = name ?: path.toString()
         ImgUtil.pressText(
             path.toFile(),
             File(newName),  //  覆盖式重写

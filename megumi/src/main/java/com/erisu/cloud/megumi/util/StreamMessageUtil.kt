@@ -21,11 +21,9 @@ object StreamMessageUtil {
     }
 
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun generateImageAsync(group: Group, file: File, delete: Boolean): CompletableFuture<Image> =
         GlobalScope.future { generateImage(group, file, delete) }
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun generateImageAsync(group: Group, inputStream: InputStream): CompletableFuture<Image> =
         GlobalScope.future { generateImage(group, inputStream) }
 

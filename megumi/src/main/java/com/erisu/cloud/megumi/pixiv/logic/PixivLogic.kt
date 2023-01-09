@@ -10,13 +10,10 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.springframework.stereotype.Component
-import java.awt.Color
-import java.awt.Font
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 import javax.annotation.Resource
-import kotlin.io.path.pathString
 
 /**
  *@Description pixiv logic
