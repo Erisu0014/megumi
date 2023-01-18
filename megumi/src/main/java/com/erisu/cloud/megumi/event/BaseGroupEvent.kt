@@ -119,15 +119,6 @@ class BaseGroupEvent : SimpleListenerHost() {
                 lastUsers[dianKey] = "${nudgeId}_${split[1].toInt() + 1}"
             }
         }
-
-        if (event.target.id == 572617659L) {
-            if (group.id == 604515343L && Random.nextInt() < 0.5) {
-                val image =
-                    StreamMessageUtil.generateImage(group, ClassPathResource("emoticon/安害怕.jpg").inputStream)
-                group.sendMessage(messageChainOf(PlainText("小路别看福瑞了！"), image))
-            }
-            return ListeningStatus.LISTENING
-        }
         if (event.target.id != bot.id) {
             return ListeningStatus.LISTENING
         }
@@ -140,10 +131,11 @@ class BaseGroupEvent : SimpleListenerHost() {
                 group.sendMessage(messageChainOf(image, PlainText(msg)))
             }
             // 随机表情
-            random < 0.2 -> {
-                group.sendMessage(emojiLogic.getRandomImage(group)!!)
+            random<0.45->{
+                val path = "${FileUtil.localStaticPath}${File.separator}emoji"
+                val randomFile = FileUtil.getRandomFile(path, null)
+                group.sendMessage(StreamMessageUtil.generateImage(group, File(randomFile).inputStream()))
             }
-            // 随机表情
             random < 0.5 -> {
                 val memoryList = JSONObject.parseArray(ClassPathResource("memory.json").file.readLines()
                     .joinToString(separator = ""), Memory::class.java)

@@ -21,3 +21,4 @@
 ### other.properties ##
 /megumi/src/main/resources/other.properties
 /megumi/static/nullable/**
+/megumi/static/emoji/**

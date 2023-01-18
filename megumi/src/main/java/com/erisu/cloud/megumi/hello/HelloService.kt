@@ -301,6 +301,17 @@ class HelloService {
         return PlainText(marsUtil.getMars(marsText))
     }
 
+    @Command(commandType = CommandType.GROUP, value = "6",alias=["六","liu","陆","666"],
+        pattern = Pattern.EQUALS, probaility = 0.4)
+    @Throws(Exception::class)
+    fun six(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        return if (Random.nextInt() < 0.5) {
+            PlainText("5")
+        } else {
+            PlainText("7")
+        }
+    }
+
 //    @Command(commandType = CommandType.GROUP, value = "半月刊", pattern = Pattern.EQUALS)
 //    @Throws(Exception::class)
 //    suspend fun halfMonth(sender: User, messageChain: MessageChain, subject: Contact?): Message {
