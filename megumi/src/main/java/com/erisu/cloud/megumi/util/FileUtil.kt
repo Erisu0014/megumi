@@ -2,9 +2,9 @@ package com.erisu.cloud.megumi.util
 
 import cn.hutool.core.io.file.FileNameUtil
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.internal.deps.okhttp3.OkHttpClient
-import net.mamoe.mirai.internal.deps.okhttp3.Request
 import net.mamoe.mirai.message.data.MessageChainBuilder
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.File
 import java.nio.file.*
 import java.util.*

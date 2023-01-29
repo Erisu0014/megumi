@@ -177,6 +177,11 @@
             <artifactId>htmlunit</artifactId>
             <version>2.50.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.10.0</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.rometools/rome -->
         <dependency>
             <groupId>com.rometools</groupId>
