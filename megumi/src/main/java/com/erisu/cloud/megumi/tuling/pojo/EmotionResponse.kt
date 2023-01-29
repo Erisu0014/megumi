@@ -4,9 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EmotionResponse(
-    val text: String,
-    val items: MutableList<Emotion>,
-    val log_id: Long,
+    val text: String?=null,
+    val items: MutableList<Emotion>?=null,
+    val log_id: Long?=null,
+    val error_code:Int?=null,
+    val error_msg:String?=null
 ) {
     @Serializable
     data class Emotion(
