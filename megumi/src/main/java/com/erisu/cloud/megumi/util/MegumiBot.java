@@ -23,7 +23,7 @@ public class MegumiBot {
         config.fileBasedDeviceInfo(deviceInfo);
         config.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PHONE);
         config.setNetworkLoggerSupplier(Bot::getLogger);
-        config.redirectBotLogToDirectory();
+//        config.redirectBotLogToDirectory();
         final Bot megumi = BotFactory.INSTANCE.newBot(account, pwd, config);
         megumi.login();
         // 注册事件
