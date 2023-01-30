@@ -78,45 +78,45 @@ class RemindService {
         } else remindMeLogic.removeRemindMe(id, group, sender.id.toString())
     }
 
-    /**
-     * 活动开始前提醒测试代码
-     *
-     * @param sender
-     * @param messageChain
-     * @param subject
-     * @return
-     */
-    @Scheduled(cron = "0 00 18 * * ?")
-    fun calendarBegin() {
-        GlobalScope.future {
-            val today = DateUtil.today()
-            val types = RemindType.values().filter { it.remindBegin == 1 }
-            if (types.isEmpty()) return@future
-            val bot = Bot.getInstance(username)
-            val group = bot.getGroup(823621066L) ?: return@future
-            val message = remindPcrLogic.getTomorrowActivities(group, today, types) ?: return@future
-            group.sendMessage(message)
-        }
-    }
+//    /**
+//     * 活动开始前提醒测试代码
+//     *
+//     * @param sender
+//     * @param messageChain
+//     * @param subject
+//     * @return
+//     */
+//    @Scheduled(cron = "0 00 18 * * ?")
+//    fun calendarBegin() {
+//        GlobalScope.future {
+//            val today = DateUtil.today()
+//            val types = RemindType.values().filter { it.remindBegin == 1 }
+//            if (types.isEmpty()) return@future
+//            val bot = Bot.getInstance(username)
+//            val group = bot.getGroup(823621066L) ?: return@future
+//            val message = remindPcrLogic.getTomorrowActivities(group, today, types) ?: return@future
+//            group.sendMessage(message)
+//        }
+//    }
 
-    /**
-     * 活动结束前提醒测试代码
-     *
-    //     * @param sender
-    //     * @param messageChain
-    //     * @param subject
-     * @return
-     */
-    @Scheduled(cron = "0 30 10 * * ?")
-    fun calendarEnd() {
-        GlobalScope.future {
-            val today = DateUtil.today()
-            val types = RemindType.values().filter { it.remindLast == 1 }
-            if (types.isEmpty()) return@future
-            val bot = Bot.getInstance(username)
-            val group = bot.getGroup(823621066L) ?: return@future
-            val message = remindPcrLogic.getTodayActivities(group, today, types) ?: return@future
-            group.sendMessage(message)
-        }
-    }
+//    /**
+//     * 活动结束前提醒测试代码
+//     *
+//    //     * @param sender
+//    //     * @param messageChain
+//    //     * @param subject
+//     * @return
+//     */
+//    @Scheduled(cron = "0 30 10 * * ?")
+//    fun calendarEnd() {
+//        GlobalScope.future {
+//            val today = DateUtil.today()
+//            val types = RemindType.values().filter { it.remindLast == 1 }
+//            if (types.isEmpty()) return@future
+//            val bot = Bot.getInstance(username)
+//            val group = bot.getGroup(823621066L) ?: return@future
+//            val message = remindPcrLogic.getTodayActivities(group, today, types) ?: return@future
+//            group.sendMessage(message)
+//        }
+//    }
 }
