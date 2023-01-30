@@ -63,11 +63,11 @@ class SetuLogic {
 //            val imageList: MutableList<Image> = mutableListOf()
             if (isR18 == 0) {
                 setuResponse.data.forEach {
-                    val response = FileUtil.downloadHttpUrl(it.urls.original!!, "cache", null, null) ?: return null
+                    val response = FileUtil.downloadHttpUrl(it.urls.original!!, "cache", null, null,true) ?: return null
 //                    if (path != null) imageList.add(StreamMessageUtil.generateImage(group, path.toFile(), true))
                     //单条发送
                     val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
-                    if (response.code != 200) {
+                    if (response.code == 200) {
                         group.sendMessage(
                             forwardSetuMessage(
                                 PlainText(text),
@@ -118,7 +118,7 @@ class SetuLogic {
             val file = Paths.get(randomFile)
             val image = getImage(group, file, "${FileUtil.localCachePath}${File.separator}${UUID.fastUUID()}.png", true)
             val node: ForwardMessage.Node =
-                ForwardMessage.Node(3099396879L, System.currentTimeMillis().toInt(), "诗姐姐", image)
+                ForwardMessage.Node(3347359415L, System.currentTimeMillis().toInt(), "jackeylove", image)
             nodes.add(node)
         }
         return buildForwardMessage(group) {

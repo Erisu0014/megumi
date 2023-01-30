@@ -77,10 +77,9 @@ class PixivLogic {
         if (!File(trueFileName).exists()) {
             // 下载图片
             val pic =
-                FileUtil.downloadHttpUrl("http://www.pixiv.cat/${artwork}.png",
+                FileUtil.downloadHttpUrl("https://www.pixiv.cat/${artwork}.png",
                     folder,
-                    null,
-                    null) ?: return null
+                    null, null,true) ?: return null
             if (pic.code == 404) {
                 var pixivNum = 0
                 val regex = Regex("<p>這個作品ID中有 ([0-9]+) 張圖片", RegexOption.DOT_MATCHES_ALL)
