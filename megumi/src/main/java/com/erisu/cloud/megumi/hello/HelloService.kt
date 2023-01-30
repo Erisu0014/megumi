@@ -46,9 +46,11 @@ import kotlin.time.ExperimentalTime
  */
 @Slf4j
 @Component
-@Model(name = "hello", help = """
+@Model(
+    name = "hello", help = """
 太多功能了，不想写了喵
-""")
+"""
+)
 class HelloService {
     @Value("\${qq.username}")
     private var username: Long = 0
@@ -301,8 +303,10 @@ class HelloService {
         return PlainText(marsUtil.getMars(marsText))
     }
 
-    @Command(commandType = CommandType.GROUP, value = "6",alias=["六","liu","陆","666"],
-        pattern = Pattern.EQUALS, probaility = 0.4)
+    @Command(
+        commandType = CommandType.GROUP, value = "6", alias = ["六", "liu", "陆", "666"],
+        pattern = Pattern.EQUALS, probaility = 0.4
+    )
     @Throws(Exception::class)
     fun six(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         return if (Random.nextInt() < 0.5) {
@@ -310,6 +314,23 @@ class HelloService {
         } else {
             PlainText("7")
         }
+    }
+
+    @Command(commandType = CommandType.GROUP, value = "草死", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    fun caosi(sender: User, messageChain: MessageChain, subject: Contact?): Message {
+        val arr = mutableListOf(
+            "草死",
+            "草活",
+            "草不死",
+            "caosi",
+            "cs",
+            "\uD83E\uDD75",
+            "\uD83D\uDE0D\uD83D\uDC4D",
+            "多来点\uD83E\uDD1F",
+            "\uD83D\uDC98"
+        )
+        return PlainText(arr.shuffled().take(1).joinToString { it })
     }
 
 //    @Command(commandType = CommandType.GROUP, value = "半月刊", pattern = Pattern.EQUALS)
@@ -403,13 +424,17 @@ class HelloService {
         }
     }
 
-    @Command(commandType = CommandType.GROUP,
+    @Command(
+        commandType = CommandType.GROUP,
         pattern = Pattern.REGEX,
         value = "补时([0-9]+)([秒s])(.*)",
-        uuid = "6b7f91bdc34b4aa3a09527ee976ca622")
+        uuid = "6b7f91bdc34b4aa3a09527ee976ca622"
+    )
     fun timeChecker(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val values = Regex("补时([0-9]+)([秒s])(.*)",
-            RegexOption.DOT_MATCHES_ALL).find(messageChain.contentToString())!!.groupValues
+        val values = Regex(
+            "补时([0-9]+)([秒s])(.*)",
+            RegexOption.DOT_MATCHES_ALL
+        ).find(messageChain.contentToString())!!.groupValues
         val timeLine = values[3]
         val sub = 90 - values[1].toInt()
         if (sub < 0 || sub > 90) {
@@ -434,13 +459,17 @@ class HelloService {
         return messageChainOf(At(sender.id), PlainText("\n" + newTimeLine))
     }
 
-    @Command(commandType = CommandType.GROUP,
+    @Command(
+        commandType = CommandType.GROUP,
         pattern = Pattern.REGEX,
         value = "用时([0-9]+)([秒s])([0-9]+) ([0-9]+)",
-        uuid = "0c698a4360014d45865640ec6f2a6a98")
+        uuid = "0c698a4360014d45865640ec6f2a6a98"
+    )
     fun rewardTime(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        val values = Regex("用时([0-9]+) ([0-9]+)",
-            RegexOption.DOT_MATCHES_ALL).find(messageChain.contentToString())!!.groupValues
+        val values = Regex(
+            "用时([0-9]+) ([0-9]+)",
+            RegexOption.DOT_MATCHES_ALL
+        ).find(messageChain.contentToString())!!.groupValues
         val damage = values[1].toInt()
         val hp = values[3].toInt()
         if (damage < hp) {
@@ -483,9 +512,11 @@ class HelloService {
         }
     }
 
-    @Command(commandType = CommandType.GROUP,
+    @Command(
+        commandType = CommandType.GROUP,
         pattern = Pattern.EQUALS,
-        value = "今日早报")
+        value = "今日早报"
+    )
     suspend fun dailyNews(sender: User, messageChain: MessageChain, subject: Contact): Message? {
         val group = subject as Group
         return getDailyNews(group)
