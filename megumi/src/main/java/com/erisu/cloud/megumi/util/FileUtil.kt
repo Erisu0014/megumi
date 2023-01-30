@@ -2,10 +2,13 @@ package com.erisu.cloud.megumi.util
 
 import cn.hutool.core.io.file.FileNameUtil
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.internal.deps.io.ktor.client.engine.ProxyType
 import net.mamoe.mirai.message.data.MessageChainBuilder
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.nio.file.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -21,6 +24,8 @@ object FileUtil {
 
     val localCachePath = "${System.getProperty("user.dir")}${File.separator}cache"
 
+    val proxies="http://localhost:12"
+
     /**
      * 下载文件---返回下载后的文件存储路径
      *
@@ -31,10 +36,19 @@ object FileUtil {
      * @return
      */
     @Throws(Exception::class)
-    fun downloadHttpUrl(url: String, folder: String, suffix: String?, name: String?): FileResponse? {
+    fun downloadHttpUrl(url: String, folder: String, suffix: String?, name: String?,useProxy:Boolean=false): FileResponse? {
         try {
-            val client =
-                OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS).readTimeout(30, TimeUnit.SECONDS).build()
+            val client:OkHttpClient = if (useProxy){
+                OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("127.0.0.1",10809))).build()
+            }else{
+                OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build()
+            }
             val request = Request.Builder().url(url).build()
             val response = client.newCall(request).execute()
             //转化成byte数组
