@@ -1,16 +1,17 @@
 package com.erisu.cloud.megumi.battle.service
 
+import com.erisu.cloud.megumi.battle.logic.BattleLogic
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.PlainText
 import org.springframework.stereotype.Component
+import javax.annotation.Resource
 
 /**
  *@Description TODO
@@ -20,12 +21,30 @@ import org.springframework.stereotype.Component
 @Component
 @Model(name = "简易公会战", help = "在做了在做了")
 class BattleService {
-    @Command(value = "预约([1-5])+", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
-    @Throws(
-        Exception::class
-    )
-    fun orderBoss(sender: User?, messageChain: MessageChain?, subject: Contact?): Message? {
-        val group = subject as Group?
+    @Resource
+    private lateinit var battleLogic: BattleLogic
+
+    @Command(value = "预约([1-5一二三四五])+", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
+    @Throws(Exception::class)
+    fun orderBoss(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+
+//        val message=messageChain.contentToString()
+//        val result = Regex("预约([1-5一二三四五])+").find(message)
+//        if (result!=null){
+//            battleLogic.orderBoss(subject.id.toString(),
+//                sender,result.groupValues[1])
+//        }
         return null
     }
+
+    @Command(value = "check([0-9]{9})+", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
+    fun checkId(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        val message = messageChain.contentToString()
+        val result = Regex("check([0-9]{9})+").find(message)
+        if (result != null) {
+            return PlainText(battleLogic.checkUid(result.groupValues[1]))
+        }
+        return PlainText("当前只支持日服风纪区")
+    }
+
 }
