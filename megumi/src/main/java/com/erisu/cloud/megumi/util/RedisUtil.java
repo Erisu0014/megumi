@@ -365,8 +365,8 @@ public class RedisUtil {
      * @param field
      * @return
      */
-    public Object hGet(String key, String field) {
-        return redisTemplate.opsForHash().get(key, field);
+    public String hGet(String key, String field) {
+        return (String) redisTemplate.opsForHash().get(key, field);
     }
 
     /**

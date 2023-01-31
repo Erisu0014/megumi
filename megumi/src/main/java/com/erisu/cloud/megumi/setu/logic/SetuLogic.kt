@@ -55,7 +55,7 @@ class SetuLogic {
                 num = num, r18 = isR18
             )
         }
-        group.sendMessage(PlainText("setu正在下载中，请稍等~"))
+//        group.sendMessage(PlainText("setu正在下载中，请稍等~"))
         val responseJson =
             HttpUtil.post("https://api.lolicon.app/setu/v2", JSON.toJSONString(setuRequest), 2000)
         val setuResponse = JSONObject.parseObject(responseJson, SetuResponse::class.java)
@@ -63,15 +63,17 @@ class SetuLogic {
 //            val imageList: MutableList<Image> = mutableListOf()
             if (isR18 == 0) {
                 setuResponse.data.forEach {
-                    val response = FileUtil.downloadHttpUrl(it.urls.original!!, "cache", null, null,true) ?: return null
+                    val name=UUID.fastUUID().toString()
+                    val response = FileUtil.downloadHttpUrl(it.urls.original!!, FileUtil.localCachePath, null, name,true) ?: return null
 //                    if (path != null) imageList.add(StreamMessageUtil.generateImage(group, path.toFile(), true))
                     //单条发送
+                   val image= getImage(group, response.path!!, "${FileUtil.localCachePath}${name}",true)
                     val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
                     if (response.code == 200) {
                         group.sendMessage(
                             forwardSetuMessage(
                                 PlainText(text),
-                                StreamMessageUtil.generateImage(group, response.path!!.toFile(), true), group
+                                image, group
                             )
                         )
                     }
@@ -82,9 +84,9 @@ class SetuLogic {
 //                PlainText(setuResponse.data[0].urls.original.toString())
             }
         } else if (setuResponse.data.isEmpty()) {
-            group.sendMessage("那是什么色图？")
+            group.sendMessage("那是什么色图？搜不到喵")
         } else {
-            group.sendMessage("色图下载失败")
+            group.sendMessage("色图下载失败>.<")
         }
         return null
     }
