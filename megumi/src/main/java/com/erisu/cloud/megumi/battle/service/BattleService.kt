@@ -28,12 +28,11 @@ class BattleService {
     @Throws(Exception::class)
     fun orderBoss(sender: User, messageChain: MessageChain, subject: Contact): Message? {
 
-//        val message=messageChain.contentToString()
-//        val result = Regex("预约([1-5一二三四五])+").find(message)
-//        if (result!=null){
-//            battleLogic.orderBoss(subject.id.toString(),
-//                sender,result.groupValues[1])
-//        }
+        val message = messageChain.contentToString()
+        val result = Regex("预约([1-5一二三四五])+").find(message)
+        if (result != null) {
+            return PlainText(battleLogic.orderBoss(subject.id.toString(), sender, result.groupValues[1]))
+        }
         return null
     }
 
