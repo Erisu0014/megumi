@@ -47,13 +47,13 @@ class LplSpringLogic {
                     DateUtil.parse(DateUtil.today(), DatePattern.NORM_DATE_PATTERN)) > 0
             }
             if (lastLpl.isEmpty()) {
-                PlainText("${team}的夏季赛已经结束啦\uD83E\uDD73")
+                PlainText("${team}的春季赛可能结束了~")
             } else {
                 lastLpl.forEach { result += "${it.time.substring(5)}\t${it.b} vs ${it.r}\n" }
                 PlainText(result)
             }
         } else {
-            PlainText("没有找到该战队哦~\uD83E\uDD2D")
+            PlainText("找不到该战队的比赛>.<它是LPL队伍吗")
         }
     }
 
