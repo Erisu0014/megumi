@@ -58,25 +58,30 @@ class SetuLogic {
 //        group.sendMessage(PlainText("setu正在下载中，请稍等~"))
         val responseJson =
             HttpUtil.post("https://api.lolicon.app/setu/v2", JSON.toJSONString(setuRequest), 2000)
+        val nodes: MutableList<ForwardMessage.Node> = mutableListOf()
         val setuResponse = JSONObject.parseObject(responseJson, SetuResponse::class.java)
-        if (setuResponse.error == "" && !setuResponse.data.isNullOrEmpty()) {
+        if (setuResponse.error == "" && setuResponse.data.isNotEmpty()) {
 //            val imageList: MutableList<Image> = mutableListOf()
             if (isR18 == 0) {
                 setuResponse.data.forEach {
-                    val name=UUID.fastUUID().toString()
-                    val response = FileUtil.downloadHttpUrl(it.urls.original!!, FileUtil.localCachePath, null, name,true) ?: return null
+                    val name = UUID.fastUUID().toString()
+                    val response =
+                        FileUtil.downloadHttpUrl(it.urls.original!!, FileUtil.localCachePath, null, name, true)
+                            ?: return null
 //                    if (path != null) imageList.add(StreamMessageUtil.generateImage(group, path.toFile(), true))
-                    //单条发送
-                   val image= getImage(group, response.path!!, "${FileUtil.localCachePath}${name}",true)
-                    val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
                     if (response.code == 200) {
-                        group.sendMessage(
-                            forwardSetuMessage(
-                                PlainText(text),
-                                image, group
+                        val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
+                        val image = getImage(group, response.path!!, "${FileUtil.localCachePath}${name}", true)
+                        val node: ForwardMessage.Node =
+                            ForwardMessage.Node(
+                                2854196306, System.currentTimeMillis().toInt(),
+                                "色图bot", messageChainOf(PlainText(text), image)
                             )
-                        )
+                        nodes.add(node)
                     }
+                }
+                return buildForwardMessage(group) {
+                    addAll(nodes)
                 }
 //                messageChainOf(*imageList.toTypedArray())
             } else {
@@ -84,9 +89,10 @@ class SetuLogic {
 //                PlainText(setuResponse.data[0].urls.original.toString())
             }
         } else if (setuResponse.data.isEmpty()) {
-            group.sendMessage("那是什么色图？搜不到喵")
+            print(setuResponse.error)
+            return PlainText("那是什么色图？搜不到喵")
         } else {
-            group.sendMessage("色图下载失败>.<")
+            return PlainText("色图下载失败>.<")
         }
         return null
     }
