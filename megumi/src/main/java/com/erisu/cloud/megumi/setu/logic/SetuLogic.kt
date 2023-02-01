@@ -66,12 +66,12 @@ class SetuLogic {
                 setuResponse.data.forEach {
                     val name = UUID.fastUUID().toString()
                     val response =
-                        FileUtil.downloadHttpUrl(it.urls.original!!, FileUtil.localCachePath, null, name, true)
+                        FileUtil.downloadHttpUrl(it.urls.original!!, "${FileUtil.localCachePath}${File.separator}", null, name, true)
                             ?: return null
 //                    if (path != null) imageList.add(StreamMessageUtil.generateImage(group, path.toFile(), true))
                     if (response.code == 200) {
                         val text = "pid：${it.pid}\n标题：${it.title}\n作者：${it.author}\n原地址：${it.urls.original}"
-                        val image = getImage(group, response.path!!, "${FileUtil.localCachePath}${name}", true)
+                        val image = getImage(group, response.path!!, "${FileUtil.localCachePath}${File.separator}${name}", true)
                         val node: ForwardMessage.Node =
                             ForwardMessage.Node(
                                 2854196306, System.currentTimeMillis().toInt(),

@@ -24,7 +24,7 @@ object FileUtil {
 
     val localCachePath = "${System.getProperty("user.dir")}${File.separator}cache"
 
-    val proxies="http://localhost:12"
+//    val proxies="http://localhost:12"
 
     /**
      * 下载文件---返回下载后的文件存储路径
