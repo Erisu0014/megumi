@@ -316,11 +316,12 @@ class HelloService {
         }
     }
 
-    @Command(commandType = CommandType.GROUP, value = "草死", pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP, value = "草死", pattern = Pattern.EQUALS, probaility = 0.3)
     @Throws(Exception::class)
     fun caosi(sender: User, messageChain: MessageChain, subject: Contact?): Message {
         val arr = mutableListOf(
             "草死",
+            "草半死不活",
             "草活",
             "草不死",
             "caosi",

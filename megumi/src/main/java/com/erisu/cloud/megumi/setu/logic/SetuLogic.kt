@@ -80,8 +80,12 @@ class SetuLogic {
                         nodes.add(node)
                     }
                 }
-                return buildForwardMessage(group) {
-                    addAll(nodes)
+                return if(!nodes.isNullOrEmpty()){
+                    buildForwardMessage(group) {
+                        addAll(nodes)
+                    }
+                }else{
+                    PlainText("色图下载失败惹>.<")
                 }
 //                messageChainOf(*imageList.toTypedArray())
             } else {
@@ -92,7 +96,7 @@ class SetuLogic {
             print(setuResponse.error)
             return PlainText("那是什么色图？搜不到喵")
         } else {
-            return PlainText("色图下载失败>.<")
+            return PlainText("色图下载失败惹>.<")
         }
         return null
     }
