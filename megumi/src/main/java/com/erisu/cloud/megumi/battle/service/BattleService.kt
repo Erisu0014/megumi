@@ -27,11 +27,32 @@ class BattleService {
     @Command(value = "预约([1-5一二三四五])+", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
     @Throws(Exception::class)
     fun orderBoss(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-
         val message = messageChain.contentToString()
         val result = Regex("预约([1-5一二三四五])+").find(message)
         if (result != null) {
             return PlainText(battleLogic.orderBoss(subject.id.toString(), sender, result.groupValues[1]))
+        }
+        return null
+    }
+
+    @Command(value = "进([1-5一二三四五])+", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
+    @Throws(Exception::class)
+    fun inBoss(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val message = messageChain.contentToString()
+        val result = Regex("进([1-5一二三四五])+").find(message)
+        if (result != null) {
+            return battleLogic.inBoss(subject.id.toString(), sender, result.groupValues[1])
+        }
+        return null
+    }
+
+    @Command(value = "查([1-5一二三四五])+", commandType = CommandType.GROUP, pattern = Pattern.REGEX)
+    @Throws(Exception::class)
+    fun checkBoss(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        val message = messageChain.contentToString()
+        val result = Regex("查([1-5一二三四五])+").find(message)
+        if (result != null) {
+            return battleLogic.checkOrderBoss(subject.id.toString(), sender, result.groupValues[1])
         }
         return null
     }

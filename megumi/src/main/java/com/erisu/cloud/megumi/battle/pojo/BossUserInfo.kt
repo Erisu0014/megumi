@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  *@Date 2023/1/31 15:24
  **/
 @Serializable
-data class OrderInfo(
+data class BossUserInfo(
     val userId: Long,
     val time: String, //"17:30"
 ) {

@@ -25,10 +25,12 @@ import javax.annotation.Resource
  **/
 @MiraiExperimentalApi
 @Component
-@Model(name = "setu",help =
-"""
+@Model(
+    name = "setu", help =
+    """
 时代的眼泪
-""")
+"""
+)
 class SetuService {
     @Resource
     lateinit var setuLogic: SetuLogic
@@ -57,6 +59,11 @@ class SetuService {
         } else {
             setuLogic.getRollSetu(tag, num.toInt(), 0, subject as Group)
         }
+    }
+
+    @Command(value = "铜", commandType = CommandType.GROUP, pattern = Pattern.CONTAINS)
+    suspend fun tong(sender: User, messageChain: MessageChain, subject: Contact): Message? {
+        return setuLogic.getRollSetu("萝莉", 1, 0, subject as Group)
     }
 
 
