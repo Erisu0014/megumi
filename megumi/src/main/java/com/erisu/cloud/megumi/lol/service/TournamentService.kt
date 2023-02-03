@@ -32,7 +32,7 @@ class TournamentService {
     @Command(commandType = CommandType.GROUP, value = "([0-9]{2}-[0-9]{2})赛程", pattern = Pattern.REGEX)
     fun searchDayLpl(sender: User, messageChain: MessageChain, subject: Contact): Message {
         val day = Regex("([0-9]{2}-[0-9]{2})赛程").find(messageChain.contentToString())!!.groupValues[1]
-        return lplSpringLogic.getDaySpringData("2022-$day")
+        return lplSpringLogic.getDaySpringData("2023-$day")
     }
 
     @Command(commandType = CommandType.GROUP, value = "查赛程", pattern = Pattern.PREFIX)

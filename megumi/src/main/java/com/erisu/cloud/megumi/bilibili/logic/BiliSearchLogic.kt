@@ -1,7 +1,6 @@
 package com.erisu.cloud.megumi.bilibili.logic
 
 import cn.hutool.http.HttpRequest
-import cn.hutool.http.HttpUtil
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.erisu.cloud.megumi.bilibili.pojo.VideoResponse
@@ -10,8 +9,10 @@ import com.erisu.cloud.megumi.util.StreamMessageUtil
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.PlainText
-import net.mamoe.mirai.message.data.buildMessageChain
 import net.mamoe.mirai.message.data.messageChainOf
+import okhttp3.Headers.Companion.toHeaders
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
@@ -20,6 +21,7 @@ import java.nio.file.Files
 import java.nio.file.LinkOption
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
+import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 
 /**
@@ -29,7 +31,8 @@ import kotlin.math.pow
  **/
 @Component
 class BiliSearchLogic : ApplicationRunner {
-    val keys = mutableMapOf("1" to "13",
+    val keys = mutableMapOf(
+        "1" to "13",
         "2" to "12",
         "3" to "46",
         "4" to "31",
@@ -86,15 +89,33 @@ class BiliSearchLogic : ApplicationRunner {
         "w" to "55",
         "x" to "32",
         "y" to "14",
-        "z" to "19")
+        "z" to "19"
+    )
     val opMap: MutableMap<String, String> = mutableMapOf()
+
+    companion object {
+        val client =
+            OkHttpClient.Builder().connectTimeout(1, TimeUnit.SECONDS).readTimeout(5, TimeUnit.SECONDS).build()
+        val cookies = "b_nut=1675325975; buvid3=483A6BC4-AD7B-BB61-3E1E-F92DDFC1D41575532infoc; innersign=0"
+        val headers = mutableMapOf("Cookie" to cookies).toHeaders()
+//        fun getUserCookie(): Headers {
+//            val response = client.newCall(Request.Builder().url("https://bilibili.com").build()).execute()
+//            if (!response.isSuccessful) {
+//                throw Exception("response返回异常，错误码:${response.code}")
+//            }
+//            return response.headers
+//        }
+    }
 
 
     fun searchUser(keyword: String): Triple<String, String, String>? {
         val url =
             "http://api.bilibili.com/x/web-interface/search/type?search_type=bili_user&keyword=${keyword}"
-        val res = HttpUtil.get(url)
-        val jo = JSONObject.parseObject(res)
+        val response = client.newCall(Request.Builder().url(url).headers(headers).build()).execute()
+        if (!response.isSuccessful) {
+            throw Exception("response返回异常，错误码:${response.code}")
+        }
+        val jo = JSONObject.parseObject(response.body!!.string())
         if (jo["code"] == 0) {
             val result = jo.getJSONObject("data").getJSONArray("result")
             if (result != null && result.isNotEmpty()) {
@@ -110,8 +131,11 @@ class BiliSearchLogic : ApplicationRunner {
 
     fun searchFollow(mid: String): List<String>? {
         val url = "https://account.bilibili.com/api/member/getCardByMid?mid=${mid}"
-        val res = HttpUtil.get(url)
-        val jo = JSONObject.parseObject(res)
+        val response = client.newCall(Request.Builder().url(url).headers(headers).build()).execute()
+        if (!response.isSuccessful) {
+            throw Exception("response返回异常，错误码:${response.code}")
+        }
+        val jo = JSONObject.parseObject(response.body!!.string())
         if (jo["code"] == 0) {
             val attentions = jo.getJSONObject("card")["attentions"]
             val arr = JSONObject.parseArray(attentions.toString(), String::class.java)
@@ -126,8 +150,11 @@ class BiliSearchLogic : ApplicationRunner {
     fun searchUser(mid: Number): Triple<String, String, String>? {
         val url =
             "http://api.bilibili.com/x/web-interface/card?mid=${mid}"
-        val res = HttpUtil.get(url)
-        val jo = JSONObject.parseObject(res)
+        val response = client.newCall(Request.Builder().url(url).headers(headers).build()).execute()
+        if (!response.isSuccessful) {
+            throw Exception("response返回异常，错误码:${response.code}")
+        }
+        val jo = JSONObject.parseObject(response.body!!.string())
         if (jo["code"] == 0) {
             val result = jo.getJSONObject("data").getJSONObject("card")
             if (result != null) {
@@ -181,10 +208,12 @@ class BiliSearchLogic : ApplicationRunner {
         val resultPath = Paths.get("${path}${File.separator}dump.json")
         val exists = Files.exists(resultPath, LinkOption.NOFOLLOW_LINKS)
         if (exists) Files.delete(resultPath)
-        Files.write(resultPath,
+        Files.write(
+            resultPath,
             result.encodeToByteArray(),
             StandardOpenOption.CREATE_NEW,
-            StandardOpenOption.WRITE)
+            StandardOpenOption.WRITE
+        )
     }
 
     fun bv2av(bv: String): String {
@@ -224,14 +253,20 @@ class BiliSearchLogic : ApplicationRunner {
             return if (pathResponse.code == 200) {
                 val image = StreamMessageUtil.generateImage(group, pathResponse.path!!.toFile().inputStream())
                 val baseInfo: String = if (stat.view!!.toInt() > 100000) {
-                    String.format("%-20s%-20s%-20s\n%-20s%-20s%-20s", "播放:${stat.view}", "弹幕:${stat.danmaku}",
-                        "评论:${stat.reply}", "收藏:${stat.favorite}", "硬币:${stat.coin}", "点赞:${stat.like}")
+                    String.format(
+                        "%-20s%-20s%-20s\n%-20s%-20s%-20s", "播放:${stat.view}", "弹幕:${stat.danmaku}",
+                        "评论:${stat.reply}", "收藏:${stat.favorite}", "硬币:${stat.coin}", "点赞:${stat.like}"
+                    )
                 } else {
-                    String.format("%-16s%-16s%-16s\n%-16s%-16s%-16s", "播放:${stat.view}", "弹幕:${stat.danmaku}",
-                        "评论:${stat.reply}", "收藏:${stat.favorite}", "硬币:${stat.coin}", "点赞:${stat.like}")
+                    String.format(
+                        "%-16s%-16s%-16s\n%-16s%-16s%-16s", "播放:${stat.view}", "弹幕:${stat.danmaku}",
+                        "评论:${stat.reply}", "收藏:${stat.favorite}", "硬币:${stat.coin}", "点赞:${stat.like}"
+                    )
                 }
-                messageChainOf(PlainText("${data.title}\n"), image,
-                    PlainText("${baseInfo}\n点击链接进入:https://www.bilibili.com/video/av${avCode}\n简介:${data.desc}"))
+                messageChainOf(
+                    PlainText("${data.title}\n"), image,
+                    PlainText("${baseInfo}\n点击链接进入:https://www.bilibili.com/video/av${avCode}\n简介:${data.desc}")
+                )
             } else null
         }
     }
@@ -248,9 +283,10 @@ class BiliSearchLogic : ApplicationRunner {
 
     fun checkOp(name: String, follow: List<String>): Message {
         if (opMap.isEmpty()) {
-            val json = File("${FileUtil.localStaticPath}${File.separator}op.json").readLines().joinToString(separator = "")
-            JSONObject.parseObject(json).forEach{
-                opMap[it.key]=it.value.toString()
+            val json =
+                File("${FileUtil.localStaticPath}${File.separator}op.json").readLines().joinToString(separator = "")
+            JSONObject.parseObject(json).forEach {
+                opMap[it.key] = it.value.toString()
             }
         }
         val opResult = mutableListOf<String>()
