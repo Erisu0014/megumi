@@ -27,7 +27,7 @@ public class HomoService {
     @Resource
     private HomoLogic homoLogic;
 
-    @Command(commandType = CommandType.GROUP, pattern = Pattern.REGEX, value = "[0-9]+", probaility = 0.01)
+    @Command(commandType = CommandType.GROUP, pattern = Pattern.REGEX, value = "[0-9]+", probaility = 0.5)
     public Message homoNum(User sender, MessageChain messageChain, Contact subject) {
         String num = messageChain.contentToString();
         if (!NumberUtil.isNumber(num)) {
