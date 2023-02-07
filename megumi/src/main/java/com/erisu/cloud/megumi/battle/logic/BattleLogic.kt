@@ -81,14 +81,27 @@ class BattleLogic {
             if (!orderValue.isNullOrBlank()) {
                 val bossUserInfoList = Json.decodeFromString<List<BossUserInfo>>(orderValue).toMutableList()
                 bossUserInfoList.removeIf { sender.id == it.userId }
-                if (bossUserInfoList.isEmpty()){
+                if (bossUserInfoList.isEmpty()) {
                     redisUtil.hDelete(orderKey, bossInfo.key)
-                }else{
+                } else {
                     redisUtil.hPut(orderKey, bossInfo.key, JSON.toJSONString(bossUserInfoList))
                 }
             }
             val inKey = """${RedisKey.BOSS_IN.key}:$groupId"""
             val size = updateBossDetail(inKey, bossInfo, sender.id)
+            // 清除其他inBoss key
+            val allInBoss = redisUtil.hGetAll(inKey)
+            allInBoss.forEach { (k, v) ->
+                if (k.toString() != bossInfo.key) {
+                    val bossUserInfoList = Json.decodeFromString<List<BossUserInfo>>(v.toString()).toMutableList()
+                    bossUserInfoList.removeIf { sender.id == it.userId }
+                    if (bossUserInfoList.isNotEmpty()){
+                        redisUtil.hPut(inKey,k.toString(),JSON.toJSONString(bossUserInfoList))
+                    }else{
+                        redisUtil.hDelete(inKey, k)
+                    }
+                }
+            }
             return PlainText(
                 "已登记进本战斗\n" +
                         "┗当前${bossInfo.chinese}王战斗人数：${size}\n"
@@ -112,8 +125,8 @@ class BattleLogic {
             redisUtil.hPut(key, bossInfo.key, JSON.toJSONString(bossUserInfoList))
             bossUserInfoList.size
         } else {
-            val orderInfoList = mutableListOf(bossUserInfo)
-            redisUtil.hPut(key, bossInfo.key, JSON.toJSONString(orderInfoList))
+            val bossUserInfoList = mutableListOf(bossUserInfo)
+            redisUtil.hPut(key, bossInfo.key, JSON.toJSONString(bossUserInfoList))
             1
         }
     }
