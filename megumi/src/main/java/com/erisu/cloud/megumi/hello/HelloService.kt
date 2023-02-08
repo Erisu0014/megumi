@@ -174,6 +174,14 @@ class HelloService {
 //        return null
 //    }
 
+    @Command(commandType = CommandType.GROUP, value = "gymbag", pattern = Pattern.EQUALS)
+    @Throws(Exception::class)
+    suspend fun gymbag(sender: User, messageChain: MessageChain, group: Group): Message {
+        val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}gymbag.m4a"
+        val silkPath = voiceUtil.convertToSilk(path)
+        val silkFile = File(silkPath)
+        return StreamMessageUtil.generateAudio(group, silkFile, false)
+    }
 
     @Command(commandType = CommandType.GROUP, value = "谁是曲奇", pattern = Pattern.EQUALS)
     @Throws(Exception::class)
