@@ -22,3 +22,4 @@
 /megumi/src/main/resources/other.properties
 /megumi/static/nullable/**
 /megumi/static/emoji/**
+!/megumi/static/emoji/neuro/**
