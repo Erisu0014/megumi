@@ -7,6 +7,8 @@ import com.erisu.cloud.megumi.pattern.Pattern
 import com.erisu.cloud.megumi.plugin.pojo.Model
 import com.erisu.cloud.megumi.tuling.logic.BaiduNlpLogic
 import com.erisu.cloud.megumi.tuling.logic.TulingLogic
+import com.erisu.cloud.megumi.util.FileUtil
+import com.erisu.cloud.megumi.util.StreamMessageUtil
 import kotlinx.serialization.ExperimentalSerializationApi
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -15,8 +17,8 @@ import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.PlainText
-import net.mamoe.mirai.utils.MiraiExperimentalApi
 import org.springframework.stereotype.Component
+import java.io.File
 import javax.annotation.Resource
 import kotlin.random.Random
 
@@ -82,10 +84,16 @@ class TulingService {
         return PlainText("当前AI概率为$probability")
     }
 
-    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CHECK, probaility = 0.01)
+    @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CHECK, probaility = 0.02)
     @Throws(Exception::class)
     suspend fun checkEmotion(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-            return baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
+        return if (Random.nextInt()>0.5){
+            baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
+        }else{
+            val path = "${FileUtil.localStaticPath}${File.separator}emoji${File.separator}neuro"
+            val randomFile = FileUtil.getRandomFile(path, null)
+            StreamMessageUtil.generateImage(subject as Group, File(randomFile).inputStream())
+        }
     }
 
 
