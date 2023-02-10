@@ -261,7 +261,7 @@ data class Owner(
 	val name: String? = null,
 
 	@JSONField(name="mid")
-	val mid: Int? = null
+	val mid: Number? = null
 )
 
 data class DescV2Item(
