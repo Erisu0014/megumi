@@ -87,10 +87,15 @@ class TulingService {
     @Command(commandType = CommandType.GROUP, value = "", pattern = Pattern.CHECK, probaility = 0.02)
     @Throws(Exception::class)
     suspend fun checkEmotion(sender: User, messageChain: MessageChain, subject: Contact): Message? {
-        return if (Random.nextInt()>0.5){
+        val prob = Random.nextInt()
+        return if (prob>0.8){
             baiduNlpLogic.emotionRecognition(subject as Group, messageChain.contentToString())
-        }else{
+        }else if(prob>0.4){
             val path = "${FileUtil.localStaticPath}${File.separator}emoji${File.separator}neuro"
+            val randomFile = FileUtil.getRandomFile(path, null)
+            StreamMessageUtil.generateImage(subject as Group, File(randomFile).inputStream())
+        }else{
+            val path = "${FileUtil.localStaticPath}${File.separator}emoji${File.separator}bocchi"
             val randomFile = FileUtil.getRandomFile(path, null)
             StreamMessageUtil.generateImage(subject as Group, File(randomFile).inputStream())
         }

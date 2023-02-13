@@ -19,7 +19,7 @@ import javax.annotation.Resource
  *@Date 2023/1/30 11:28
  **/
 @Component
-@Model(name = "简易公会战", help = "在做了在做了")
+@Model(name = "简易公会战", help = "不做了，傻逼pcr死了算了，kmr就是个傻逼")
 class BattleService {
     @Resource
     private lateinit var battleLogic: BattleLogic
