@@ -20,7 +20,7 @@ import javax.annotation.Resource
 @Component
 @Model(name = "查重",help =
 """
-[查重 ...]：枝网查重专用，似乎不是枝网的也可以查！
+[查重 ...]：枝网查重专用，似乎不是枝网的也可以查
 """)
 class AsoulService {
     @Resource
