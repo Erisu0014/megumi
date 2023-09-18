@@ -3,6 +3,7 @@ package com.erisu.cloud.megumi.util;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
+import net.mamoe.mirai.auth.BotAuthorization;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.ListenerHost;
 import net.mamoe.mirai.utils.BotConfiguration;
@@ -21,10 +22,11 @@ public class MegumiBot {
     public static void startBot(Long account, String pwd, String deviceInfo, List<ListenerHost> events) {
         BotConfiguration config = new BotConfiguration();
         config.fileBasedDeviceInfo(deviceInfo);
-        config.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_PHONE);
+        config.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_WATCH);
         config.setNetworkLoggerSupplier(Bot::getLogger);
 //        config.redirectBotLogToDirectory();
-        final Bot megumi = BotFactory.INSTANCE.newBot(account, pwd, config);
+//        final Bot megumi = BotFactory.INSTANCE.newBot(account, pwd, config);
+        final Bot megumi = BotFactory.INSTANCE.newBot(account, BotAuthorization.byQRCode(), config);
         megumi.login();
         // 注册事件
         for (ListenerHost event : events) {
@@ -37,7 +39,7 @@ public class MegumiBot {
 //                    if (subject instanceof Group) {
 //                        Objects.requireNonNull(bot.getGroup(subject.getId())).sendMessage(e1.getReturnMsg());
 //                    }
-//
+//                                                                                                            
 //                }
 //                return Unit.INSTANCE;
 //            });
