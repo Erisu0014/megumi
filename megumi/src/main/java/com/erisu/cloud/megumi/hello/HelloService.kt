@@ -64,10 +64,16 @@ class HelloService {
     @Resource
     private lateinit var voiceUtil: VoiceUtil
 
-    @Command(commandType = CommandType.GROUP, value = "死了吗", pattern = Pattern.EQUALS, prefix = BotPrefix.alice)
+    @Command(
+        commandType = CommandType.GROUP,
+        value = "死了吗",
+        alias = ["在吗", "在吗？"],
+        pattern = Pattern.EQUALS,
+        prefix = BotPrefix.xiangzi
+    )
     @Throws(Exception::class)
     fun hello(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        return PlainText("喵？")
+        return PlainText("你好，客服小祥114514号为您服务！有什么可以帮您？:heart")
     }
 
 
@@ -109,7 +115,7 @@ class HelloService {
 //                val music = StreamMessageUtil.generateAudio(it, silkFile, false)
 //                it.sendMessage(music)
                 val image = StreamMessageUtil.generateImage(it, ClassPathResource("emoticon/下班.gif").inputStream)
-                it.sendMessage(messageChainOf(PlainText("下班啦~下班啦~"), image))
+                it.sendMessage(messageChainOf(PlainText("下班啦~下班啦~回家弹钢琴啦~"), image))
             }
         }
     }
@@ -202,7 +208,7 @@ class HelloService {
     }
 
 
-    @Command(commandType = CommandType.GROUP, value = "alice起床", pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP, value = "alice起床", alias = ["起床"], pattern = Pattern.EQUALS)
     @Throws(Exception::class)
     suspend fun okitte(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}alice.mp3"
