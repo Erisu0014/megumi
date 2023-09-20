@@ -65,6 +65,11 @@
             <artifactId>mirai-core-jvm</artifactId>
             <version>2.13.4</version>
         </dependency>
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.19</version>
+        </dependency>
 
         <dependency>
             <groupId>net.mamoe</groupId>
@@ -94,21 +99,21 @@
             <version>${kotlin.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.kotlinx</groupId>-->
-<!--            <artifactId>kotlinx-coroutines-core-jvm</artifactId>-->
-<!--            <version>${kotlinx.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.kotlinx</groupId>-->
-<!--            <artifactId>kotlinx-coroutines-jdk8</artifactId>-->
-<!--            <version>${kotlinx.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.kotlinx</groupId>-->
-<!--            <artifactId>kotlinx-coroutines-core</artifactId>-->
-<!--            <version>${kotlinx.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+        <!--            <artifactId>kotlinx-coroutines-core-jvm</artifactId>-->
+        <!--            <version>${kotlinx.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+        <!--            <artifactId>kotlinx-coroutines-jdk8</artifactId>-->
+        <!--            <version>${kotlinx.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+        <!--            <artifactId>kotlinx-coroutines-core</artifactId>-->
+        <!--            <version>${kotlinx.version}</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
@@ -226,7 +231,7 @@
                     <compilerPlugins>
                         <plugin>kotlinx-serialization</plugin>
                         <plugin>all-open</plugin>
-<!--                        <plugin>spring</plugin>-->
+                        <!--                        <plugin>spring</plugin>-->
                     </compilerPlugins>
                     <pluginOptions>
                         <option>all-open:annotation=com.erisu.cloud.megumi.util.Open</option>
