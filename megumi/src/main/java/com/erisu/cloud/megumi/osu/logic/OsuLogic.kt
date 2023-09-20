@@ -86,7 +86,9 @@ class OsuLogic {
             val winner = redisUtil.hGetAll("${RedisKey.OSU_BG_WINNER.key}:${group.id}")
             val bgPath = "${osuBgPath}${File.separator}${bgPair.first}.png"
             val image = StreamMessageUtil.generateImage(group, File(bgPath), false)
+            redisUtil.hDelete(RedisKey.OSU_BG.key, group.id.toString())
             if (winner != null) {
+                redisUtil.delete("${RedisKey.OSU_BG_WINNER.key}:${group.id}")
                 group.sendMessage(
                     messageChainOf(
                         PlainText(winner.keys.joinToString { "猜对啦~\n" }),
@@ -129,8 +131,8 @@ class OsuLogic {
         //创建一个输出文件对象，假设输出目录为/data/data/com.example
         //调用Thumbnails类中的of方法和toFile方法，进行图片裁剪和输出
         Thumbnails.of(bgFile.pathString)
-            .sourceRegion(Positions.TOP_LEFT, x, y) //指定裁剪区域
-            .size(50, 50) //指定输出大小
+            .sourceRegion( x, y,50,50) //指定裁剪区域
+            .size(100,100)
             .toFile(path) //指定输出路径
         val bgId = bgFile.name.split(".")[0]
         return Pair(bgId, path)
