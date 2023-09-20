@@ -15,7 +15,8 @@ import java.util.List;
  * @Author alice
  * @Date 2020/11/18 8:24
  **/
-//@PropertySource("classpath:qq.properties")
+//@Proper
+// tySource("classpath:qq.properties")
 @Component
 public class BotServer implements ApplicationRunner {
 

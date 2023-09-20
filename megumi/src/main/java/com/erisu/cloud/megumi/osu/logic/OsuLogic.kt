@@ -21,6 +21,9 @@ import net.mamoe.mirai.message.data.messageChainOf
 import okhttp3.*
 import org.springframework.stereotype.Component
 import java.io.File
+import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -53,6 +56,7 @@ class OsuLogic {
         val client = OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.SECONDS)
             .readTimeout(5, TimeUnit.SECONDS)
+            .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("127.0.0.1",10809)))
             .build()
         var beatMapInfo: BeatMapInfo? = null
         val response = client.newCall(

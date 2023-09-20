@@ -439,6 +439,18 @@ class HelloService {
         }
     }
 
+    @Scheduled(cron = "00 30 12 * * ?")
+    @Throws(FileNotFoundException::class)
+    fun goSleep2() {
+        GlobalScope.future {
+            val bot = Bot.getInstance(username)
+            val groupId = 823621066L
+            val group = bot.getGroup(groupId) as Group
+            group.sendMessage(messageChainOf(PlainText("嗯哼哼~我要睡午觉，睡在哪里才追舒服呀~")))
+
+        }
+    }
+
     @Command(
         commandType = CommandType.GROUP,
         pattern = Pattern.REGEX,

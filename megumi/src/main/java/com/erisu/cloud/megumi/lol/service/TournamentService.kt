@@ -1,5 +1,7 @@
 package com.erisu.cloud.megumi.lol.service
 
+import cn.hutool.core.date.DateUnit
+import cn.hutool.core.date.DateUtil
 import com.erisu.cloud.megumi.command.Command
 import com.erisu.cloud.megumi.command.CommandType
 import com.erisu.cloud.megumi.lol.logic.LplSpringLogic
@@ -24,9 +26,14 @@ class TournamentService {
     @Resource
     private lateinit var lplSpringLogic: LplSpringLogic
 
-    @Command(commandType = CommandType.GROUP, value = "今日赛程", pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP, value = "(今日)?赛程", pattern = Pattern.REGEX)
     fun searchTodayLpl(sender: User, messageChain: MessageChain, subject: Contact): Message {
         return lplSpringLogic.getDaySpringData(null)
+    }
+
+    @Command(commandType = CommandType.GROUP, value = "明[日天]赛程", pattern = Pattern.REGEX)
+    fun searchTomorrowLpl(sender: User, messageChain: MessageChain, subject: Contact): Message {
+        return lplSpringLogic.getDaySpringData(DateUtil.formatDate(DateUtil.tomorrow()))
     }
 
     @Command(commandType = CommandType.GROUP, value = "([0-9]{2}-[0-9]{2})赛程", pattern = Pattern.REGEX)
@@ -37,7 +44,7 @@ class TournamentService {
 
     @Command(commandType = CommandType.GROUP, value = "查赛程", pattern = Pattern.PREFIX)
     fun searchTeamLpl(sender: User, messageChain: MessageChain, subject: Contact): Message {
-        val team = messageChain.contentToString().removePrefix("查赛程").trim().toUpperCase()
+        val team = messageChain.contentToString().removePrefix("查赛程").trim().uppercase()
         return lplSpringLogic.getTeamSpringData(team)
     }
 

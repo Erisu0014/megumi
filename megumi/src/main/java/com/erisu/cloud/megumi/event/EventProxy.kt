@@ -17,8 +17,9 @@ import net.mamoe.mirai.event.EventPriority
 import net.mamoe.mirai.event.ListeningStatus
 import net.mamoe.mirai.event.SimpleListenerHost
 import net.mamoe.mirai.event.events.MessageEvent
-import net.mamoe.mirai.message.data.EmptyMessageChain
+import net.mamoe.mirai.message.data.emptyMessageChain
 import net.mamoe.mirai.message.data.Message
+import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.PlainText
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -89,9 +90,10 @@ class EventProxy : SimpleListenerHost() {
                 }
 //               answer = method.invoke(bean, messageEvent.sender, messageEvent.message, messageEvent.subject)
             } catch (e: Exception) {
+
                 handleException(coroutineContext, e)
             }
-            if (answer !is Message || answer is EmptyMessageChain) continue
+            if (answer !is Message || answer == emptyMessageChain()) continue
             else {
                 val messageReceipt =
                     messageEvent.subject.sendMessage(buildMessage(messageEvent.subject as Group, answer))
