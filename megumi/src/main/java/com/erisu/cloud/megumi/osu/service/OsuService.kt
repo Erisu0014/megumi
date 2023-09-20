@@ -57,4 +57,24 @@ class OsuService {
         return null
     }
 
+    @Command(
+        commandType = CommandType.GROUP,
+        value = "猜bg",
+        pattern = Pattern.EQUALS
+    )
+    @Throws(Exception::class)
+    suspend fun rollOsuBg(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+        return osuLogic.rollOsuBg(sender, subject as Group)
+    }
+
+    @Command(
+        commandType = CommandType.GROUP,
+        pattern = Pattern.CHECK
+    )
+    @Throws(Exception::class)
+    suspend fun bgNameCheck(sender: User, messageChain: MessageChain, subject: Contact?): Message? {
+        return osuLogic.bgNameCheck(sender, subject as Group, messageChain)
+    }
+
+
 }

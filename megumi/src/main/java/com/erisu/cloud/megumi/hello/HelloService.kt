@@ -208,7 +208,7 @@ class HelloService {
     }
 
 
-    @Command(commandType = CommandType.GROUP, value = "alice起床", alias = ["起床"], pattern = Pattern.EQUALS)
+    @Command(commandType = CommandType.GROUP, value = "起床", pattern = Pattern.EQUALS, prefix = BotPrefix.xiangzi)
     @Throws(Exception::class)
     suspend fun okitte(sender: User, messageChain: MessageChain, group: Group): Message {
         val path = "${FileUtil.localStaticPath}${File.separator}osu${File.separator}alice.mp3"
