@@ -25,7 +25,7 @@ public class MegumiBot {
         config.setProtocol(BotConfiguration.MiraiProtocol.ANDROID_WATCH);
         config.setNetworkLoggerSupplier(Bot::getLogger);
 //        config.redirectBotLogToDirectory();
-//        final Bot megumi = BotFactory.INSTANCE.newBot(account, pwd, config);
+//        final Bot megumi = BotFactory.INSTANCE.newBot(account, BotAuthorization.byPassword(pwd), config);
         final Bot megumi = BotFactory.INSTANCE.newBot(account, BotAuthorization.byQRCode(), config);
         megumi.login();
         // 注册事件
