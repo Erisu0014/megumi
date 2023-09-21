@@ -15,9 +15,8 @@ import net.coobird.thumbnailator.Thumbnails
 import net.coobird.thumbnailator.geometry.Positions
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.data.Message
-import net.mamoe.mirai.message.data.PlainText
-import net.mamoe.mirai.message.data.messageChainOf
+import net.mamoe.mirai.contact.nameCardOrNick
+import net.mamoe.mirai.message.data.*
 import okhttp3.*
 import org.springframework.stereotype.Component
 import java.io.File
@@ -56,7 +55,7 @@ class OsuLogic {
         val client = OkHttpClient.Builder()
             .connectTimeout(1, TimeUnit.SECONDS)
             .readTimeout(5, TimeUnit.SECONDS)
-            .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("127.0.0.1",10809)))
+            .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("127.0.0.1", 10809)))
             .build()
         var beatMapInfo: BeatMapInfo? = null
         val response = client.newCall(
@@ -87,9 +86,11 @@ class OsuLogic {
             val bgPath = "${osuBgPath}${File.separator}${bgPair.first}.png"
             val image = StreamMessageUtil.generateImage(group, File(bgPath), false)
             if (winner != null) {
+                val baseMessageChain = MessageChainBuilder()
+                winner.keys.forEach { baseMessageChain.append(At(it.toString().toLong())).append("猜对啦~\n") }
                 group.sendMessage(
                     messageChainOf(
-                        PlainText(winner.keys.joinToString { "猜对啦~\n" }),
+                        baseMessageChain.build(),
                         PlainText("正确答案是：${BgUtil.bgJson.getJSONArray(bgPair.first)[0]}"),
                         image
                     )
@@ -111,7 +112,7 @@ class OsuLogic {
         val bgId = redisUtil.hGet(RedisKey.OSU_BG.key, group.id.toString())
         if (bgId != null) {
             if (BgUtil.nameCheck(message.contentToString().trim(), bgId)) {
-                redisUtil.hPut("${RedisKey.OSU_BG_WINNER.key}:${group.id}", sender.nick, "1")
+                redisUtil.hPut("${RedisKey.OSU_BG_WINNER.key}:${group.id}", sender.id.toString(), sender.nameCardOrNick)
             }
         }
         return null
